@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "345803967238",
+    "project_id": "project-eureka-firebase",
+    "storage_bucket": "project-eureka-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345803967238:android:814b0c686b2206a7d8ac87",
+        "android_client_info": {
+          "package_name": "com.example.project_eureka_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "345803967238-pu417p3rj09eku6f1d4okmvn9lifv6io.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_eureka_flutter",
+            "certificate_hash": "c774b294b2253d1816b940fee9db7eb8d68fb96d"
+          }
+        },
+        {
+          "client_id": "345803967238-fkl4ljutktq1saj21bb5d8dkhobd86pt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOQ3Puyw8Xg5P9fEv873DhJ4TK34YHJ-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "345803967238-fkl4ljutktq1saj21bb5d8dkhobd86pt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
