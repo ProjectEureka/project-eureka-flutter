@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 /// This is the stateful widget that the main application instantiates.
 class CategoryFilter extends StatefulWidget {
-  CategoryFilter({Key key}) : super(key: key);
+  final _callback;
+
+  CategoryFilter({@required void getCategoryCallback(String category)}) : _callback = getCategoryCallback;
 
   @override
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
@@ -11,6 +13,7 @@ class CategoryFilter extends StatefulWidget {
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<CategoryFilter> {
+
   String dropdownValue = 'All Categories';
 
   @override
@@ -25,6 +28,8 @@ class _MyStatefulWidgetState extends State<CategoryFilter> {
         color: Colors.deepPurpleAccent,
       ),
       onChanged: (String newValue) {
+        // Call function in Home class
+        widget?._callback(newValue);
         setState(() {
           dropdownValue = newValue;
         });

@@ -1,4 +1,3 @@
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'question_model.dart';
 import 'category_filter.dart';
@@ -9,29 +8,173 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final SearchBarController<QuestionModel> _searchBarController =
-      SearchBarController();
+  // Questions data. Unfiltered list of questions
+  List data = [];
+  // Will filter the list of questions
+  List questionsListFiltered = [];
+  // These lists will help to filter questions by both search key and category simultaneously
+  // Might be inefficient to use that many lists around, thus, this might change in the future versions to something more dynamic and efficient
+  List questionsListFilteredCategory = [];
+  List questionsListFilteredSearch = [];
+  // isSearching keep track of whether search bar is activated or not. Search bar will appear if user clicked a search icon.
+  bool isSearching = false;
+  // Keeps track of the last chosen category. By default is All Categories.
+  String selectedCategory = "All Categories";
 
+  // Called from widget (class) category filter
+  getCategory(value) {
+    setState(() {
+      filterQuestionsCategory(value);
+    });
+  }
+
+  // Here Eureka will get data from the database.
+  // At this point it contains just dummy lists of questions for test purposes
+  getQuestions() async {
+    // List of 2 dummy questions
+    List list1 = List.generate(2, (index) => "Message")
+        .map((val) => QuestionModel(
+              category: "Technology",
+              time: "2 hours ago",
+              status: "Active",
+              title: "Linux installation issue - usb not found",
+              description:
+                  "Hello. I have a Smartbuy 16Gb USB 2.0 flash drive (with new memory controller) that is not recognized in any Linux system, but on Windows it recognized and worked fine. When I connect it to the PC on Linux system, nothing happens",
+            ))
+        .toList();
+
+    // List of another 2 dummy questions (different)
+    List list2 = List.generate(2, (index) => "Message")
+        .map((val) => QuestionModel(
+              category: "Household",
+              time: "2 hours ago",
+              status: "",
+              title: "Windows Issue",
+              description: "Hello",
+            ))
+        .toList();
+
+    // List of another 2 dummy questions (different)
+    List list3 = List.generate(2, (index) => "Message")
+        .map((val) => QuestionModel(
+              category: "Technology",
+              time: "2 weeks ago",
+              status: "",
+              title: "iPhone not working",
+              description: "iphone stopped working",
+            ))
+        .toList();
+
+    // Combined 6 dummy questions together
+    List list2list3 = new List.from(list2)..addAll(list3);
+    data = new List.from(list1)..addAll(list2list3);
+    return data;
+  }
+
+  // Get data from the database to the list. Questions are shown on home page is always questionsListFiltered,
+  // which at this point is a copy of a `data`, as no filters have been applied yet
+  @override
+  void initState() {
+    getQuestions().then((data) {
+      setState(() {
+        questionsListFiltered = questionsListFilteredSearch = questionsListFilteredCategory = data;
+      });
+    });
+    super.initState();
+  }
+
+  // Called by search bar. Returns filtered list
+  // At this point it can only search for a single keyword in question's Title
+  // In case if category filter is applied to the list of questions, search filter is applied to `questionsListFilteredCategory`,
+  //    which might or might not have filter applied
+  void filterQuestionsSearch(value) {
+    setState(() {
+      questionsListFiltered = questionsListFilteredSearch = questionsListFilteredCategory
+          .where((question) =>
+              question.title.toLowerCase().contains(value.toLowerCase())
+                  ? true
+                  : false)
+          .toList();
+    });
+  }
+
+  // Category filter.
+  // In case if search is applied to the list of questions, category filter is applied to `questionsListFilteredSearch`,
+  //    which might or might not have filter applied
+  void filterQuestionsCategory(value) {
+    selectedCategory = value;
+    if (value == "All Categories") {
+      questionsListFiltered = questionsListFilteredCategory = questionsListFilteredSearch;
+    } else {
+      setState(() {
+        questionsListFiltered = questionsListFilteredCategory = questionsListFilteredSearch
+            .where((question) =>
+                question.category.toLowerCase().contains(value.toLowerCase())
+                    ? true
+                    : false)
+            .toList();
+      });
+    }
+  }
+
+  // Main code for Home page
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(140.0), // here the desired height
         child: AppBar(
+          // Menu button
           leading: FlatButton(
             textColor: Colors.white,
             onPressed: () {}, // open side menu
             child: Icon(Icons.menu, color: Colors.cyan),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
-          title: Text(
-            'Eureka!',
-            style: TextStyle(
-              fontSize: 40.0,
-            ),
-          ),
+
+          // Title "Eureka" is changed to a search bar after search icon is clicked
+          title: !isSearching
+              ? Text('Eureka!')
+              : TextField(
+                  onChanged: (value) {
+                    // Call function to apply search filter
+                    filterQuestionsSearch(value);
+                  },
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      ),
+                      hintText: "Search Question",
+                      hintStyle: TextStyle(color: Colors.white)),
+                ),
           centerTitle: true,
-          actions: [
+
+          // Search icon is changed to search bar
+          actions: <Widget>[
+            isSearching
+                ? IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () {
+                      // Button to drop search bar. Will keep list filtered if category filter is applied
+                      setState(() {
+                        this.isSearching = false;
+                        questionsListFilteredSearch = data; // search list is now the same as the original
+                        filterQuestionsCategory(selectedCategory); // if "All Categories", then it page is completely unfiltered
+                      });
+                    },
+                  )
+                : IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      setState(() {
+                        this.isSearching = true;
+                      });
+                    },
+                  ),
+
+            // Chat button
             FlatButton(
               textColor: Colors.white,
               onPressed: () {}, // redirect to Chat page
@@ -42,14 +185,17 @@ class HomeState extends State<Home> {
           backgroundColor: Colors.blueGrey[800],
         ),
       ),
+
+      // List of questions and a category filter
       body: Column(
         children: [
-          // Search bar
-          // Category filter
           // List of Questions
-          Expanded(child: _buildList()),
+          Expanded(
+              // Show loading circle if results are taking time
+              // Show "No results" if input text doesn't match with question title (later will be added to description too)
+              child: _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)),
 
-          // "Create New Question" button
+          // Button "Create New Question" is visible if the user is in Text input mode. This feature is questionable
           RawMaterialButton(
             onPressed: () {},
             fillColor: Colors.blueGrey[800],
@@ -73,49 +219,26 @@ class HomeState extends State<Home> {
   }
 }
 
-ListView _buildList() {
-  // search bar
-  final SearchBarController<QuestionModel> _searchBarController =
-      SearchBarController();
-
-  List list = List.generate(10, (index) => "Message")
-      .map((val) => QuestionModel(
-            category: "Technology",
-            time: "2 hours ago",
-            status: "Active",
-            title: "Linux installation issue - usb not found",
-            description:
-                "Hello. I have a Smartbuy 16Gb USB 2.0 flash drive (with new memory controller) that is not recognized in any Linux system, but on Windows it recognized and worked fine. When I connect it to the PC on Linux system, nothing happens",
-          ))
-      .toList();
-
+// Function to return List of Questions and category filter. Called from 'body'.
+ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory) {
   return ListView.builder(
-      itemCount: list.length + 1,
+      itemCount: questionsListFiltered.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          // search bar and category filter are above the first row
+          // category filter are above the first row. If there is no questions to show, it will still be there.
           return Column(
             children: <Widget>[
-              // Search bar
-              Container(
-                height: 80.0,
-                child: SearchBar<QuestionModel>(
-                  searchBarPadding: EdgeInsets.symmetric(horizontal: 70),
-                  //onSearch: _getAllQuestions,    // search action
-                  searchBarController: _searchBarController,
-                ),
-              ),
-
               // Categories filter
               Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: CategoryFilter(),
-                )
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: CategoryFilter(getCategoryCallback: getCategory))
               ]),
+              if (questionsListFiltered.length == 0) Center(child: Text("No results"))
             ],
           );
         }
+        index -= 1;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
           child: Row(
@@ -127,7 +250,7 @@ ListView _buildList() {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        list[index - 1].category,
+                        questionsListFiltered[index].category,
                         textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 15.0),
                       ),
@@ -139,12 +262,12 @@ ListView _buildList() {
                           style: TextStyle(fontSize: 15.0, color: Colors.grey),
                         ),
                         Text(
-                          list[index - 1].time,
+                          questionsListFiltered[index].time,
                           textAlign: TextAlign.left,
                           style: TextStyle(fontSize: 15.0, color: Colors.black),
                         ),
                         Text(
-                          "        " + list[index - 1].status,
+                          "        " + questionsListFiltered[index].status,
                           style: TextStyle(
                               fontSize: 15.0,
                               color: Colors.blue,
@@ -153,23 +276,26 @@ ListView _buildList() {
                       ]),
                       SizedBox(height: 5),
                       Text(
-                        list[index - 1].title,
+                        questionsListFiltered[index].title,
                         textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 20.0, color: Colors.black),
                       ),
                       SizedBox(height: 5),
                       Text(
-                        list[index - 1].description,
+                        questionsListFiltered[index].description,
                         textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 15.0, color: Colors.grey),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        // Button to open Question page
                         FlatButton(
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
-                          onPressed: () {},
+                          onPressed: () {
+                            // Question page redirection here
+                          },
                           child: Text("More Details",
                               style: TextStyle(
                                   fontSize: 15.0, color: Colors.purple),
