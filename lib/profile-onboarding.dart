@@ -11,6 +11,7 @@ class ProfileOnboarding extends StatefulWidget {
 class _ProfileOnboardingState extends State<ProfileOnboarding> {
   bool _profilePage = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static final RegExp _lettersRegExp = RegExp('[a-zA-Z]');
 
   int _role = 0;
   String _firstName;
@@ -18,7 +19,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
   String _city;
   String _birthDate;
 
-  TextStyle appBarTextStyle = TextStyle(
+  TextStyle _appBarTextStyle = TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.bold,
   );
@@ -47,12 +48,21 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     ),
   };
 
-  Column segmentedControl() {
+  SizedBox _sizedBoxPadding() {
+    return const SizedBox(
+      height: 20.0,
+    );
+  }
+
+  Column _segmentedControl() {
     return Column(
       children: [
         Container(
           padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-          child: Text('Do you have a preference?'),
+          child: Text(
+            'Do you prefer to help people with their questions or ask questions?',
+            textAlign: TextAlign.center,
+          ),
         ),
         MaterialSegmentedControl(
           children: _children,
@@ -67,15 +77,16 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
             });
           },
         ),
-        SizedBox(height: 20.0),
+        _sizedBoxPadding(),
       ],
     );
   }
 
-  Column profileTextFormField(
+  Column _profileTextFormField(
     String labelText,
     TextInputAction textInputAction,
     String validatorMsg,
+    RegExp regExp,
     Function onSaved,
   ) {
     return Column(
@@ -87,6 +98,8 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
           validator: (value) {
             if (value.isEmpty) {
               return validatorMsg;
+            } else if (!regExp.hasMatch(value)) {
+              return 'Invalid input.';
             }
             return null;
           },
@@ -96,23 +109,23 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
           ),
           onSaved: onSaved,
         ),
-        SizedBox(height: 20.0),
+        _sizedBoxPadding(),
       ],
     );
   }
 
-  DateTimePicker birthDateSelector() {
+  DateTimePicker _birthDateSelector() {
     return DateTimePicker(
       initialValue: '',
       firstDate: DateTime(1930),
       lastDate: DateTime(2030),
       decoration: InputDecoration(
         border: OutlineInputBorder(),
-        labelText: 'Birthday',
+        labelText: 'Date of Birth',
       ),
       validator: (value) {
         if (value.isEmpty) {
-          return 'Birth date is required.';
+          return 'Date of birth is required.';
         }
         return null;
       },
@@ -120,30 +133,60 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     );
   }
 
-  Expanded submitButton() {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: FlatButton(
-          onPressed: () {
-            _validateAndSubmit();
-          },
-          color: Color(0xFF00ADB5),
-          minWidth: MediaQuery.of(context).size.width - 50.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(10.0),
-            child: Text(
-              'Confirm',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25.0,
-              ),
+  Container _submitButton() {
+    return Container(
+      padding: EdgeInsets.all(20.0),
+      child: FlatButton(
+        onPressed: () {
+          _validateAndSubmit();
+        },
+        color: Color(0xFF00ADB5),
+        minWidth: MediaQuery.of(context).size.width - 50.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(10.0),
+          child: Text(
+            'Confirm',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 25.0,
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  SingleChildScrollView _scrollingForm() {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          _segmentedControl(),
+          _profileTextFormField(
+            'First Name',
+            TextInputAction.next,
+            'First name is required.',
+            _lettersRegExp,
+            (value) => _firstName = value.trim(),
+          ),
+          _profileTextFormField(
+            'Last Name',
+            TextInputAction.next,
+            'Last name is required.',
+            _lettersRegExp,
+            (value) => _lastName = value.trim(),
+          ),
+          _profileTextFormField(
+            'City',
+            TextInputAction.done,
+            'Your city is required.',
+            _lettersRegExp,
+            (value) => _city = value.trim(),
+          ),
+          _birthDateSelector(),
+        ],
       ),
     );
   }
@@ -168,39 +211,20 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
         elevation: 0.0,
         centerTitle: true,
         title: _profilePage
-            ? Text("Edit Your Profile", style: appBarTextStyle)
-            : Text("Create Your Profile", style: appBarTextStyle),
+            ? Text("Edit Your Profile", style: _appBarTextStyle)
+            : Text("Create Your Profile", style: _appBarTextStyle),
       ),
-      body: Container(
-        padding: EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              segmentedControl(),
-              profileTextFormField(
-                'First Name',
-                TextInputAction.next,
-                'First name is required.',
-                (value) => _firstName = value.trim(),
-              ),
-              profileTextFormField(
-                'Last Name',
-                TextInputAction.next,
-                'Last name is required.',
-                (value) => _lastName = value.trim(),
-              ),
-              profileTextFormField(
-                'City',
-                TextInputAction.done,
-                'Your city is required.',
-                (value) => _city = value.trim(),
-              ),
-              birthDateSelector(),
-              submitButton(),
-            ],
-          ),
+      body: Form(
+        key: _formKey,
+        child: Container(
+          padding: EdgeInsets.all(20.0),
+          child: _scrollingForm(),
         ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.transparent,
+        elevation: 0,
+        child: _submitButton(),
       ),
     );
   }
