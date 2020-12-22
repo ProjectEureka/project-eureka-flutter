@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:project_eureka_flutter/HomePage.dart';
+import 'package:project_eureka_flutter/home_page.dart';
 import 'package:project_eureka_flutter/sign_in.dart';
 
-class LoginPage extends StatefulWidget {
+class login_page extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<login_page> {
   //@overide
 
   Widget build(BuildContext context) {
@@ -30,26 +30,28 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void signInGoogle(result) {
+    signInWithGoogle().then((result) {
+      if (result != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return home_page();
+            },
+          ),
+        );
+      }
+    });
+  }
+
   Widget _signInButton(BuildContext context) {
     return FlatButton(
       splashColor: Colors.grey,
       onPressed: () {
-        signInWithGoogle().then((result) {
-          if (result != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return HomePage();
-                },
-              ),
-            );
-          }
-        });
+        signInGoogle(context);
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      //highlightElevation: 0,
-      //borderSide: BorderSide(color: Colors.grey),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Row(

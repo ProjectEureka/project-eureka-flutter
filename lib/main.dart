@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'LoginPage.dart';
+import 'login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage(),
+      home: login_page(),
     );
   }
 }
