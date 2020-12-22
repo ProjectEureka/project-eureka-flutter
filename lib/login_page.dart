@@ -3,12 +3,12 @@ import 'package:flutter/rendering.dart';
 import 'package:project_eureka_flutter/home_page.dart';
 import 'package:project_eureka_flutter/sign_in.dart';
 
-class login_page extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<login_page> {
+class _LoginPageState extends State<LoginPage> {
   //@overide
 
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _LoginPageState extends State<login_page> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return home_page();
+              return HomePage();
             },
           ),
         );
