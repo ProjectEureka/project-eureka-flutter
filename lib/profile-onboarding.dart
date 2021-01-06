@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:project_eureka_flutter/blank_page.dart';
 
@@ -11,13 +10,21 @@ class ProfileOnboarding extends StatefulWidget {
 class _ProfileOnboardingState extends State<ProfileOnboarding> {
   bool _profilePage = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  static final RegExp _lettersRegExp = RegExp('[a-zA-Z]');
+
+  static final RegExp _nameRegExp = RegExp(
+      "[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]");
+  static final RegExp _monthRegExp = RegExp('(((0)[0-9])|((1)[0-2]))');
+  static final RegExp _dayRegExp = RegExp('([0-2][0-9]|(3)[0-1])');
+  static final RegExp _yearRegExp = RegExp('(19|20)[0-9][0-9]');
 
   int _role = 0;
   String _firstName;
   String _lastName;
   String _city;
-  String _birthDate;
+  String _birthMonth;
+  String _birthDay;
+  String _birthYear;
+  DateTime _birthDate;
 
   TextStyle _appBarTextStyle = TextStyle(
     color: Colors.black,
@@ -84,6 +91,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
 
   Column _profileTextFormField(
     String labelText,
+    TextInputType keyboardType,
     TextInputAction textInputAction,
     String validatorMsg,
     RegExp regExp,
@@ -93,7 +101,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       children: <Widget>[
         TextFormField(
           textCapitalization: TextCapitalization.sentences,
-          keyboardType: TextInputType.text,
+          keyboardType: keyboardType,
           textInputAction: textInputAction,
           validator: (value) {
             if (value.isEmpty) {
@@ -114,22 +122,46 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     );
   }
 
-  DateTimePicker _birthDateSelector() {
-    return DateTimePicker(
-      initialValue: '',
-      firstDate: DateTime(1930),
-      lastDate: DateTime(2030),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Date of Birth',
-      ),
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Date of birth is required.';
-        }
-        return null;
-      },
-      onSaved: (value) => _birthDate = value,
+  Row _birthDateForms() {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: _profileTextFormField(
+            'Month (MM)',
+            TextInputType.number,
+            TextInputAction.next,
+            'Required',
+            _monthRegExp,
+            (value) => _birthMonth = value.trim(),
+          ),
+        ),
+        SizedBox(
+          width: 10.0,
+        ),
+        Expanded(
+          child: _profileTextFormField(
+            'Day (DD)',
+            TextInputType.number,
+            TextInputAction.next,
+            'Required',
+            _dayRegExp,
+            (value) => _birthDay = value.trim(),
+          ),
+        ),
+        SizedBox(
+          width: 10.0,
+        ),
+        Expanded(
+          child: _profileTextFormField(
+            'Year (YYYY)',
+            TextInputType.number,
+            TextInputAction.done,
+            'Required',
+            _yearRegExp,
+            (value) => _birthYear = value.trim(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -166,26 +198,29 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
           _segmentedControl(),
           _profileTextFormField(
             'First Name',
+            TextInputType.text,
             TextInputAction.next,
             'First name is required.',
-            _lettersRegExp,
+            _nameRegExp,
             (value) => _firstName = value.trim(),
           ),
           _profileTextFormField(
             'Last Name',
+            TextInputType.text,
             TextInputAction.next,
             'Last name is required.',
-            _lettersRegExp,
+            _nameRegExp,
             (value) => _lastName = value.trim(),
           ),
           _profileTextFormField(
             'City',
-            TextInputAction.done,
+            TextInputType.text,
+            TextInputAction.next,
             'Your city is required.',
-            _lettersRegExp,
+            _nameRegExp,
             (value) => _city = value.trim(),
           ),
-          _birthDateSelector(),
+          _birthDateForms(),
         ],
       ),
     );
@@ -196,10 +231,16 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       return;
     }
     _formKey.currentState.save();
+
+    _birthDate = DateTime.parse('$_birthYear-$_birthMonth-$_birthDay');
+
     print('$_role, $_firstName, $_lastName, $_city, $_birthDate');
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BlankPage()),
+      MaterialPageRoute(
+        builder: (context) => BlankPage(),
+      ),
     );
   }
 
