@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
-import 'package:project_eureka_flutter/blank_page.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class ProfileOnboarding extends StatefulWidget {
   @override
@@ -239,7 +239,9 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BlankPage(),
+        builder: (context) => SideMenu(
+          title: 'Project Eureka',
+        ),
       ),
     );
   }
