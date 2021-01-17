@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  final appTitle = 'Project Eureka';
-
   @override
   Widget build(BuildContext context) {
+    final appTitle = 'Project Eureka';
+
     return MaterialApp(
       title: appTitle,
-      home: SideMenu(title: appTitle),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: ProfileOnboarding(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
