@@ -8,11 +8,11 @@ class CategoryFilter extends StatefulWidget {
   CategoryFilter({@required void getCategoryCallback(String category)}) : _callback = getCategoryCallback;
 
   @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+  _CategoryFilterState createState() => _CategoryFilterState();
 }
 
 /// This is the private State class that goes with MyStatefulWidget.
-class _MyStatefulWidgetState extends State<CategoryFilter> {
+class _CategoryFilterState extends State<CategoryFilter> {
 
   String dropdownValue = 'All Categories';
 

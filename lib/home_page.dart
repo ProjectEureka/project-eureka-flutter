@@ -22,7 +22,7 @@ class HomeState extends State<Home> {
   String selectedCategory = "All Categories";
 
   // Called from widget (class) category filter
-  getCategory(value) {
+  void getCategory(value) {
     setState(() {
       filterQuestionsCategory(value);
     });
@@ -30,7 +30,7 @@ class HomeState extends State<Home> {
 
   // Here Eureka will get data from the database.
   // At this point it contains just dummy lists of questions for test purposes
-  getQuestions() async {
+  Future<List> getQuestions() async {
     // List of 2 dummy questions
     List list1 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
@@ -71,15 +71,34 @@ class HomeState extends State<Home> {
     return data;
   }
 
-  // Get data from the database to the list. Questions are shown on home page is always questionsListFiltered,
-  // which at this point is a copy of a `data`, as no filters have been applied yet
-  @override
-  void initState() {
+  void initGetQuestions() {
     getQuestions().then((data) {
       setState(() {
         questionsListFiltered = questionsListFilteredSearch = questionsListFilteredCategory = data;
       });
     });
+  }
+
+  void searchingFalse() {
+    // Button to drop search bar. Will keep list filtered if category filter is applied
+    setState(() {
+      this.isSearching = false;
+      questionsListFilteredSearch = data; // search list is now the same as the original
+      filterQuestionsCategory(selectedCategory); // if "All Categories", then it page is completely unfiltered
+    });
+  }
+
+  void searchingTrue() {
+    setState(() {
+      this.isSearching = true;
+    });
+  }
+
+  // Get data from the database to the list. Questions are shown on home page is always questionsListFiltered,
+  // which at this point is a copy of a `data`, as no filters have been applied yet
+  @override
+  void initState() {
+    initGetQuestions();
     super.initState();
   }
 
@@ -121,6 +140,7 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false, // fixed: "Create New Question" button was moving up while in keyboard mode
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(140.0), // here the desired height
         child: AppBar(
@@ -157,20 +177,13 @@ class HomeState extends State<Home> {
                 ? IconButton(
                     icon: Icon(Icons.cancel),
                     onPressed: () {
-                      // Button to drop search bar. Will keep list filtered if category filter is applied
-                      setState(() {
-                        this.isSearching = false;
-                        questionsListFilteredSearch = data; // search list is now the same as the original
-                        filterQuestionsCategory(selectedCategory); // if "All Categories", then it page is completely unfiltered
-                      });
+                      searchingFalse();
                     },
                   )
                 : IconButton(
                     icon: Icon(Icons.search),
                     onPressed: () {
-                      setState(() {
-                        this.isSearching = true;
-                      });
+                     searchingTrue();
                     },
                   ),
 
@@ -195,7 +208,6 @@ class HomeState extends State<Home> {
               // Show "No results" if input text doesn't match with question title (later will be added to description too)
               child: _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)),
 
-          // Button "Create New Question" is visible if the user is in Text input mode. This feature is questionable
           RawMaterialButton(
             onPressed: () {},
             fillColor: Colors.blueGrey[800],
