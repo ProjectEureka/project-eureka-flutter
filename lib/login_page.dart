@@ -9,8 +9,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //@overide
-
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -45,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Widget _signInButton(BuildContext context) {
+  FlatButton _signInButton(BuildContext context) {
     return FlatButton(
       splashColor: Colors.grey,
       onPressed: () {
