@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'onboarding.dart';
+import 'screens/onboarding.dart';
 
 //first time login checker
 int initScreen;
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       initialRoute: initScreen == 0 || initScreen == null ? "first" : "/",
       routes: {
         '/': (context) => placeholder(),
-        "first": (context) => onboarding(),
+        "first": (context) => Onboarding(),
       },
       debugShowCheckedModeBanner: false,
     );
