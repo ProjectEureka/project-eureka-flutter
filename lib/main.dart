@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
 
-void main() => runApp(MyApp());
+import 'package:project_eureka_flutter/screens/login_page.dart';
 
-class MyApp extends StatelessWidget {
+void main() => runApp(ProjectEureka());
+
+class ProjectEureka extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appTitle = 'Project Eureka';
@@ -14,7 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ProfileOnboarding(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
