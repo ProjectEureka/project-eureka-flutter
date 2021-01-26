@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:project_eureka_flutter/home_page.dart';
+import 'file:///C:/Users/maksi/Desktop/490-491/project-eureka-flutter/lib/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
 
-void main() {
-  runApp(MyApp());
-}
+import 'package:project_eureka_flutter/screens/login_page.dart';
 
-class MyApp extends StatelessWidget {
+void main() => runApp(ProjectEureka());
+
+class ProjectEureka extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final appTitle = 'Project Eureka';
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: appTitle,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Home(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
