@@ -260,19 +260,6 @@ ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)
           // category filter are above the first row. If there is no questions to show, it will still be there.
           return Column(
             children: <Widget>[
-<<<<<<< Updated upstream
-=======
-              // Search bar
-              Container(
-                height: 80.0,
-                child: SearchBar<QuestionModel>(
-                  searchBarPadding: EdgeInsets.symmetric(horizontal: 70),
-                  onSearch: _getAllQuestions,    // search action
-                  searchBarController: _searchBarController,
-                ),
-              ),
-
->>>>>>> Stashed changes
               // Categories filter
               Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
                 Container(
