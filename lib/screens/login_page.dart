@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:project_eureka_flutter/home_page.dart';
-import 'package:project_eureka_flutter/sign_in.dart';
+import 'package:project_eureka_flutter/services/sign_in.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return HomePage();
+              return HomeScreen();
             },
           ),
         );
