@@ -4,10 +4,10 @@ import 'category_filter.dart';
 
 class Home extends StatefulWidget {
   @override
-  HomeState createState() => HomeState();
+  _HomeState createState() => _HomeState();
 }
 
-class HomeState extends State<Home> {
+class _HomeState extends State<Home> {
   // Questions data. Unfiltered list of questions
   List data = [];
   // Will filter the list of questions
@@ -136,103 +136,123 @@ class HomeState extends State<Home> {
     }
   }
 
-  // Main code for Home page
+  Column questionsList(){
+    return Column(
+      children: [
+        // List of Questions
+        Expanded(
+          // Show loading circle if results are taking time
+          // Show "No results" if input text doesn't match with question title (later will be added to description too)
+            child: _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)),
+
+        RawMaterialButton(
+          onPressed: () {},
+          fillColor: Colors.blueGrey[800],
+          splashColor: Colors.grey,
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: SizedBox(
+              width: 200.0,
+              child: Text(
+                "Create New Question",
+                maxLines: 1,
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  AppBar homeAppBar() {
+    return AppBar(
+      // Menu button
+      leading: FlatButton(
+        textColor: Colors.white,
+        onPressed: () {}, // open side menu
+        child: Icon(Icons.menu, color: Colors.cyan),
+        shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+      ),
+
+      // Title "Eureka" is changed to a search bar after search icon is clicked
+      title: !isSearching
+          ? Text('Eureka!')
+          : TextField(
+        onChanged: (value) {
+          // Call function to apply search filter
+          filterQuestionsSearch(value);
+        },
+        style: TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            hintText: "Search Question",
+            hintStyle: TextStyle(color: Colors.white)),
+      ),
+      centerTitle: true,
+
+      // Search icon is changed to search bar
+      actions: <Widget>[
+        isSearching
+            ? IconButton(
+          icon: Icon(Icons.cancel),
+          onPressed: () {
+            searchingFalse();
+          },
+        )
+            : IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            searchingTrue();
+          },
+        ),
+
+        // Chat button
+        FlatButton(
+          textColor: Colors.white,
+          onPressed: () {}, // redirect to Chat page
+          child: Icon(Icons.chat_sharp, color: Colors.cyan),
+          shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+        ),
+      ],
+      backgroundColor: Colors.blueGrey[800],
+    );
+  }
+
+  // *** WIDGET BUILD ***
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false, // fixed: "Create New Question" button was moving up while in keyboard mode
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(140.0), // here the desired height
-        child: AppBar(
-          // Menu button
-          leading: FlatButton(
-            textColor: Colors.white,
-            onPressed: () {}, // open side menu
-            child: Icon(Icons.menu, color: Colors.cyan),
-            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-          ),
-
-          // Title "Eureka" is changed to a search bar after search icon is clicked
-          title: !isSearching
-              ? Text('Eureka!')
-              : TextField(
-                  onChanged: (value) {
-                    // Call function to apply search filter
-                    filterQuestionsSearch(value);
-                  },
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                      icon: Icon(
-                        Icons.search,
-                        color: Colors.white,
-                      ),
-                      hintText: "Search Question",
-                      hintStyle: TextStyle(color: Colors.white)),
-                ),
-          centerTitle: true,
-
-          // Search icon is changed to search bar
-          actions: <Widget>[
-            isSearching
-                ? IconButton(
-                    icon: Icon(Icons.cancel),
-                    onPressed: () {
-                      searchingFalse();
-                    },
-                  )
-                : IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                     searchingTrue();
-                    },
-                  ),
-
-            // Chat button
-            FlatButton(
-              textColor: Colors.white,
-              onPressed: () {}, // redirect to Chat page
-              child: Icon(Icons.chat_sharp, color: Colors.cyan),
-              shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-            ),
-          ],
-          backgroundColor: Colors.blueGrey[800],
-        ),
+          // Call function homeAppBar
+        child: homeAppBar()
       ),
 
-      // List of questions and a category filter
-      body: Column(
-        children: [
-          // List of Questions
-          Expanded(
-              // Show loading circle if results are taking time
-              // Show "No results" if input text doesn't match with question title (later will be added to description too)
-              child: _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)),
-
-          RawMaterialButton(
-            onPressed: () {},
-            fillColor: Colors.blueGrey[800],
-            splashColor: Colors.grey,
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: SizedBox(
-                width: 200.0,
-                child: Text(
-                  "Create New Question",
-                  maxLines: 1,
-                  style: TextStyle(color: Colors.white),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        // List of questions and a category filter
+        // Call function questionsList
+      body: questionsList()
     );
   }
 }
 
 // Function to return List of Questions and category filter. Called from 'body'.
 ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory) {
+
+  // Used to avoid some repetitive code
+  Text questionTextStyle(String string, double fontSize, Color color, FontWeight FontWeight) {
+    return Text(
+      string,
+      textAlign: TextAlign.left,
+      style: TextStyle(fontSize: fontSize, color: color, fontWeight: FontWeight),
+    );
+  }
+
   return ListView.builder(
       itemCount: questionsListFiltered.length + 1,
       itemBuilder: (context, index) {
@@ -240,6 +260,19 @@ ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)
           // category filter are above the first row. If there is no questions to show, it will still be there.
           return Column(
             children: <Widget>[
+<<<<<<< Updated upstream
+=======
+              // Search bar
+              Container(
+                height: 80.0,
+                child: SearchBar<QuestionModel>(
+                  searchBarPadding: EdgeInsets.symmetric(horizontal: 70),
+                  onSearch: _getAllQuestions,    // search action
+                  searchBarController: _searchBarController,
+                ),
+              ),
+
+>>>>>>> Stashed changes
               // Categories filter
               Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
                 Container(
@@ -261,37 +294,15 @@ ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        questionsListFiltered[index].category,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 15.0),
-                      ),
+                      questionTextStyle(questionsListFiltered[index].category, 15.0, Colors.grey, FontWeight.normal),
                       SizedBox(height: 5),
                       Row(children: [
-                        Text(
-                          "Asked:  ",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 15.0, color: Colors.grey),
-                        ),
-                        Text(
-                          questionsListFiltered[index].time,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 15.0, color: Colors.black),
-                        ),
-                        Text(
-                          "        " + questionsListFiltered[index].status,
-                          style: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold),
-                        ),
+                        questionTextStyle("Asked:  ", 15.0, Colors.grey, FontWeight.normal),
+                        questionTextStyle(questionsListFiltered[index].time, 15.0, Colors.black, FontWeight.normal),
+                        questionTextStyle("        " + questionsListFiltered[index].status, 15.0, Colors.blue, FontWeight.bold),
                       ]),
                       SizedBox(height: 5),
-                      Text(
-                        questionsListFiltered[index].title,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 20.0, color: Colors.black),
-                      ),
+                      questionTextStyle(questionsListFiltered[index].title, 20.0, Colors.black, FontWeight.normal),
                       SizedBox(height: 5),
                       Text(
                         questionsListFiltered[index].description,
@@ -309,8 +320,7 @@ ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)
                             // Question page redirection here
                           },
                           child: Text("More Details",
-                              style: TextStyle(
-                                  fontSize: 15.0, color: Colors.purple),
+                              style: TextStyle(fontSize: 15.0, color: Colors.purple),
                               textAlign: TextAlign.right),
                         ),
                       ]),
