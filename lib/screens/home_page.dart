@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'question_model.dart';
-import 'category_filter.dart';
+import '../models/question_model.dart';
+import '../services/category_filter.dart';
 
 class Home extends StatefulWidget {
   @override
