@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:project_eureka_flutter/services/sign_in.dart';
-
-import 'file:///C:/Users/maksi/Desktop/490-491/project-eureka-flutter/lib/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
