@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/maksi/Desktop/490-491/project-eureka-flutter/lib/screens/home_page.dart';
-import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
-
 import 'package:project_eureka_flutter/screens/login_page.dart';
 
 void main() => runApp(ProjectEureka());
