@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:project_eureka_flutter/screens/login_page.dart';
 
 class Onboarding extends StatefulWidget {
   @override
@@ -91,23 +92,9 @@ class _OnboardingState extends State<Onboarding> {
         done: Text('Got it'),
         onDone: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => placeholder()));
+              context, MaterialPageRoute(builder: (context) => LoginPage()));
         },
       ),
     );
   }
 }
-
-//placeholder class start
-class placeholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blueAccent,
-      child: Center(
-        child: Text('placeholder'),
-      ),
-    );
-  }
-}
-//placeholder class end

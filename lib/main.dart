@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/screens/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/onboarding.dart';
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       ), // check if it's the first launch of app
       initialRoute: initScreen == 0 || initScreen == null ? "first" : "/",
       routes: {
-        '/': (context) => placeholder(),
+        '/': (context) => LoginPage(),
         "first": (context) => Onboarding(),
       },
       debugShowCheckedModeBanner: false,
