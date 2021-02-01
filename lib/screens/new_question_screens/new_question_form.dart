@@ -130,6 +130,9 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
         status: 0,
         visible: 1,
       );
+
+      print(
+          "${_question.title}, ${_question.date}, ${_question.description}, ${_question.category}, ${_question.status}, ${_question.visible}");
     });
 
     Navigator.push(
