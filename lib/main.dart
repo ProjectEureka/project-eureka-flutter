@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/screens/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'screens/onboarding.dart';
 
-void main() => runApp(ProjectEureka());
+//first time login checker
+int initScreen;
 
-class ProjectEureka extends StatelessWidget {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  initScreen = await prefs.getInt("initScreen");
+  await prefs.setInt("initScreen", 1); //after first launch set to 1
+  print(
+      'initScreen ${initScreen}'); // printout to see how many times app was launched
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appTitle = 'Project Eureka';
@@ -13,8 +26,12 @@ class ProjectEureka extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: SideMenu(title: appTitle),
+      ), // check if it's the first launch of app
+      initialRoute: initScreen == 0 || initScreen == null ? "first" : "/",
+      routes: {
+        '/': (context) => LoginPage(),
+        "first": (context) => Onboarding(),
+      },
       debugShowCheckedModeBanner: false,
     );
   }

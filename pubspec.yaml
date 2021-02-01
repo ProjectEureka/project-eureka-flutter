@@ -21,6 +21,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+
+  introduction_screen: ^1.0.7
+  shared_preferences: ^0.5.12+4
   flappy_search_bar: ^1.7.2
   flutter:
     sdk: flutter
@@ -49,6 +52,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/images/
 
     
 

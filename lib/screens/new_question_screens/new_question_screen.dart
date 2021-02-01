@@ -17,14 +17,14 @@ class NewQuestionScreen extends StatelessWidget {
 
   Expanded categoryButton(
     BuildContext context,
-    String imageLink,
+    String imageName,
     String categoryName,
   ) {
     return Expanded(
       child: FlatButton(
         child: Column(
           children: [
-            Image.network(imageLink),
+            Image.asset('assets/images/$imageName'),
             SizedBox(
               height: 12.0,
             ),
@@ -64,12 +64,12 @@ class NewQuestionScreen extends StatelessWidget {
           <Widget>[
             categoryButton(
               context,
-              'https://picsum.photos/250?image=9',
+              'lifestyle.png',
               "Lifestyle",
             ),
             categoryButton(
               context,
-              'https://picsum.photos/250?image=9',
+              'adademic.png',
               "Adademic",
             )
           ],
@@ -79,12 +79,12 @@ class NewQuestionScreen extends StatelessWidget {
           <Widget>[
             categoryButton(
               context,
-              'https://picsum.photos/250?image=9',
+              'household.png',
               "Household",
             ),
             categoryButton(
               context,
-              'https://picsum.photos/250?image=9',
+              'technology.png',
               "Technology",
             ),
           ],

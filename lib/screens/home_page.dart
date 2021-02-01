@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/question_model.dart';
-import '../services/category_filter.dart';
+import 'package:project_eureka_flutter/models/question_model.dart';
+import 'package:project_eureka_flutter/services/category_filter.dart';
 
 class Home extends StatefulWidget {
   @override
