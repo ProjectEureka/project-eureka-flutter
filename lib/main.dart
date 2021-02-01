@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/maksi/Desktop/490-491/project-eureka-flutter/lib/screens/home_page.dart';
-import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
-
-import 'package:project_eureka_flutter/screens/login_page.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
 
 void main() => runApp(ProjectEureka());
 
@@ -17,7 +14,7 @@ class ProjectEureka extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage(),
+      home: SideMenu(title: appTitle),
       debugShowCheckedModeBanner: false,
     );
   }
