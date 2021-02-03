@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
-import 'package:project_eureka_flutter/components/eureka_segmented_control.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
-import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_confirmation.dart';
 
@@ -29,12 +28,6 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
   String _questionBody;
 
   QuestionModel _question;
-
-  List<String> _segmentedControlLabels = [
-    'Text',
-    'Photo',
-    'Video',
-  ];
 
   Column _textForm() {
     return Column(
@@ -86,16 +79,14 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          EurekaSegmenetedControl(
-            segmentedControlCount: 3,
-            segmentedControlLabels: _segmentedControlLabels,
-            segmentedControlValue: _role,
-            setState: (index) {
-              setState(() {
-                _role = index;
-              });
-            },
-          ),
+          EurekaToggleSwitch(
+              labels: ['Text', 'Photo', 'Video'],
+              initialLabelIndex: _role,
+              setState: (index) {
+                setState(() {
+                  _role = index;
+                });
+              }),
           Visibility(
             visible: _role == 0 ? true : false,
             child: _textForm(),

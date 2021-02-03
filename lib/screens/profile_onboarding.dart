@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:project_eureka_flutter/components/eureka_segmented_control.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
+import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class ProfileOnboarding extends StatefulWidget {
@@ -32,12 +32,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
   String _birthDay;
   String _birthYear;
   DateTime _birthDate;
-
-  List<String> _segmentedControlLabels = [
-    'None',
-    'Student',
-    'Teacher',
-  ];
 
   TextStyle _appBarTextStyle = TextStyle(
     color: Colors.black,
@@ -122,10 +116,9 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
               textAlign: TextAlign.center,
             ),
           ),
-          EurekaSegmenetedControl(
-            segmentedControlCount: 3,
-            segmentedControlLabels: _segmentedControlLabels,
-            segmentedControlValue: _role,
+          EurekaToggleSwitch(
+            labels: ['None', 'Student', 'Teacher'],
+            initialLabelIndex: _role,
             setState: (index) {
               setState(() {
                 _role = index;
