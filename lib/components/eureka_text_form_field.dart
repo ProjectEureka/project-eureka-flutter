@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// This is a custom made TextForm made specifically for Project
-/// Eureka. Please use this Widget when any text form fields.
+/// Eureka. Please use this Widget when using any text form fields.
 class EurekaTextFormField extends StatefulWidget {
   final String labelText;
   final TextCapitalization textCapitalization;

@@ -20,8 +20,9 @@ class NewQuestionForm extends StatefulWidget {
 class _NewQuestionFormState extends State<NewQuestionForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  static final RegExp _nameRegExp = RegExp(
-      "[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]");
+  /// this regex will most characters with a minimum of 6
+  static final RegExp _regExp = RegExp(
+      "[0-9a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{6,}");
 
   int _role = 0;
   String _questionTitle;
@@ -35,7 +36,7 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
         EurekaTextFormField(
           labelText: 'Question Title',
           errValidatorMsg: 'Question title is required.',
-          regExp: _nameRegExp,
+          regExp: _regExp,
           onSaved: (value) => _questionTitle = value.trim(),
         ),
         EurekaTextFormField(
@@ -44,7 +45,7 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
           textInputAction: TextInputAction.done,
           maxLines: 10,
           errValidatorMsg: 'Question body is required.',
-          regExp: _nameRegExp,
+          regExp: _regExp,
           onSaved: (value) => _questionBody = value.trim(),
         ),
       ],

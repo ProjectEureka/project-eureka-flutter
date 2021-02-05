@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// This is a custom made Rounded Button made specifically for Project
-/// Eureka. Please use this Widget when implementing and big buttons so
+/// Eureka. Please use this Widget when implementing big buttons so
 /// we can have a uniform design thoughout our app.
 class EurekaRoundedButton extends StatefulWidget {
   final Function onPressed;
