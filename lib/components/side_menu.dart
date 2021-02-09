@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/new_post_screen.dart';
@@ -10,37 +11,51 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('Home'),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
-            sideMenuListTile(context, 'Home', Home()),
-            sideMenuListTile(context, 'Profile', ProfileScreen()),
-            sideMenuListTile(context, 'Create New Post', NewPostScreen()),
-            sideMenuListTile(context, 'Settings', SettingsScreen()),
-          ],
+    return Drawer(
+        child: Column(children: <Widget>[
+      UserAccountsDrawerHeader(
+        decoration: BoxDecoration(
+          color: Colors.blueGrey[800],
         ),
+        accountName: Text('Tony N.'),
+        accountEmail: Text('tonynguyen@gmail.com'),
+        currentAccountPicture: CircleAvatar(backgroundColor: Colors.teal),
       ),
-    );
+      sideMenuListTile(context, 'Home', Home(), Icons.home),
+      Divider(color: Colors.grey.shade400),
+      sideMenuListTile(
+        context,
+        'Profile',
+        ProfileScreen(),
+        Icons.person,
+      ),
+      Divider(color: Colors.grey.shade400),
+      sideMenuListTile(
+        context,
+        'Create New Post',
+        NewPostScreen(),
+        Icons.edit,
+      ),
+      Divider(color: Colors.grey.shade400),
+      sideMenuListTile(
+        context,
+        'Settings',
+        SettingsScreen(),
+        Icons.settings,
+      ),
+      Divider(color: Colors.grey.shade400),
+    ]));
   }
 }
 
 ListTile sideMenuListTile(
-    BuildContext context, String string, Widget newScreen) {
+    BuildContext context, String string, Widget newScreen, IconData leading) {
   return ListTile(
       title: Text(string),
+      leading: Icon(leading),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => newScreen),
-        );
+        Navigator.of(context).pop();
+        Navigator.pushReplacement(context,
+            CupertinoPageRoute(builder: (BuildContext context) => newScreen));
       });
 }
