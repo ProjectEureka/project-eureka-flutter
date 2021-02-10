@@ -38,6 +38,7 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
           errValidatorMsg: 'Question title is required.',
           regExp: _regExp,
           onSaved: (value) => _questionTitle = value.trim(),
+          initialValue: _questionTitle == null ? null : _questionTitle,
         ),
         EurekaTextFormField(
           labelText: 'Please explain in detail your question...',
@@ -47,6 +48,7 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
           errValidatorMsg: 'Question body is required.',
           regExp: _regExp,
           onSaved: (value) => _questionBody = value.trim(),
+          initialValue: _questionBody == null ? null : _questionBody,
         ),
       ],
     );
@@ -85,6 +87,7 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
               initialLabelIndex: _role,
               setState: (index) {
                 setState(() {
+                  _formKey.currentState.save();
                   _role = index;
                 });
               }),

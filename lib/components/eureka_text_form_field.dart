@@ -12,21 +12,22 @@ class EurekaTextFormField extends StatefulWidget {
   final String errValidatorMsg;
   final RegExp regExp;
   final Function onSaved;
+  final String initialValue;
 
   /// labelText, errValidatorMsg, validator RegEx, and onSaved functions are
   /// all required. textCapitalization, keyboardType, textInputAction, and
   /// maxLines are all option and if they have no values passed in, they
   /// will use the default values found below.
-  EurekaTextFormField({
-    @required this.labelText,
-    this.textCapitalization,
-    this.keyboardType,
-    this.textInputAction,
-    this.maxLines,
-    @required this.errValidatorMsg,
-    @required this.regExp,
-    @required this.onSaved,
-  });
+  EurekaTextFormField(
+      {@required this.labelText,
+      this.textCapitalization,
+      this.keyboardType,
+      this.textInputAction,
+      this.maxLines,
+      @required this.errValidatorMsg,
+      @required this.regExp,
+      @required this.onSaved,
+      this.initialValue});
 
   @override
   _EurekaTextFormFieldState createState() => _EurekaTextFormFieldState();
@@ -63,6 +64,8 @@ class _EurekaTextFormFieldState extends State<EurekaTextFormField> {
             labelText: widget.labelText,
           ),
           onSaved: widget.onSaved,
+          initialValue:
+              widget.initialValue == null ? null : widget.initialValue,
         ),
         SizedBox(
           height: 20.0,
