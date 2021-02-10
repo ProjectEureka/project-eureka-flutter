@@ -36,10 +36,11 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
     );
   }
 
-  Text _questionCornfirmationTextStyling(String text) {
+  Text _questionCornfirmationTextStyling(String text, [bool bold]) {
     return Text(
       text,
-      style: TextStyle(fontSize: 18.0),
+      style: TextStyle(
+          fontSize: 18.0, fontWeight: bold == null ? null : FontWeight.bold),
     );
   }
 
@@ -59,7 +60,8 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _questionCornfirmationTextStyling(widget.questionModel.title),
+              _questionCornfirmationTextStyling(
+                  widget.questionModel.title, true),
               SizedBox(
                 height: 40.0,
               ),
