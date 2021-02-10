@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return SideMenu(title: "Project Eureka");
+              return SideMenu(title: "Eureka");
             },
           ),
         );
