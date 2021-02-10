@@ -1,10 +1,12 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:project_eureka_flutter/home_page.dart';
+import 'package:project_eureka_flutter/screens/forgot_password.dart';
+import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/signup_page.dart';
+import 'package:project_eureka_flutter/services/auth.dart';
 import 'package:project_eureka_flutter/sign_in.dart';
-import 'package:project_eureka_flutter/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,25 +14,25 @@ class LoginPage extends StatefulWidget {
 }
 
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-final TextEditingController _emailController = TextEditingController();
-final TextEditingController _passwordController = TextEditingController();
 final RegExp _emailValid = RegExp(
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 final RegExp _passwordValid =
     RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
 
-bool _success;
 String _userEmail;
 
 class _LoginPageState extends State<LoginPage> {
   final _auth = FirebaseAuth.instance;
   String email;
   String password;
+  bool showSpinner = false;
+  String exception = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
         color: Colors.white,
         child: Center(
           child: Column(
@@ -38,7 +40,13 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               _form(context),
-              _forgotPassword(context),
+              Visibility(
+                  visible: exception == "" ? false : true,
+                  child: Text(
+                    exception,
+                    style: TextStyle(color: Colors.red),
+                  )),
+              //_forgotPassword(context),
               //_signUpButton(context),
               _signInButton(context),
             ],
@@ -63,22 +71,29 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void signIn(_formKey) {
+  Future<String> signIn(_formKey) async {
     if (_formKey.currentState.validate()) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return HomePage();
-          },
-        ),
-      );
+      try {
+        UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return HomePage();
+            },
+          ),
+        );
+      } catch (e) {
+        print(e);
+        setState(() {
+          //exception = e.toString();
+          exception = Auth().getExceptionText(e);
+        });
+      }
     }
-  }
-
-  @override
-  Future<void> resetPassword(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
   }
 
   Widget _form(BuildContext context) {
@@ -99,9 +114,9 @@ class _LoginPageState extends State<LoginPage> {
                 } else if (!_emailValid.hasMatch(value)) {
                   return 'Invalid Input';
                 }
+                email = value;
                 return null;
               },
-              //controller: _emailController,
               textAlign: TextAlign.center,
             ),
             TextFormField(
@@ -113,11 +128,11 @@ class _LoginPageState extends State<LoginPage> {
                 if (value.isEmpty) {
                   return 'Password Needed';
                 } else if (_passwordValid.hasMatch(value)) {
-                  return 'Missing something';
+                  return 'Invalid input';
                 }
+                password = value;
                 return null;
               },
-              controller: _passwordController,
               textAlign: TextAlign.center,
             ),
             Padding(
@@ -144,12 +159,23 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: Text('signup'),
                 )),
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: TextButton(
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ForgotPassword();
+                        },
+                      ),
+                    );
+                  },
+                  child: Text('forgotpassword?'),
+                )),
           ],
         ));
-  }
-
-  Widget _forgotPassword(BuildContext context) {
-    return TextButton(onPressed: null, child: Text('forgot password?'));
   }
 
   Widget _signInButton(BuildContext context) {
