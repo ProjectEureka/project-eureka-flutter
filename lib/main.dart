@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'file:///C:/Users/Tony/Desktop/PE/project-eureka-flutter/lib/screens/login_page.dart';
+import 'package:project_eureka_flutter/screens/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
