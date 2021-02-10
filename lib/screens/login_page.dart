@@ -86,6 +86,9 @@ class _LoginPageState extends State<LoginPage> {
             },
           ),
         );
+        setState(() {
+          showSpinner = false;
+        });
       } catch (e) {
         print(e);
         setState(() {
@@ -138,7 +141,10 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  setState(() {
+                    showSpinner = true;
+                  });
                   signIn(_formKey);
                 },
                 child: Text('Submit'),

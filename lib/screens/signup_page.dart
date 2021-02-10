@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/services/auth.dart';
 
 import 'login_page.dart';
@@ -116,11 +115,11 @@ class _SignupPageState extends State<SignupPage> {
                       //print('signInWithGoogle succeeded, uid displayed: ${newUser.uid}');
                       print(_userEmail);
                       if (newUser != null) {
-                        Navigator.push(
+                        Navigator.pop(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return HomePage();
+                              return LoginPage();
                             },
                           ),
                         );
