@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
-import 'package:project_eureka_flutter/screens/new_post_screen.dart';
+import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/screens/settings_screen.dart';
 
@@ -24,7 +24,7 @@ class SideMenu extends StatelessWidget {
             ),
             sideMenuListTile(context, 'Home', Home()),
             sideMenuListTile(context, 'Profile', ProfileScreen()),
-            sideMenuListTile(context, 'Create New Post', NewPostScreen()),
+            sideMenuListTile(context, 'Create New Post', NewQuestionScreen()),
             sideMenuListTile(context, 'Settings', SettingsScreen()),
           ],
         ),

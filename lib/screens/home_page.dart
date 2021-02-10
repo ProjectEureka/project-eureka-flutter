@@ -35,8 +35,9 @@ class _HomeState extends State<Home> {
     List list1 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
               category: "Technology",
-              time: "2 hours ago",
-              status: "Active",
+              date: DateTime.now(),
+              status: 0,
+              visible: 1,
               title: "Linux installation issue - usb not found",
               description:
                   "Hello. I have a Smartbuy 16Gb USB 2.0 flash drive (with new memory controller) that is not recognized in any Linux system, but on Windows it recognized and worked fine. When I connect it to the PC on Linux system, nothing happens",
@@ -47,8 +48,9 @@ class _HomeState extends State<Home> {
     List list2 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
               category: "Household",
-              time: "2 hours ago",
-              status: "",
+              date: DateTime.now(),
+              status: 1,
+              visible: 1,
               title: "Windows Issue",
               description: "Hello",
             ))
@@ -58,8 +60,9 @@ class _HomeState extends State<Home> {
     List list3 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
               category: "Technology",
-              time: "2 weeks ago",
-              status: "",
+              date: DateTime.now(),
+              status: 0,
+              visible: 1,
               title: "iPhone not working",
               description: "iphone stopped working",
             ))
@@ -74,7 +77,8 @@ class _HomeState extends State<Home> {
   void initGetQuestions() {
     getQuestions().then((data) {
       setState(() {
-        questionsListFiltered = questionsListFilteredSearch = questionsListFilteredCategory = data;
+        questionsListFiltered =
+            questionsListFilteredSearch = questionsListFilteredCategory = data;
       });
     });
   }
@@ -83,8 +87,10 @@ class _HomeState extends State<Home> {
     // Button to drop search bar. Will keep list filtered if category filter is applied
     setState(() {
       this.isSearching = false;
-      questionsListFilteredSearch = data; // search list is now the same as the original
-      filterQuestionsCategory(selectedCategory); // if "All Categories", then it page is completely unfiltered
+      questionsListFilteredSearch =
+          data; // search list is now the same as the original
+      filterQuestionsCategory(
+          selectedCategory); // if "All Categories", then it page is completely unfiltered
     });
   }
 
@@ -108,12 +114,13 @@ class _HomeState extends State<Home> {
   //    which might or might not have filter applied
   void filterQuestionsSearch(value) {
     setState(() {
-      questionsListFiltered = questionsListFilteredSearch = questionsListFilteredCategory
-          .where((question) =>
-              question.title.toLowerCase().contains(value.toLowerCase())
-                  ? true
-                  : false)
-          .toList();
+      questionsListFiltered = questionsListFilteredSearch =
+          questionsListFilteredCategory
+              .where((question) =>
+                  question.title.toLowerCase().contains(value.toLowerCase())
+                      ? true
+                      : false)
+              .toList();
     });
   }
 
@@ -123,27 +130,31 @@ class _HomeState extends State<Home> {
   void filterQuestionsCategory(value) {
     selectedCategory = value;
     if (value == "All Categories") {
-      questionsListFiltered = questionsListFilteredCategory = questionsListFilteredSearch;
+      questionsListFiltered =
+          questionsListFilteredCategory = questionsListFilteredSearch;
     } else {
       setState(() {
-        questionsListFiltered = questionsListFilteredCategory = questionsListFilteredSearch
-            .where((question) =>
-                question.category.toLowerCase().contains(value.toLowerCase())
+        questionsListFiltered = questionsListFilteredCategory =
+            questionsListFilteredSearch
+                .where((question) => question.category
+                        .toLowerCase()
+                        .contains(value.toLowerCase())
                     ? true
                     : false)
-            .toList();
+                .toList();
       });
     }
   }
 
-  Column questionsList(){
+  Column questionsList() {
     return Column(
       children: [
         // List of Questions
         Expanded(
-          // Show loading circle if results are taking time
-          // Show "No results" if input text doesn't match with question title (later will be added to description too)
-            child: _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)),
+            // Show loading circle if results are taking time
+            // Show "No results" if input text doesn't match with question title (later will be added to description too)
+            child: _buildList(
+                questionsListFiltered, filterQuestionsCategory, getCategory)),
 
         RawMaterialButton(
           onPressed: () {},
@@ -180,36 +191,36 @@ class _HomeState extends State<Home> {
       title: !isSearching
           ? Text('Eureka!')
           : TextField(
-        onChanged: (value) {
-          // Call function to apply search filter
-          filterQuestionsSearch(value);
-        },
-        style: TextStyle(color: Colors.white),
-        decoration: InputDecoration(
-            icon: Icon(
-              Icons.search,
-              color: Colors.white,
+              onChanged: (value) {
+                // Call function to apply search filter
+                filterQuestionsSearch(value);
+              },
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                  icon: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  ),
+                  hintText: "Search Question",
+                  hintStyle: TextStyle(color: Colors.white)),
             ),
-            hintText: "Search Question",
-            hintStyle: TextStyle(color: Colors.white)),
-      ),
       centerTitle: true,
 
       // Search icon is changed to search bar
       actions: <Widget>[
         isSearching
             ? IconButton(
-          icon: Icon(Icons.cancel),
-          onPressed: () {
-            searchingFalse();
-          },
-        )
+                icon: Icon(Icons.cancel),
+                onPressed: () {
+                  searchingFalse();
+                },
+              )
             : IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () {
-            searchingTrue();
-          },
-        ),
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  searchingTrue();
+                },
+              ),
 
         // Chat button
         FlatButton(
@@ -227,29 +238,30 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false, // fixed: "Create New Question" button was moving up while in keyboard mode
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(140.0), // here the desired height
-          // Call function homeAppBar
-        child: homeAppBar()
-      ),
+        resizeToAvoidBottomPadding:
+            false, // fixed: "Create New Question" button was moving up while in keyboard mode
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(140.0), // here the desired height
+            // Call function homeAppBar
+            child: homeAppBar()),
 
         // List of questions and a category filter
         // Call function questionsList
-      body: questionsList()
-    );
+        body: questionsList());
   }
 }
 
 // Function to return List of Questions and category filter. Called from 'body'.
-ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory) {
-
+ListView _buildList(
+    questionsListFiltered, filterQuestionsCategory, getCategory) {
   // Used to avoid some repetitive code
-  Text questionTextStyle(String string, double fontSize, Color color, FontWeight FontWeight) {
+  Text questionTextStyle(
+      String string, double fontSize, Color color, FontWeight FontWeight) {
     return Text(
       string,
       textAlign: TextAlign.left,
-      style: TextStyle(fontSize: fontSize, color: color, fontWeight: FontWeight),
+      style:
+          TextStyle(fontSize: fontSize, color: color, fontWeight: FontWeight),
     );
   }
 
@@ -266,7 +278,8 @@ ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     child: CategoryFilter(getCategoryCallback: getCategory))
               ]),
-              if (questionsListFiltered.length == 0) Center(child: Text("No results"))
+              if (questionsListFiltered.length == 0)
+                Center(child: Text("No results"))
             ],
           );
         }
@@ -281,15 +294,27 @@ ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      questionTextStyle(questionsListFiltered[index].category, 15.0, Colors.grey, FontWeight.normal),
+                      questionTextStyle(questionsListFiltered[index].category,
+                          15.0, Colors.grey, FontWeight.normal),
                       SizedBox(height: 5),
                       Row(children: [
-                        questionTextStyle("Asked:  ", 15.0, Colors.grey, FontWeight.normal),
-                        questionTextStyle(questionsListFiltered[index].time, 15.0, Colors.black, FontWeight.normal),
-                        questionTextStyle("        " + questionsListFiltered[index].status, 15.0, Colors.blue, FontWeight.bold),
+                        questionTextStyle(
+                            "Asked:  ", 15.0, Colors.grey, FontWeight.normal),
+                        questionTextStyle(
+                            questionsListFiltered[index].date.toString(),
+                            15.0,
+                            Colors.black,
+                            FontWeight.normal),
+                        questionTextStyle(
+                            "        " +
+                                questionsListFiltered[index].status.toString(),
+                            15.0,
+                            Colors.blue,
+                            FontWeight.bold),
                       ]),
                       SizedBox(height: 5),
-                      questionTextStyle(questionsListFiltered[index].title, 20.0, Colors.black, FontWeight.normal),
+                      questionTextStyle(questionsListFiltered[index].title,
+                          20.0, Colors.black, FontWeight.normal),
                       SizedBox(height: 5),
                       Text(
                         questionsListFiltered[index].description,
@@ -307,7 +332,8 @@ ListView _buildList(questionsListFiltered, filterQuestionsCategory, getCategory)
                             // Question page redirection here
                           },
                           child: Text("More Details",
-                              style: TextStyle(fontSize: 15.0, color: Colors.purple),
+                              style: TextStyle(
+                                  fontSize: 15.0, color: Colors.purple),
                               textAlign: TextAlign.right),
                         ),
                       ]),
