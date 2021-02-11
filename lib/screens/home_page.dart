@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/services/category_filter.dart';
 
@@ -179,14 +180,6 @@ class _HomeState extends State<Home> {
 
   AppBar homeAppBar() {
     return AppBar(
-      // Menu button
-      leading: FlatButton(
-        textColor: Colors.white,
-        onPressed: () {}, // open side menu
-        child: Icon(Icons.menu, color: Colors.cyan),
-        shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-      ),
-
       // Title "Eureka" is changed to a search bar after search icon is clicked
       title: !isSearching
           ? Text('Eureka!')
@@ -241,12 +234,13 @@ class _HomeState extends State<Home> {
         resizeToAvoidBottomPadding:
             false, // fixed: "Create New Question" button was moving up while in keyboard mode
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(140.0), // here the desired height
+            preferredSize: Size.fromHeight(100.0), // here the desired height
             // Call function homeAppBar
             child: homeAppBar()),
 
         // List of questions and a category filter
         // Call function questionsList
+        drawer: SideMenu(),
         body: questionsList());
   }
 }
@@ -300,14 +294,10 @@ ListView _buildList(
                       Row(children: [
                         questionTextStyle(
                             "Asked:  ", 15.0, Colors.grey, FontWeight.normal),
+                        questionTextStyle(questionsListFiltered[index].time,
+                            15.0, Colors.black, FontWeight.normal),
                         questionTextStyle(
-                            questionsListFiltered[index].date.toString(),
-                            15.0,
-                            Colors.black,
-                            FontWeight.normal),
-                        questionTextStyle(
-                            "        " +
-                                questionsListFiltered[index].status.toString(),
+                            "        " + questionsListFiltered[index].status,
                             15.0,
                             Colors.blue,
                             FontWeight.bold),

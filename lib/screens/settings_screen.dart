@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_account.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_general.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_payment.dart';
@@ -8,27 +9,34 @@ import 'package:project_eureka_flutter/services/sign_in.dart';
 import 'login_page.dart';
 
 class SettingsScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final title = 'Settings';
 
     return Scaffold(
+      drawer: SideMenu(),
       appBar: AppBar(
         title: Text(title),
+        toolbarHeight: 100,
+        backgroundColor: Color(0xFF37474F),
       ),
       body: ListView(
         children: <Widget>[
-          settingsListTile(context, CupertinoIcons.gear_alt_fill, 'General', SettingsGeneral()),
+          settingsListTile(context, CupertinoIcons.gear_alt_fill, 'General',
+              SettingsGeneral()),
           Divider(height: 1.0),
-          settingsListTile(context, CupertinoIcons.creditcard_fill, 'Payment', SettingsPayment()),
+          settingsListTile(context, CupertinoIcons.creditcard_fill, 'Payment',
+              SettingsPayment()),
           Divider(height: 1.0),
-          settingsListTile(context, CupertinoIcons.person_alt, 'Account', SettingsAccount()),
+          settingsListTile(
+              context, CupertinoIcons.person_alt, 'Account', SettingsAccount()),
           Divider(height: 1.0),
           ListTile(
             leading: Icon(CupertinoIcons.square_arrow_right),
             title: Text('Logout'),
-            onTap: () { signOut(context); },
+            onTap: () {
+              signOut(context);
+            },
           ),
         ],
       ),
@@ -54,7 +62,6 @@ ListTile settingsListTile(
 void signOut(context) {
   signOutGoogle().then((_) => Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute<Widget>(
-          builder: (BuildContext context) => LoginPage()),
-          (Route<void> route) => false));
+      MaterialPageRoute<Widget>(builder: (BuildContext context) => LoginPage()),
+      (Route<void> route) => false));
 }

@@ -80,9 +80,6 @@ class _OnboardingState extends State<Onboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Eureka'),
-      ),
       body: IntroductionScreen(
         globalBackgroundColor: Colors.white,
         pages: getPages(),
