@@ -36,8 +36,9 @@ class _HomeState extends State<Home> {
     List list1 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
               category: "Technology",
-              time: "2 hours ago",
-              status: "Active",
+              date: DateTime.now(),
+              status: 0,
+              visible: 1,
               title: "Linux installation issue - usb not found",
               description:
                   "Hello. I have a Smartbuy 16Gb USB 2.0 flash drive (with new memory controller) that is not recognized in any Linux system, but on Windows it recognized and worked fine. When I connect it to the PC on Linux system, nothing happens",
@@ -48,8 +49,9 @@ class _HomeState extends State<Home> {
     List list2 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
               category: "Household",
-              time: "2 hours ago",
-              status: "",
+              date: DateTime.now(),
+              status: 1,
+              visible: 1,
               title: "Windows Issue",
               description: "Hello",
             ))
@@ -59,8 +61,9 @@ class _HomeState extends State<Home> {
     List list3 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
               category: "Technology",
-              time: "2 weeks ago",
-              status: "",
+              date: DateTime.now(),
+              status: 0,
+              visible: 1,
               title: "iPhone not working",
               description: "iphone stopped working",
             ))
