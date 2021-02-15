@@ -64,6 +64,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
               setState(() {
                 _switchSetting('darkMode', value);
                 _darkMode = value;
+                print("Dark mode: " + _darkMode.toString());
               });
             },
           ),
@@ -74,6 +75,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
               setState(() {
                 _switchSetting('emailNotification', value);
                 _emailNotification = value;
+                print("Email notification: " + _emailNotification.toString());
               });
             },
           ),
@@ -84,6 +86,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
               setState(() {
                 _switchSetting('textNotification', value);
                 _textNotification = value;
+                print("Text notification: " + _textNotification.toString());
               });
             },
           ),
