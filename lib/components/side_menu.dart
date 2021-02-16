@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
-import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
+import 'package:project_eureka_flutter/screens/new_post_screen.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/screens/settings_screen.dart';
 

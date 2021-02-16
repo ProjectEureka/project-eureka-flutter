@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/services/category_filter.dart';
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -248,6 +249,7 @@ class _HomeState extends State<Home> {
 // Function to return List of Questions and category filter. Called from 'body'.
 ListView _buildList(
     questionsListFiltered, filterQuestionsCategory, getCategory) {
+  DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
   // Used to avoid some repetitive code
   Text questionTextStyle(
       String string, double fontSize, Color color, FontWeight FontWeight) {
@@ -294,10 +296,18 @@ ListView _buildList(
                       Row(children: [
                         questionTextStyle(
                             "Asked:  ", 15.0, Colors.grey, FontWeight.normal),
-                        questionTextStyle(questionsListFiltered[index].time,
-                            15.0, Colors.black, FontWeight.normal),
                         questionTextStyle(
-                            "        " + questionsListFiltered[index].status,
+                            dateFormat
+                                .format(questionsListFiltered[index].date)
+                                .toString(),
+                            15.0,
+                            Colors.black,
+                            FontWeight.normal),
+                        questionTextStyle(
+                            questionsListFiltered[index].status.toString() ==
+                                    '1'
+                                ? "       Active"
+                                : "",
                             15.0,
                             Colors.blue,
                             FontWeight.bold),
