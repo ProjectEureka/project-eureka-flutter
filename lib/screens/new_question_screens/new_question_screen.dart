@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_form.dart';
 
 class NewQuestionScreen extends StatelessWidget {
@@ -96,9 +97,11 @@ class NewQuestionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideMenu(),
       appBar: AppBar(
         title: Text("New Question"),
-        backgroundColor: Colors.blueGrey[800],
+        toolbarHeight: 100,
+        backgroundColor: Color(0xFF37474F),
       ),
       body: categorySelector(context),
     );
