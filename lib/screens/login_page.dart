@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return HomePage();
+              return Home();
             },
           ),
         );
@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return HomePage();
+              return Home();
             },
           ),
         );
