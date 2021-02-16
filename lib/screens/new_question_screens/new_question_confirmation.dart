@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
-import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
+
+import '../home_page.dart';
 
 class NewQuestionConfirmation extends StatefulWidget {
   final QuestionModel questionModel;
@@ -87,9 +88,7 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SideMenu(
-              title: "Project Eureka",
-            ),
+            builder: (context) => Home(),
           ),
         ),
       ),

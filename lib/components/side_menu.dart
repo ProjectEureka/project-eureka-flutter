@@ -33,7 +33,7 @@ class SideMenu extends StatelessWidget {
       sideMenuListTile(
         context,
         'Create New Post',
-        NewPostScreen(),
+        NewQuestionScreen(),
         Icons.edit,
       ),
       Divider(color: Colors.grey.shade400),
