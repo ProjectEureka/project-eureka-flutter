@@ -1,13 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/screens/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/onboarding.dart';
+import 'package:project_eureka_flutter/screens/onboarding.dart';
 
 //first time login checker
 int initScreen;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   initScreen = await prefs.getInt("initScreen");
   await prefs.setInt("initScreen", 1); //after first launch set to 1
