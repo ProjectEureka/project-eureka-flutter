@@ -15,9 +15,8 @@ class SettingsPayment extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          Divider(height: 20.0),
-          Text('Payment Methods', style: TextStyle(color: Colors.blue, fontSize: 30.0, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-          Divider(height: 50.0),
+          Container(padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30), child: Text('Payment Methods', style: TextStyle(color: Colors.blue, fontSize: 20.0, fontWeight: FontWeight.bold), textAlign: TextAlign.left,)),
+          Divider(height: 25.0),
           settingsListTile(context, AssetImage('assets/images/Google_Pay_Logo.png'), 'Google Pay', GooglePay()),
           Divider(height: 30.0),
           settingsListTile(context, AssetImage('assets/images/Apple_Pay_logo.png'), 'Apple Pay', ApplePay()),
@@ -31,8 +30,8 @@ class SettingsPayment extends StatelessWidget {
 ListTile settingsListTile(
     BuildContext context, AssetImage image, String string, Widget newScreen) {
   return ListTile(
-    leading: Container(padding: EdgeInsets.all(10.0), child: Image(image: image, width: 100.0), decoration: BoxDecoration(border: Border.all())),
-    title: Text(string, textAlign: TextAlign.center, style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
+    leading: Container(padding: EdgeInsets.all(7.0), child: Image(image: image, width: 70.0), decoration: BoxDecoration(border: Border.all())),
+    title: Text(string, textAlign: TextAlign.center, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
     trailing: Icon(Icons.keyboard_arrow_right, size: 50.0),
     onTap: () {
       Navigator.push(
