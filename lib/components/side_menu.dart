@@ -17,33 +17,33 @@ class SideMenu extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.blueGrey[800],
         ),
-        accountName: Text('Tony N.'),
+        accountName: Text('Tony N.', style: TextStyle(fontSize: 18.0)),
         accountEmail: Text('tonynguyen@gmail.com'),
         currentAccountPicture: CircleAvatar(backgroundColor: Colors.teal),
       ),
       sideMenuListTile(context, 'Home', Home(), Icons.home),
-      Divider(color: Colors.grey.shade400),
+      Divider(color: Colors.grey.shade400, height: 1.0),
       sideMenuListTile(
         context,
         'Profile',
         ProfileScreen(),
         Icons.person,
       ),
-      Divider(color: Colors.grey.shade400),
+      Divider(color: Colors.grey.shade400, height: 1.0),
       sideMenuListTile(
         context,
         'Create New Post',
         NewQuestionScreen(),
         Icons.edit,
       ),
-      Divider(color: Colors.grey.shade400),
+      Divider(color: Colors.grey.shade400, height: 1.0),
       sideMenuListTile(
         context,
         'Settings',
         SettingsScreen(),
         Icons.settings,
       ),
-      Divider(color: Colors.grey.shade400),
+      Divider(color: Colors.grey.shade400, height: 1.0),
     ]));
   }
 }
@@ -51,8 +51,8 @@ class SideMenu extends StatelessWidget {
 ListTile sideMenuListTile(
     BuildContext context, String string, Widget newScreen, IconData leading) {
   return ListTile(
-      title: Text(string),
-      leading: Icon(leading),
+      title: Text(string, style: TextStyle(fontSize: 16.0)),
+      leading: Icon(leading, size: 27.0),
       onTap: () {
         Navigator.of(context).pop();
         Navigator.pushReplacement(context,

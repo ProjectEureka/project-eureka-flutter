@@ -5,8 +5,7 @@ import 'package:project_eureka_flutter/screens/settings/settings_account.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_general.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_payment.dart';
 import 'package:project_eureka_flutter/services/sign_in.dart';
-
-import 'login_page.dart';
+import 'package:project_eureka_flutter/screens/login_page.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -32,8 +31,8 @@ class SettingsScreen extends StatelessWidget {
               context, CupertinoIcons.person_alt, 'Account', SettingsAccount()),
           Divider(height: 1.0),
           ListTile(
-            leading: Icon(CupertinoIcons.square_arrow_right),
-            title: Text('Logout'),
+            leading: Icon(CupertinoIcons.square_arrow_right, size: 30.0),
+            title: Text('Logout', style: TextStyle(fontSize: 18.0)),
             onTap: () {
               signOut(context);
             },
@@ -47,8 +46,8 @@ class SettingsScreen extends StatelessWidget {
 ListTile settingsListTile(
     BuildContext context, IconData icon, String string, Widget newScreen) {
   return ListTile(
-    leading: Icon(icon),
-    title: Text(string),
+    leading: Icon(icon, size: 30.0),
+    title: Text(string, style: TextStyle(fontSize: 18.0)),
     trailing: Icon(Icons.keyboard_arrow_right),
     onTap: () {
       Navigator.push(
