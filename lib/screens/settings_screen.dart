@@ -5,8 +5,7 @@ import 'package:project_eureka_flutter/screens/settings/settings_account.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_general.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_payment.dart';
 import 'package:project_eureka_flutter/services/sign_in.dart';
-
-import 'login_page.dart';
+import 'package:project_eureka_flutter/screens/login_page.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
