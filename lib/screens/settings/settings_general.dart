@@ -54,6 +54,8 @@ class _SettingsGeneral extends State<SettingsGeneral> {
     return Scaffold(
       appBar: AppBar(
         title: Text("General Settings"),
+        toolbarHeight: 100,
+        backgroundColor: Color(0xFF37474F),
       ),
       body: Column(
         children: [
@@ -92,7 +94,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
           ),
           ListTile(
             title: Row(
-                children: [Text('About   '), Icon(CupertinoIcons.info_circle)]),
+                children: [Text('About   ', style: TextStyle(fontSize: 18.0)), Icon(CupertinoIcons.info_circle)]),
             onTap: () {
               showDialog(
                   context: context,
@@ -121,5 +123,5 @@ class _SettingsGeneral extends State<SettingsGeneral> {
 // settings builder function
 SwitchListTile settingsList(String settingName, bool switchValue, setState) {
   return SwitchListTile(
-      title: Text(settingName), value: switchValue, onChanged: setState);
+      title: Text(settingName, style: TextStyle(fontSize: 18.0)), value: switchValue, onChanged: setState);
 }

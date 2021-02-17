@@ -31,8 +31,8 @@ class SettingsScreen extends StatelessWidget {
               context, CupertinoIcons.person_alt, 'Account', SettingsAccount()),
           Divider(height: 1.0),
           ListTile(
-            leading: Icon(CupertinoIcons.square_arrow_right),
-            title: Text('Logout'),
+            leading: Icon(CupertinoIcons.square_arrow_right, size: 30.0),
+            title: Text('Logout', style: TextStyle(fontSize: 18.0)),
             onTap: () {
               signOut(context);
             },
@@ -46,8 +46,8 @@ class SettingsScreen extends StatelessWidget {
 ListTile settingsListTile(
     BuildContext context, IconData icon, String string, Widget newScreen) {
   return ListTile(
-    leading: Icon(icon),
-    title: Text(string),
+    leading: Icon(icon, size: 30.0),
+    title: Text(string, style: TextStyle(fontSize: 18.0)),
     trailing: Icon(Icons.keyboard_arrow_right),
     onTap: () {
       Navigator.push(

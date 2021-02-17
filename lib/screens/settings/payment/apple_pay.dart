@@ -7,6 +7,8 @@ class ApplePay extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Apple Pay"),
+        toolbarHeight: 100,
+        backgroundColor: Color(0xFF37474F),
       ),
       body: Center(
         child: ElevatedButton(
