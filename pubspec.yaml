@@ -21,8 +21,6 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  introduction_screen: ^1.0.7
-  shared_preferences: ^0.5.12+4
   flutter:
     sdk: flutter
 
@@ -33,8 +31,13 @@ dependencies:
   firebase_core: ^0.5.0
   firebase_auth: ^0.18.0+1
   google_sign_in: ^4.5.3
+  modal_progress_hud: ^0.1.3
+
   date_time_picker: ^1.1.0
   material_segmented_control: ^2.1.0+1
+  toggle_switch: ^0.1.8
+  introduction_screen: ^1.0.7
+  shared_preferences: ^0.5.12+4
 
 dev_dependencies:
   flutter_test:
