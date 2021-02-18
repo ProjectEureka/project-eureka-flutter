@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(
             height: 15.0,
           ),
-          Text("5.0 Stars"),
+          Text("5.0 ⭐"),
         ],
       ),
     );
