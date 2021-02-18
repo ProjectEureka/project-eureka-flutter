@@ -1,3 +1,4 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 
 /// Function to return List of Questions and category filter. Called from 'body'.
@@ -50,6 +51,8 @@ class _EurekaListViewState extends State<EurekaListView> {
   }
 
   Column timeAndIsActiveRow(int index) {
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+
     return Column(
       children: [
         Row(
@@ -62,13 +65,18 @@ class _EurekaListViewState extends State<EurekaListView> {
                   color: Colors.grey,
                 ),
                 _eurekaListViewTextStyle(
-                  value: widget.filteredQuestionsList[index].time,
+                  value: dateFormat
+                      .format(widget.filteredQuestionsList[index].date)
+                      .toString(),
                   color: Colors.black,
                 ),
               ],
             ),
             _eurekaListViewTextStyle(
-              value: widget.filteredQuestionsList[index].status,
+              value:
+                  widget.filteredQuestionsList[index].status.toString() == '1'
+                      ? "Active"
+                      : "",
               color: Colors.blue,
               fontWeight: FontWeight.bold,
             ),

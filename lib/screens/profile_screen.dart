@@ -5,6 +5,7 @@ import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
 import 'package:project_eureka_flutter/services/user_category_service.dart';
 import 'package:project_eureka_flutter/services/user_question_service.dart';
 import 'package:project_eureka_flutter/services/user_answer_service.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -228,6 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideMenu(),
       body: Column(
         children: [
           _headerStack(),

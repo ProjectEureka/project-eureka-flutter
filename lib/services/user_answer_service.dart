@@ -9,8 +9,9 @@ class UserAnswerService {
     List list2 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
               category: "Household",
-              time: "2 hours ago",
-              status: "",
+              date: DateTime.now(),
+              status: 1,
+              visible: 1,
               title: "Windows Issue",
               description: "Hello",
             ))
@@ -19,11 +20,12 @@ class UserAnswerService {
     // List of another 2 dummy questions (different)
     List list3 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
-              category: "Technology",
-              time: "2 weeks ago",
-              status: "",
-              title: "iPhone not working",
-              description: "iphone stopped working",
+              category: "Household",
+              date: DateTime.now(),
+              status: 1,
+              visible: 1,
+              title: "Windows Issue",
+              description: "Hello",
             ))
         .toList();
 

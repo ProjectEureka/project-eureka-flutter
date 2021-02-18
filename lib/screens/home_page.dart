@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
 
 class Home extends StatefulWidget {
@@ -117,15 +119,6 @@ class _HomeState extends State<Home> {
     return AppBar(
       // Menu button
       toolbarHeight: 140.0,
-      leading: FlatButton(
-        textColor: Colors.white,
-        onPressed: () {}, // open side menu
-        child: Icon(Icons.menu, color: Colors.cyan),
-        shape: CircleBorder(
-          side: BorderSide(color: Colors.transparent),
-        ),
-      ),
-
       // Title "Eureka" is changed to a search bar after search icon is clicked
       title: !isSearching
           ? Text('Eureka!')
@@ -256,10 +249,41 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Container _createNewQuestionButton() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 40.0),
+      child: RawMaterialButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewQuestionScreen(),
+            ),
+          );
+        },
+        fillColor: Colors.blueGrey[800],
+        splashColor: Colors.grey,
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: SizedBox(
+            width: 200.0,
+            child: Text(
+              "Create New Question",
+              maxLines: 1,
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   // *** WIDGET BUILD ***
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideMenu(),
       resizeToAvoidBottomPadding:
           false, // fixed: "Create New Question" button was moving up while in keyboard mode
       appBar: homeAppBar(),
@@ -268,26 +292,7 @@ class _HomeState extends State<Home> {
       // Call function questionsList
       body: questionsList(),
 
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(horizontal: 40.0),
-        child: RawMaterialButton(
-          onPressed: () {},
-          fillColor: Colors.blueGrey[800],
-          splashColor: Colors.grey,
-          child: Padding(
-            padding: EdgeInsets.all(10.0),
-            child: SizedBox(
-              width: 200.0,
-              child: Text(
-                "Create New Question",
-                maxLines: 1,
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ),
-      ),
+      bottomNavigationBar: _createNewQuestionButton(),
     );
   }
 }

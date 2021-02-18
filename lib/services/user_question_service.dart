@@ -8,8 +8,9 @@ class UserQuestionService {
     List list3 = List.generate(2, (index) => "Message")
         .map((val) => QuestionModel(
               category: "Technology",
-              time: "2 weeks ago",
-              status: "",
+              date: DateTime.now(),
+              status: 0,
+              visible: 1,
               title: "iPhone not working",
               description: "iphone stopped working",
             ))
