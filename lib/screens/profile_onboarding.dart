@@ -3,12 +3,17 @@ import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class ProfileOnboarding extends StatefulWidget {
+  final bool isProfile;
+
+  ProfileOnboarding({
+    @required this.isProfile,
+  });
+
   @override
   _ProfileOnboardingState createState() => _ProfileOnboardingState();
 }
 
 class _ProfileOnboardingState extends State<ProfileOnboarding> {
-  bool _profilePage = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   static final RegExp _nameRegExp = RegExp(
@@ -236,14 +241,16 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
 
     print('$_role, $_firstName, $_lastName, $_city, $_birthDate');
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SideMenu(
-          title: 'Project Eureka',
-        ),
-      ),
-    );
+    widget.isProfile
+        ? Navigator.pop(context)
+        : Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SideMenu(
+                title: 'Project Eureka',
+              ),
+            ),
+          );
   }
 
   @override
@@ -253,7 +260,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         centerTitle: true,
-        title: _profilePage
+        title: widget.isProfile
             ? Text("Edit Your Profile", style: _appBarTextStyle)
             : Text("Create Your Profile", style: _appBarTextStyle),
       ),
