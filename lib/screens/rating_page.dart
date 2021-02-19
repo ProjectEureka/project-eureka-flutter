@@ -1,0 +1,166 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:project_eureka_flutter/screens/home_page.dart';
+
+class RatingPage extends StatefulWidget {
+  @override
+  _RatingPageState createState() => _RatingPageState();
+}
+
+class _RatingPageState extends State<RatingPage> {
+  double _rating;
+  int _ratingBarMode = 1;
+  IconData _selectedIcon;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Builder(
+        builder: (context) => Scaffold(
+          backgroundColor: Color(0xff00adb5),
+          body: Center(
+              child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            height: MediaQuery.of(context).size.height - 250.0,
+            width: MediaQuery.of(context).size.width - 30.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 40.0,
+                ),
+                Center(
+                  child: Column(
+                    children: [
+                      _profilePicture('assets/images/batman.png'),
+                      _heading('How was your session with', 24.0),
+                      _heading('Tony N?', 24.0),
+                      _ratingBar(_ratingBarMode),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                _rating != null
+                    ? Text(
+                        'Rating: $_rating',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 40.0,
+                ),
+                Center(
+                  child: _submitButton('Done!'),
+                ),
+              ],
+            ),
+          )),
+        ),
+      ),
+    );
+  }
+
+  void checkRating() {
+    double checker = _rating;
+    if (checker != null) {
+      print(checker);
+    } else {
+      _rating = 0;
+      print(_rating);
+    }
+  }
+
+  Widget _profilePicture(String profileImage) {
+    return Center(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 55.0,
+              backgroundColor: Colors.black,
+              child: CircleAvatar(
+                radius: 50.0,
+                backgroundImage: AssetImage(profileImage),
+              ),
+            ),
+          ]),
+    );
+  }
+
+  Widget _heading(String text, double fontSize) => Container(
+        child: Column(
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                color: Color(0xFF666666),
+                fontWeight: FontWeight.w300,
+                fontSize: 24.0,
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+          ],
+        ),
+      );
+  Widget _submitButton(String text) => Column(
+        children: [
+          ElevatedButton(
+            onPressed: () async {
+              checkRating();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return HomePage();
+                  },
+                ),
+              );
+            },
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w300,
+                fontSize: 24.0,
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget _ratingBar(int mode) {
+    return RatingBar.builder(
+      initialRating: 2,
+      minRating: 0,
+      direction: Axis.horizontal,
+      allowHalfRating: true,
+      unratedColor: Colors.amber.withAlpha(50),
+      itemCount: 5,
+      itemSize: 50.0,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => Icon(
+        _selectedIcon ?? Icons.star,
+        color: Colors.amber,
+      ),
+      onRatingUpdate: (rating) {
+        setState(() {
+          _rating = rating;
+        });
+      },
+      updateOnDrag: true,
+    );
+  }
+}

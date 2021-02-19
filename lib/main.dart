@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'file:///C:/Users/Tony/Desktop/PE/project-eureka-flutter/lib/screens/login_page.dart';
+import 'package:project_eureka_flutter/screens/login_page.dart';
+import 'package:project_eureka_flutter/screens/rating_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage(),
+      home: RatingPage(), // change back to LoginPage when done testing
     );
   }
 }
