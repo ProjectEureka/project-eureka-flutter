@@ -122,7 +122,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(
             height: 15.0,
           ),
-          Text("5.0 ⭐"),
+          Text(
+            "5.0 ⭐",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -152,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: <Widget>[
         Center(
           child: Container(
-            /// screen height - total size of profile stack
+            /// screen height minus total size of profile stack
             height: MediaQuery.of(context).size.height - 360,
             child: listView,
           ),
@@ -191,17 +194,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _categoryBuilder(int index) {
+    return Column(
+      children: [
+        ListTile(
+          leading: Image.asset(
+              'assets/images/${categories[index].toLowerCase()}.png'),
+          title: Text(
+            '${categories[index]}',
+          ),
+        ),
+        Divider(color: Colors.grey.shade400, height: 1.0)
+      ],
+    );
+  }
+
   Column _interestList() {
     return _toggleSwtichListBuilder(
       categories.length,
       ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(
-              '• ${categories[index]}',
-            ),
-          );
+          return _categoryBuilder(index);
         },
       ),
     );

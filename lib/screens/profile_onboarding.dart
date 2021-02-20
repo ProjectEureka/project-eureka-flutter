@@ -38,6 +38,27 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     fontWeight: FontWeight.bold,
   );
 
+  AppBar _profileOnboardingAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
+      centerTitle: true,
+      title: widget.isProfile
+          ? Text("Edit Your Profile", style: _appBarTextStyle)
+          : Text("Create Your Profile", style: _appBarTextStyle),
+      actions: [
+        widget.isProfile
+            ? IconButton(
+                icon: Icon(
+                  Icons.cancel,
+                  color: Color(0xFF00ADB5),
+                ),
+                onPressed: () => Navigator.pop(context))
+            : null
+      ],
+    );
+  }
+
   Row _birthDateForms() {
     return Row(
       children: <Widget>[
@@ -174,14 +195,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        centerTitle: true,
-        title: widget.isProfile
-            ? Text("Edit Your Profile", style: _appBarTextStyle)
-            : Text("Create Your Profile", style: _appBarTextStyle),
-      ),
+      appBar: _profileOnboardingAppBar(),
       body: Form(
         key: _formKey,
         child: Container(
