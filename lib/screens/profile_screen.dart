@@ -13,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int _role = 0;
+  int _tab = 0;
   List questionsList = [];
   List answersList = [];
   List categories = [];
@@ -225,15 +225,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       children: [
         Visibility(
-          visible: _role == 0 ? true : false,
+          visible: _tab == 0 ? true : false,
           child: _questionsList(),
         ),
         Visibility(
-          visible: _role == 1 ? true : false,
+          visible: _tab == 1 ? true : false,
           child: _answersList(),
         ),
         Visibility(
-          visible: _role == 2 ? true : false,
+          visible: _tab == 2 ? true : false,
           child: _interestList(),
         )
       ],
@@ -249,10 +249,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _headerStack(),
           EurekaToggleSwitch(
             labels: ['Questions', 'Answers', 'Interests'],
-            initialLabelIndex: _role,
+            initialLabelIndex: _tab,
             setState: (index) {
               setState(() {
-                _role = index;
+                _tab = index;
               });
             },
           ),
