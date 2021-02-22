@@ -70,8 +70,8 @@ class NewQuestionScreen extends StatelessWidget {
             ),
             categoryButton(
               context,
-              'adademic.png',
-              "Adademic",
+              'academic.png',
+              "Academic",
             )
           ],
         ),

@@ -5,11 +5,11 @@ import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class ProfileOnboarding extends StatefulWidget {
-  /// This will check if the user is new or returning to edit their
-  /// profile from the profile page.
-  final bool isProfilePage;
+  final bool isProfile;
 
-  ProfileOnboarding({@required this.isProfilePage});
+  ProfileOnboarding({
+    @required this.isProfile,
+  });
 
   @override
   _ProfileOnboardingState createState() => _ProfileOnboardingState();
@@ -37,6 +37,27 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     color: Colors.black,
     fontWeight: FontWeight.bold,
   );
+
+  AppBar _profileOnboardingAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0.0,
+      centerTitle: true,
+      title: widget.isProfile
+          ? Text("Edit Your Profile", style: _appBarTextStyle)
+          : Text("Create Your Profile", style: _appBarTextStyle),
+      actions: [
+        widget.isProfile
+            ? IconButton(
+                icon: Icon(
+                  Icons.cancel,
+                  color: Color(0xFF00ADB5),
+                ),
+                onPressed: () => Navigator.pop(context))
+            : null
+      ],
+    );
+  }
 
   Row _birthDateForms() {
     return Row(
@@ -159,27 +180,22 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
 
     print('$_role, $_firstName, $_lastName, $_city, $_birthDate');
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SideMenu(
-          title: 'Project Eureka',
-        ),
-      ),
-    );
+    widget.isProfile
+        ? Navigator.pop(context)
+        : Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SideMenu(
+                title: 'Project Eureka',
+              ),
+            ),
+          );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        centerTitle: true,
-        title: widget.isProfilePage
-            ? Text("Edit Your Profile", style: _appBarTextStyle)
-            : Text("Create Your Profile", style: _appBarTextStyle),
-      ),
+      appBar: _profileOnboardingAppBar(),
       body: Form(
         key: _formKey,
         child: Container(
