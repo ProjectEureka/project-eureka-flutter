@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
 
 class RatingPage extends StatefulWidget {
@@ -57,7 +58,16 @@ class _RatingPageState extends State<RatingPage> {
             SizedBox(
               height: 40.0,
             ),
-            _submitButton('Done!'),
+            EurekaRoundedButton(
+                buttonText: 'Done!',
+                onPressed: () async {
+                  checkRating();
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return Home();
+                    },
+                  ));
+                }),
           ],
         ),
       )),
@@ -73,7 +83,7 @@ class _RatingPageState extends State<RatingPage> {
     }
   }
 
-  Widget _profilePicture(String profileImage) {
+  Center _profilePicture(String profileImage) {
     return Center(
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -107,31 +117,6 @@ class _RatingPageState extends State<RatingPage> {
             ),
           ],
         ),
-      );
-  Widget _submitButton(String text) => Column(
-        children: [
-          ElevatedButton(
-            onPressed: () async {
-              checkRating();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return HomePage();
-                  },
-                ),
-              );
-            },
-            child: Text(
-              text,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
-                fontSize: 24.0,
-              ),
-            ),
-          ),
-        ],
       );
 
   Widget _ratingBar(int mode) {
