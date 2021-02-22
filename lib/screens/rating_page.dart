@@ -19,54 +19,48 @@ class _RatingPageState extends State<RatingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Builder(
-        builder: (context) => Scaffold(
-          backgroundColor: Color(0xff00adb5),
-          body: Center(
-              child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-            height: MediaQuery.of(context).size.height - 250.0,
-            width: MediaQuery.of(context).size.width - 30.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+    return Scaffold(
+      backgroundColor: Color(0xff00adb5),
+      body: Center(
+          child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        height: MediaQuery.of(context).size.height - 250.0,
+        width: MediaQuery.of(context).size.width - 30.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              height: 40.0,
+            ),
+            Column(
+              children: [
+                _profilePicture('assets/images/batman.png'),
                 SizedBox(
                   height: 40.0,
                 ),
-                Center(
-                  child: Column(
-                    children: [
-                      _profilePicture('assets/images/batman.png'),
-                      _heading('How was your session with', 24.0),
-                      _heading('Tony N?', 24.0),
-                      _ratingBar(_ratingBarMode),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                _rating != null
-                    ? Text(
-                        'Rating: $_rating',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    : Container(),
-                SizedBox(
-                  height: 40.0,
-                ),
-                Center(
-                  child: _submitButton('Done!'),
-                ),
+                _heading('How was your session with', 24.0),
+                _heading('Tony N?', 24.0),
+                _ratingBar(_ratingBarMode),
               ],
             ),
-          )),
+            SizedBox(
+              height: 20.0,
+            ),
+            _rating != null
+                ? Text(
+                    'Rating: $_rating',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                : Container(),
+            SizedBox(
+              height: 40.0,
+            ),
+            _submitButton('Done!'),
+          ],
         ),
-      ),
+      )),
     );
   }
 
@@ -75,8 +69,7 @@ class _RatingPageState extends State<RatingPage> {
     if (checker != null) {
       print(checker);
     } else {
-      _rating = 0;
-      print(_rating);
+      print('Rating is null: $checker');
     }
   }
 
@@ -143,6 +136,7 @@ class _RatingPageState extends State<RatingPage> {
 
   Widget _ratingBar(int mode) {
     return RatingBar.builder(
+      glow: false,
       initialRating: 2,
       minRating: 0,
       direction: Axis.horizontal,
