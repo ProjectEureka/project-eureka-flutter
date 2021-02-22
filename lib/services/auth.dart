@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
 class Auth {
+  final auth = FirebaseAuth.instance;
+
   String getExceptionText(Exception e) {
     if (e is FirebaseAuthException) {
       switch (e.message) {
@@ -27,4 +29,23 @@ class Auth {
       return 'Unknown error occured.';
     }
   }
+
+  void resetAccount(String _email) {
+    auth.sendPasswordResetEmail(email: _email);
+    return;
+  }
+
+/*Future<UserCredential> login(String email, String password) async {
+    UserCredential result = await auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return result;
+  }
+  Future<UserCredential> sign(String _userEmail, String _password) async {
+    final newUser = await auth.createUserWithEmailAndPassword(
+        email: _userEmail, password: _password);
+    return newUser;
+  }
+*/
 }

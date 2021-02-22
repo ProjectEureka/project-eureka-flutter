@@ -4,29 +4,29 @@ import 'package:project_eureka_flutter/screens/forgot_password.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/signup_page.dart';
 import 'package:project_eureka_flutter/services/auth.dart';
-import 'package:project_eureka_flutter/sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:project_eureka_flutter/services/sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-final RegExp _emailValid = RegExp(
-    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-final RegExp _passwordValid =
-    RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-
-String _userEmail;
 
 class _LoginPageState extends State<LoginPage> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   String email;
   String password;
   bool showSpinner = false;
   String exception = "";
+  final RegExp _emailValid = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  final RegExp _passwordValid =
+      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+
+  String _userEmail;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return HomePage();
+              return Home();
             },
           ),
         );
@@ -74,6 +74,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<String> signIn(_formKey) async {
     if (_formKey.currentState.validate()) {
       try {
+        //UserCredential result = Auth().login(String email, String password);
         UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
@@ -82,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return HomePage();
+              return Home();
             },
           ),
         );
@@ -91,8 +92,12 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           //exception = e.toString();
           exception = Auth().getExceptionText(e);
+          showSpinner = false;
         });
       }
+      setState(() {
+        showSpinner = false;
+      });
     }
   }
 
@@ -110,8 +115,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               validator: (value) {
                 if (value.isEmpty) {
+                  showSpinner = false;
                   return 'Email needed';
                 } else if (!_emailValid.hasMatch(value)) {
+                  showSpinner = false;
                   return 'Invalid Input';
                 }
                 email = value;
@@ -138,7 +145,10 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  setState(() {
+                    showSpinner = true;
+                  });
                   signIn(_formKey);
                 },
                 child: Text('Submit'),

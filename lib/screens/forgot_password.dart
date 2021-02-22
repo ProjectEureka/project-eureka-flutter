@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project_eureka_flutter/services/auth.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -38,7 +39,7 @@ class _ForgotpasswordState extends State<ForgotPassword> {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      auth.sendPasswordResetEmail(email: _email);
+                      Auth().resetAccount(_email);
                       SnackBar(
                         content: const Text('request sent'),
                       );
