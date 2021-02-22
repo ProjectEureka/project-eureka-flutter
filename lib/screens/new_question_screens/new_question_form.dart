@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
@@ -143,10 +144,14 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: EurekaAppBar(
+        title: 'New Question',
+        appBar: AppBar(),
+      ),
+      /*appBar: AppBar(
         title: Text("New Question"),
         backgroundColor: Colors.blueGrey[800],
-      ),
+      ),*/
       body: Form(
         key: _formKey,
         child: Container(

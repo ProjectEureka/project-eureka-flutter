@@ -199,6 +199,7 @@ class _HomeState extends State<Home> {
                   hintStyle: TextStyle(color: Colors.white)),
             ),
       centerTitle: true,
+      //toolbarHeight: 100,
 
       // Search icon is changed to search bar
       actions: <Widget>[
