@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:project_eureka_flutter/services/auth.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
+import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
 
 import 'login_page.dart';
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class SignupPage extends StatefulWidget {
   @override
@@ -15,41 +12,49 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  EmailAuth _emailAuth = new EmailAuth();
+  FirebaseExceptionHandler _firebaseExceptionHandler =
+      new FirebaseExceptionHandler();
+
   String _userEmail;
   String _password;
   String exception = "";
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _form(context),
-              Visibility(
-                  visible: exception == "" ? false : true,
-                  child: Text(
-                    exception,
-                    style: TextStyle(color: Colors.red),
-                  )),
-              _back(context),
-            ],
-          ),
-        ),
-      ),
-    );
+
+  final RegExp _emailValid = RegExp(
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+
+  final RegExp _passwordValid =
+      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+
+  void _validateAndSubmit() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
+
+    try {
+      _emailAuth.signUp(_userEmail, _password).then((newUser) {
+        if (newUser != null) {
+          Navigator.pop(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return LoginPage();
+              },
+            ),
+          );
+        }
+      });
+    } catch (e) {
+      setState(() {
+        exception = _firebaseExceptionHandler.getExceptionText(e);
+      });
+    }
   }
 
   Widget _form(BuildContext context) {
-    final RegExp _emailValid = RegExp(
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-
-    final RegExp _passwordValid =
-        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-    RegExp regExp;
     return Form(
         key: _formKey,
         child: Column(
@@ -66,7 +71,7 @@ class _SignupPageState extends State<SignupPage> {
                 } else if (!_emailValid.hasMatch(value)) {
                   return 'You must enter a valid email address';
                 }
-                _userEmail = value;
+                _userEmail = value.trim();
                 return null;
               },
               textAlign: TextAlign.center,
@@ -104,34 +109,7 @@ class _SignupPageState extends State<SignupPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
-                onPressed: () async {
-                  print('in pressed');
-                  if (_formKey.currentState.validate()) {
-                    _formKey.currentState.save();
-                    try {
-                      final newUser =
-                          await _auth.createUserWithEmailAndPassword(
-                              email: _userEmail, password: _password);
-                      //print('signInWithGoogle succeeded, uid displayed: ${newUser.uid}');
-                      print(_userEmail);
-                      if (newUser != null) {
-                        Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return LoginPage();
-                            },
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      setState(() {
-                        //exception = e.toString();
-                        exception = Auth().getExceptionText(e);
-                      });
-                    }
-                  } //method
-                },
+                onPressed: () => _validateAndSubmit(),
                 child: Text('Register'),
               ),
             ),
@@ -141,16 +119,43 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _back(BuildContext context) {
     return ElevatedButton(
-        child: Text('return to login?'),
-        onPressed: () {
-          Navigator.pop(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return LoginPage();
-              },
-            ),
-          );
-        });
+      child: Text('Return to login'),
+      onPressed: () {
+        Navigator.pop(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return LoginPage();
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _form(context),
+              Visibility(
+                visible: exception == "" ? false : true,
+                child: Text(
+                  exception,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              _back(context),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
