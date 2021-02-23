@@ -47,7 +47,7 @@ class _ForgotpasswordState extends State<ForgotPassword> {
               ),
               onChanged: (value) {
                 setState(() {
-                  _email = value;
+                  _email = value.trim();
                 });
               },
             ),

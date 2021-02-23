@@ -71,7 +71,7 @@ class _SignupPageState extends State<SignupPage> {
                 } else if (!_emailValid.hasMatch(value)) {
                   return 'You must enter a valid email address';
                 }
-                _userEmail = value;
+                _userEmail = value.trim();
                 return null;
               },
               textAlign: TextAlign.center,

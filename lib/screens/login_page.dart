@@ -122,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                   showSpinner = false;
                   return 'Invalid Input';
                 }
-                email = value;
+                email = value.trim();
                 return null;
               },
               textAlign: TextAlign.center,
