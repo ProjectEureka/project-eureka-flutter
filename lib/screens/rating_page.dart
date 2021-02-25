@@ -21,57 +21,58 @@ class _RatingPageState extends State<RatingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff00adb5),
-      body: Center(
-          child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-        height: MediaQuery.of(context).size.height - 250.0,
-        width: MediaQuery.of(context).size.width - 30.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              height: 40.0,
-            ),
-            Column(
-              children: [
-                _profilePicture('assets/images/batman.png'),
+        backgroundColor: Color(0xff00adb5),
+        body: Center(
+          child: SingleChildScrollView(
+              child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            //height: MediaQuery.of(context).size.height - 250.0,
+            //width: MediaQuery.of(context).size.width - 30.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
                 SizedBox(
                   height: 40.0,
                 ),
-                _heading('How was your session with', 24.0),
-                _heading('Tony N?', 24.0),
-                _ratingBar(_ratingBarMode),
+                Column(
+                  children: [
+                    _profilePicture('assets/images/batman.png'),
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    _heading('How was your session with', 24.0),
+                    _heading('Tony N?', 24.0),
+                    _ratingBar(_ratingBarMode),
+                  ],
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                _rating != null
+                    ? Text(
+                        'Rating: $_rating',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 40.0,
+                ),
+                EurekaRoundedButton(
+                    buttonText: 'Done!',
+                    onPressed: () async {
+                      checkRating();
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return Home();
+                        },
+                      ));
+                    }),
               ],
             ),
-            SizedBox(
-              height: 20.0,
-            ),
-            _rating != null
-                ? Text(
-                    'Rating: $_rating',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                : Container(),
-            SizedBox(
-              height: 40.0,
-            ),
-            EurekaRoundedButton(
-                buttonText: 'Done!',
-                onPressed: () async {
-                  checkRating();
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return Home();
-                    },
-                  ));
-                }),
-          ],
-        ),
-      )),
-    );
+          )),
+        ));
   }
 
   void checkRating() {
