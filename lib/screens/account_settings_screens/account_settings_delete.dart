@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/screens/login_page.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class AccountSettingsDelete extends StatelessWidget {
+  final EmailAuth _emailAuth = new EmailAuth();
+
+  void deleteUser(context) {
+    _emailAuth.deleteUser().then((_) => Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute<Widget>(
+            builder: (BuildContext context) => LoginPage()),
+        (Route<void> route) => false));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,11 +71,45 @@ class AccountSettingsDelete extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Are you sure?"),
+                          content: Text(
+                              "You will permanently lose your account and this proccess cannot be undone."),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                deleteUser(context);
+                              },
+                              child: Text(
+                                "Delete",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      });
+                },
                 child: Container(
                   padding: EdgeInsets.all(12.0),
                   child: Text(
-                    'Delete account',
+                    "Delete account",
                     style: TextStyle(
                       color: Colors.red,
                       fontSize: 21.0,

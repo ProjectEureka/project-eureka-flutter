@@ -33,4 +33,19 @@ class EmailAuth {
   Future<void> forgotPassword(String email) async {
     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
+
+  Future<void> deleteUser() async {
+    User user = _auth.currentUser;
+    await user.delete();
+  }
+
+  Future<void> updateEmail(String email) async {
+    User user = _auth.currentUser;
+    await user.updateEmail(email);
+  }
+
+  Future<void> updatePassword(String password) async {
+    User user = _auth.currentUser;
+    await user.updatePassword(password);
+  }
 }
