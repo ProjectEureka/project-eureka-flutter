@@ -58,11 +58,6 @@ class _SettingsGeneral extends State<SettingsGeneral> {
         title: 'General Settings',
         appBar: AppBar(),
       ),
-      /*appBar: AppBar(
-        title: Text("General Settings"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
-      ),*/
       body: Column(
         children: [
           settingsList(

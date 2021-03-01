@@ -83,7 +83,6 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
       appBar: EurekaAppBar(
         title: 'New Question',
         appBar: AppBar(),
-        toolbarHeight: 100,
       ),
       body: _questionConfirmationBody(),
       bottomNavigationBar: EurekaRoundedButton(

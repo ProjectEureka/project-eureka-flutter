@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
 
@@ -34,7 +35,10 @@ class _ForgotpasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Reset Password')),
+      appBar: EurekaAppBar(
+        title: 'Reset Password',
+        appBar: AppBar(),
+      ),
       body: Container(
         color: Colors.lightBlueAccent[100],
         child: Column(

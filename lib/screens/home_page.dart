@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
@@ -115,11 +116,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  AppBar homeAppBar() {
-    return AppBar(
-      // Menu button
-      toolbarHeight: 140.0,
-      // Title "Eureka" is changed to a search bar after search icon is clicked
+  EurekaAppBar homeAppBar() {
+    return EurekaAppBar(
       title: !isSearching
           ? Text('Eureka!')
           : TextField(
@@ -137,10 +135,8 @@ class _HomeState extends State<Home> {
                 hintStyle: TextStyle(color: Colors.white),
               ),
             ),
-      centerTitle: true,
-
-      // Search icon is changed to search bar
-      actions: <Widget>[
+      appBar: AppBar(),
+      actions: [
         isSearching
             ? IconButton(
                 icon: Icon(Icons.cancel),
@@ -163,7 +159,6 @@ class _HomeState extends State<Home> {
           shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
         ),
       ],
-      backgroundColor: Colors.blueGrey[800],
     );
   }
 

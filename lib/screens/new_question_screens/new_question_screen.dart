@@ -102,7 +102,6 @@ class NewQuestionScreen extends StatelessWidget {
       appBar: EurekaAppBar(
         title: 'New Questions',
         appBar: AppBar(),
-        toolbarHeight: 100,
       ),
       body: categorySelector(context),
     );

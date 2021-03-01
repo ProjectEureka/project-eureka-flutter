@@ -9,11 +9,6 @@ class SettingsAccount extends StatelessWidget {
         title: 'Account Settings',
         appBar: AppBar(),
       ),
-      /*appBar: AppBar(
-        title: Text("Account Settings"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
-      ),*/
       body: Center(
         child: ElevatedButton(
           onPressed: () {

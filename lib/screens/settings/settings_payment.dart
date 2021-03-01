@@ -12,11 +12,6 @@ class SettingsPayment extends StatelessWidget {
         title: 'Payment Settings',
         appBar: AppBar(),
       ),
-      /*AppBar(
-        title: Text("Payment Settings"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
-      ),*/
       body: ListView(
         children: <Widget>[
           Container(

@@ -147,7 +147,6 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
       appBar: EurekaAppBar(
         title: 'New Question',
         appBar: AppBar(),
-        toolbarHeight: 100,
       ),
       body: Form(
         key: _formKey,

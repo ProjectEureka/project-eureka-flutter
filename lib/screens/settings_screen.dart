@@ -43,7 +43,6 @@ class SettingsScreen extends StatelessWidget {
       appBar: EurekaAppBar(
         title: 'Settings',
         appBar: AppBar(),
-        toolbarHeight: 100,
       ),
       body: ListView(
         children: <Widget>[

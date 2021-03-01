@@ -5,21 +5,21 @@ import 'package:flutter/material.dart';
  we can have a uniform design though out our app.*/
 
 class EurekaAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final title;
   final List<Widget> actions;
   final AppBar appBar;
-  final toolbarHeight;
+  final double toolbarHeight = 140;
 
-  const EurekaAppBar(
-      {@required this.title,
-      this.actions,
-      @required this.appBar,
-      this.toolbarHeight});
+  const EurekaAppBar({
+    @required this.title,
+    this.actions,
+    @required this.appBar,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(title),
+      title: title is String ? Text(title) : title, //Text(title),
       backgroundColor: Color(0xFF37474F),
       centerTitle: true,
       toolbarHeight: toolbarHeight,
