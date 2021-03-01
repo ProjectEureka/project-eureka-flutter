@@ -147,11 +147,8 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
       appBar: EurekaAppBar(
         title: 'New Question',
         appBar: AppBar(),
+        toolbarHeight: 100,
       ),
-      /*appBar: AppBar(
-        title: Text("New Question"),
-        backgroundColor: Colors.blueGrey[800],
-      ),*/
       body: Form(
         key: _formKey,
         child: Container(

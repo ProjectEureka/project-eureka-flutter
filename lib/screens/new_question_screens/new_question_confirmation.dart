@@ -82,11 +82,8 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
       appBar: EurekaAppBar(
         title: 'New Question',
         appBar: AppBar(),
+        toolbarHeight: 100,
       ),
-      /*appBar: AppBar(
-        title: Text("New Question"),
-        backgroundColor: Colors.blueGrey[800],
-      ),*/
       body: _questionConfirmationBody(),
       bottomNavigationBar: EurekaRoundedButton(
         buttonText: "Return to Home Page",

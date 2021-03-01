@@ -8,9 +8,13 @@ class EurekaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget> actions;
   final AppBar appBar;
+  final toolbarHeight;
 
   const EurekaAppBar(
-      {@required this.title, this.actions, @required this.appBar});
+      {@required this.title,
+      this.actions,
+      @required this.appBar,
+      this.toolbarHeight});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +22,10 @@ class EurekaAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title),
       backgroundColor: Color(0xFF37474F),
       centerTitle: true,
-      toolbarHeight: 100,
+      toolbarHeight: toolbarHeight,
       actions: actions == null ? null : actions,
     );
   }
 
-  Size get preferredSize => new Size.fromHeight(appBar.preferredSize.height);
+  Size get preferredSize => new Size.fromHeight(toolbarHeight);
 }

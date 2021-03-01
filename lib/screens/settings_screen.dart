@@ -18,12 +18,8 @@ class SettingsScreen extends StatelessWidget {
       appBar: EurekaAppBar(
         title: 'Settings',
         appBar: AppBar(),
-      ),
-      /*appBar: AppBar(
-        title: Text(title),
         toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
-      ),*/
+      ),
       body: ListView(
         children: <Widget>[
           settingsListTile(context, CupertinoIcons.gear_alt_fill, 'General',
