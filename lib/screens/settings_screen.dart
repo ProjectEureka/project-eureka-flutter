@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_account.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_general.dart';
@@ -39,10 +40,9 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideMenu(),
-      appBar: AppBar(
-        title: Text(title),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
+      appBar: EurekaAppBar(
+        title: 'Settings',
+        appBar: AppBar(),
       ),
       body: ListView(
         children: <Widget>[

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsGeneral extends StatefulWidget {
@@ -16,7 +17,8 @@ class _SettingsGeneral extends State<SettingsGeneral> {
 
   Future<bool> _getBoolValuesSF(String setting) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(setting) ?? false; // if setting doesn't exist yet, give false
+    return prefs.getBool(setting) ??
+        false; // if setting doesn't exist yet, give false
   }
 
   void _switchSetting(String setting, bool value) async {
@@ -52,10 +54,9 @@ class _SettingsGeneral extends State<SettingsGeneral> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("General Settings"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
+      appBar: EurekaAppBar(
+        title: 'General Settings',
+        appBar: AppBar(),
       ),
       body: Column(
         children: [
@@ -93,8 +94,10 @@ class _SettingsGeneral extends State<SettingsGeneral> {
             },
           ),
           ListTile(
-            title: Row(
-                children: [Text('About   ', style: TextStyle(fontSize: 18.0)), Icon(CupertinoIcons.info_circle)]),
+            title: Row(children: [
+              Text('About   ', style: TextStyle(fontSize: 18.0)),
+              Icon(CupertinoIcons.info_circle)
+            ]),
             onTap: () {
               showDialog(
                   context: context,
@@ -123,5 +126,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
 // settings builder function
 SwitchListTile settingsList(String settingName, bool switchValue, setState) {
   return SwitchListTile(
-      title: Text(settingName, style: TextStyle(fontSize: 18.0)), value: switchValue, onChanged: setState);
+      title: Text(settingName, style: TextStyle(fontSize: 18.0)),
+      value: switchValue,
+      onChanged: setState);
 }

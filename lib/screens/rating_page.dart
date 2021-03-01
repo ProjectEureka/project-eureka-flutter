@@ -28,8 +28,6 @@ class _RatingPageState extends State<RatingPage> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(20))),
-            //height: MediaQuery.of(context).size.height - 250.0,
-            //width: MediaQuery.of(context).size.width - 30.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
