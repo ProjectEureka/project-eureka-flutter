@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/shared_preferences_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsGeneral extends StatefulWidget {
   @override
@@ -46,10 +46,9 @@ class _SettingsGeneral extends State<SettingsGeneral> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("General Settings"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
+      appBar: EurekaAppBar(
+        title: 'General Settings',
+        appBar: AppBar(),
       ),
       body: Column(
         children: [
