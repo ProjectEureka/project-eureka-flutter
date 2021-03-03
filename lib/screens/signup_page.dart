@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:project_eureka_flutter/screens/root_page.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
 
@@ -41,7 +42,7 @@ class _SignupPageState extends State<SignupPage> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return LoginPage();
+                return RootPage();
               },
             ),
           );
@@ -125,7 +126,7 @@ class _SignupPageState extends State<SignupPage> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return LoginPage();
+              return RootPage();
             },
           ),
         );

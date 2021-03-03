@@ -63,11 +63,12 @@ class _LoginPageState extends State<LoginPage> {
       _googleAuth.signInWithGoogle().then(
         (result) {
           if (result != null) {
-            Navigator.push(
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (context) => Home(),
               ),
+              (Route<void> route) => false,
             );
           }
         },
@@ -86,11 +87,12 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await _emailAuth.signIn(email, password);
 
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           builder: (context) => Home(),
         ),
+        (Route<void> route) => false,
       );
       setState(() {
         showSpinner = false;

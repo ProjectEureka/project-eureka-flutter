@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:project_eureka_flutter/screens/login_page.dart';
+import 'package:project_eureka_flutter/screens/root_page.dart';
+import 'package:project_eureka_flutter/services/shared_preferences_helper.dart';
 
 class Onboarding extends StatefulWidget {
   @override
@@ -15,7 +16,6 @@ class _OnboardingState extends State<Onboarding> {
           title: 'Welcome to Eureka!',
           body:
               'Eureka is a platform for peers to help each other by answering questions \n\n Everyone can help and even get paid for help!',
-          footer: Text(''),
           decoration: const PageDecoration(
               //pageColor: Color(0xfffdfafc),
               )),
@@ -26,7 +26,6 @@ class _OnboardingState extends State<Onboarding> {
           body:
               'Eureka allows posting questions as on any regular forum, BUT also gives you an option of posting questions with an incentive \n\n'
               'Need answer ASAP? \n\n Try adding incentive to your question \n Paid questions get answers a lot faster!',
-          footer: Text(''),
           decoration: const PageDecoration(
               //pageColor: Color(0xffB9AEFB),
               )),
@@ -39,7 +38,6 @@ class _OnboardingState extends State<Onboarding> {
         decoration: const PageDecoration(
             //pageColor: Color(0xfffdfafc),
             ),
-        footer: Text(''),
       ),
       //-----------------------------------------------------------Privacy
       PageViewModel(
@@ -50,7 +48,6 @@ class _OnboardingState extends State<Onboarding> {
         decoration: const PageDecoration(
             //pageColor: Color(0xfffdfafc),
             ),
-        footer: Text(''),
       ),
       //-----------------------------------------------------------Categories
       PageViewModel(
@@ -61,7 +58,6 @@ class _OnboardingState extends State<Onboarding> {
         decoration: const PageDecoration(
           pageColor: Color(0xfffdfafc),
         ),
-        footer: Text(''),
       ),
       //-----------------------------------------------------------All set
       PageViewModel(
@@ -72,7 +68,6 @@ class _OnboardingState extends State<Onboarding> {
         decoration: const PageDecoration(
           pageColor: Color(0xff6DB8FF),
         ),
-        footer: Text(''),
       ),
     ];
   }
@@ -87,9 +82,19 @@ class _OnboardingState extends State<Onboarding> {
         showSkipButton: true,
         skip: Text('Skip'),
         done: Text('Got it'),
+        dotsDecorator: DotsDecorator(
+          size: const Size.square(10.0),
+          activeSize: const Size(20.0, 10.0),
+          color: Colors.black26,
+          spacing: const EdgeInsets.symmetric(horizontal: 3.0),
+          activeShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+        ),
         onDone: () {
+          SharedPreferencesHelper().setInitScreen(1);
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginPage()));
+              context, MaterialPageRoute(builder: (context) => RootPage()));
         },
       ),
     );
