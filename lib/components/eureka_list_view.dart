@@ -1,5 +1,6 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 
 /// Function to return List of Questions and category filter. Called from 'body'.
 class EurekaListView extends StatefulWidget {
@@ -121,7 +122,10 @@ class _EurekaListViewState extends State<EurekaListView> {
         FlatButton(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onPressed: () {
-            // Question page redirection here
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MoreDetails()),
+            );
           },
           child: Text(
             "More Details",
