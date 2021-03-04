@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project_eureka_flutter/screens/account_settings_screens/account_settings_delete.dart';
-import 'package:project_eureka_flutter/screens/account_settings_screens/account_settings_email.dart';
-import 'package:project_eureka_flutter/screens/account_settings_screens/account_settings_password.dart';
+import 'package:project_eureka_flutter/screens/settings/account/account_settings_delete.dart';
+import 'package:project_eureka_flutter/screens/settings/account/account_settings_email.dart';
+import 'package:project_eureka_flutter/screens/settings/account/account_settings_password.dart';
 
 class SettingsAccount extends StatelessWidget {
   @override

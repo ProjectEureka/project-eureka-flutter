@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                 if (value.isEmpty) {
                   showSpinner = false;
                   return 'Password Needed';
-                } else if (_passwordValid.hasMatch(value)) {
+                } else if (!_passwordValid.hasMatch(value)) {
                   showSpinner = false;
                   return 'Invalid input';
                 }

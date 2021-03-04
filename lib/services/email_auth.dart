@@ -44,8 +44,12 @@ class EmailAuth {
     await user.updateEmail(email);
   }
 
-  Future<void> updatePassword(String password) async {
+  Future<void> updatePassword(
+      String currentPassword, String newPassword) async {
     User user = _auth.currentUser;
-    await user.updatePassword(password);
+    EmailAuthCredential credentials = EmailAuthProvider.credential(
+        email: user.email, password: currentPassword);
+    await user.reauthenticateWithCredential(credentials);
+    await user.updatePassword(newPassword);
   }
 }

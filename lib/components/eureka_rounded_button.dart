@@ -6,13 +6,16 @@ import 'package:flutter/material.dart';
 class EurekaRoundedButton extends StatefulWidget {
   final Function onPressed;
   final String buttonText;
+  final Color buttonColor;
+  final Color textColor;
 
   /// Users will need to pass in values for the onPressed interation and
   /// what the text for this button will be.
-  EurekaRoundedButton({
-    @required this.onPressed,
-    @required this.buttonText,
-  });
+  EurekaRoundedButton(
+      {@required this.onPressed,
+      @required this.buttonText,
+      this.buttonColor,
+      this.textColor});
 
   @override
   _EurekaRoundedButtonState createState() => _EurekaRoundedButtonState();
@@ -27,7 +30,8 @@ class _EurekaRoundedButtonState extends State<EurekaRoundedButton> {
       padding: EdgeInsets.all(20.0),
       child: FlatButton(
         onPressed: widget.onPressed,
-        color: Color(0xFF00ADB5),
+        color:
+            widget.buttonColor == null ? Color(0xFF00ADB5) : widget.buttonColor,
         minWidth: MediaQuery.of(context).size.width - 50.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -37,7 +41,7 @@ class _EurekaRoundedButtonState extends State<EurekaRoundedButton> {
           child: Text(
             widget.buttonText,
             style: TextStyle(
-              color: Colors.white,
+              color: widget.textColor == null ? Colors.white : widget.textColor,
               fontSize: 25.0,
             ),
           ),
