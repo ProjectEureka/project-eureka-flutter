@@ -25,7 +25,26 @@ class _AccountSettingsPasswordState extends State<AccountSettingsPassword> {
 
   Future<void> updateUserPassword(context) async {
     await _emailAuth.updatePassword(currentPassword, newPassword);
-    showDialog(
+    _showDialog(context);
+  }
+
+  Future<void> _validateAndSubmit(context) async {
+    _formKey.currentState.save();
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    try {
+      await updateUserPassword(context);
+    } catch (e) {
+      setState(() {
+        exception = _exceptionHandler.getExceptionText(e);
+        print(exception);
+      });
+    }
+  }
+
+  Future<dynamic> _showDialog(context) {
+    return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -49,21 +68,6 @@ class _AccountSettingsPasswordState extends State<AccountSettingsPassword> {
         );
       },
     );
-  }
-
-  Future<void> _validateAndSubmit(context) async {
-    _formKey.currentState.save();
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
-    try {
-      await updateUserPassword(context);
-    } catch (e) {
-      setState(() {
-        exception = _exceptionHandler.getExceptionText(e);
-        print(exception);
-      });
-    }
   }
 
   Container _passwordTextForm() {
