@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
@@ -33,19 +34,10 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
   String _birthYear;
   DateTime _birthDate;
 
-  TextStyle _appBarTextStyle = TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-  );
-
-  AppBar _profileOnboardingAppBar() {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0.0,
-      centerTitle: true,
-      title: widget.isProfile
-          ? Text("Edit Your Profile", style: _appBarTextStyle)
-          : Text("Create Your Profile", style: _appBarTextStyle),
+  EurekaAppBar _profileOnboardingAppBar() {
+    return EurekaAppBar(
+      title: widget.isProfile ? 'Edit Your Profile' : 'Create Your Profile',
+      appBar: AppBar(),
       actions: [
         widget.isProfile
             ? IconButton(

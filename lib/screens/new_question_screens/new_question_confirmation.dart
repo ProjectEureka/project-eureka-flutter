@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
+import 'package:project_eureka_flutter/screens/rating_page.dart';
 
 import '../home_page.dart';
 
@@ -78,9 +80,9 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("New Question"),
-        backgroundColor: Colors.blueGrey[800],
+      appBar: EurekaAppBar(
+        title: 'New Question',
+        appBar: AppBar(),
       ),
       body: _questionConfirmationBody(),
       bottomNavigationBar: EurekaRoundedButton(
@@ -88,7 +90,7 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Home(),
+            builder: (context) => RatingPage(), // Return to Home() when done
           ),
         ),
       ),

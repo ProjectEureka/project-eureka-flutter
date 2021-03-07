@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
@@ -138,11 +139,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Container(
           height: 300.0,
         ),
-        AppBar(
-          centerTitle: true,
-          toolbarHeight: 140.0,
-          backgroundColor: Colors.blueGrey[800],
-          title: Text("Profile"),
+        EurekaAppBar(
+          title: 'Profile',
+          appBar: AppBar(),
         ),
         _profileNameAndIcon(),
         _editButtonAndRating(),
