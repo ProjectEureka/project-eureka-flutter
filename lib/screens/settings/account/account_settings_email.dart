@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
@@ -62,10 +63,9 @@ class _AccountSettingsEmailState extends State<AccountSettingsEmail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Update Email"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
+      appBar: EurekaAppBar(
+        title: 'Update Email',
+        appBar: AppBar(),
       ),
       body: _emailTextForm(),
       bottomNavigationBar: BottomAppBar(

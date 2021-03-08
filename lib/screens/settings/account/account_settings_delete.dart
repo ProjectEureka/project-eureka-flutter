@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/screens/login_page.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
@@ -114,10 +115,9 @@ class AccountSettingsDelete extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Delete Your Account"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
+      appBar: EurekaAppBar(
+        title: "Delete Your Account",
+        appBar: AppBar(),
       ),
       body: _deleteAccountInfo(),
       bottomNavigationBar: _deleteAccountButton(context),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/screens/settings/account/account_settings_delete.dart';
 import 'package:project_eureka_flutter/screens/settings/account/account_settings_email.dart';
 import 'package:project_eureka_flutter/screens/settings/account/account_settings_password.dart';
@@ -8,10 +9,9 @@ class SettingsAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Edit Account"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
+      appBar: EurekaAppBar(
+        title: 'Edit Account',
+        appBar: AppBar(),
       ),
       body: Container(
         padding: EdgeInsets.only(left: 10, top: 3, right: 10),

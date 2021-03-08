@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
@@ -79,7 +80,7 @@ class _AccountSettingsPasswordState extends State<AccountSettingsPassword> {
           child: Column(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
                 child: Text(
                   'What would you like to change your current password to? ',
                   style: TextStyle(
@@ -148,10 +149,9 @@ class _AccountSettingsPasswordState extends State<AccountSettingsPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Update Password"),
-        toolbarHeight: 100,
-        backgroundColor: Color(0xFF37474F),
+      appBar: EurekaAppBar(
+        title: "Update Password",
+        appBar: AppBar(),
       ),
       body: _passwordTextForm(),
       bottomNavigationBar: _updatePasswordButton(context),
