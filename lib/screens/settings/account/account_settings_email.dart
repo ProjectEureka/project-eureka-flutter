@@ -36,7 +36,6 @@ class _AccountSettingsEmailState extends State<AccountSettingsEmail> {
         child: Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
                   padding: EdgeInsets.all(20.0),
@@ -49,6 +48,8 @@ class _AccountSettingsEmailState extends State<AccountSettingsEmail> {
                     textAlign: TextAlign.center,
                   )),
               EurekaTextFormField(
+                keyboardType: TextInputType.emailAddress,
+                textCapitalization: TextCapitalization.none,
                 labelText: "Email",
                 errValidatorMsg: "Email required.",
                 regExp: _regExp,
@@ -63,28 +64,38 @@ class _AccountSettingsEmailState extends State<AccountSettingsEmail> {
 
   Future<dynamic> _showDialog(context) {
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Email Changed"),
-            content: Text("You can now sign in with your new email."),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Done",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Color(0xFF00ADB5),
-                  ),
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Email Changed"),
+          content: Text("You can now sign in with your new email."),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Done",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFF00ADB5),
                 ),
               ),
-            ],
-          );
-        });
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Container _updateEmailButton(context) {
+    return Container(
+      child: EurekaRoundedButton(
+        buttonText: "Change email",
+        onPressed: () => _validateAndSubmit(context),
+      ),
+    );
   }
 
   @override
@@ -95,14 +106,7 @@ class _AccountSettingsEmailState extends State<AccountSettingsEmail> {
         appBar: AppBar(),
       ),
       body: _emailTextForm(),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
-        elevation: 0,
-        child: EurekaRoundedButton(
-          onPressed: () => _validateAndSubmit(context),
-          buttonText: 'Done',
-        ),
-      ),
+      bottomNavigationBar: _updateEmailButton(context),
     );
   }
 }

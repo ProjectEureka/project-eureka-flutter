@@ -102,6 +102,7 @@ class _AccountSettingsPasswordState extends State<AccountSettingsPassword> {
               ),
               SizedBox(height: 7),
               EurekaTextFormField(
+                textCapitalization: TextCapitalization.none,
                 obscureText: true,
                 labelText: "Current password",
                 errValidatorMsg: "Password required.",
@@ -109,6 +110,7 @@ class _AccountSettingsPasswordState extends State<AccountSettingsPassword> {
                 onSaved: (value) => currentPassword = value.trim(),
               ),
               EurekaTextFormField(
+                textCapitalization: TextCapitalization.none,
                 obscureText: true,
                 labelText: "New Password",
                 errValidatorMsg: "Password required.",
@@ -116,6 +118,7 @@ class _AccountSettingsPasswordState extends State<AccountSettingsPassword> {
                 onSaved: (value) => newPassword = value.trim(),
               ),
               TextFormField(
+                textCapitalization: TextCapitalization.none,
                 obscureText: true,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
