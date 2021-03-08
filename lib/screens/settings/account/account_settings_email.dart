@@ -16,8 +16,9 @@ class _AccountSettingsEmailState extends State<AccountSettingsEmail> {
   static final RegExp _regExp = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
-  void updateUserEmail(context) {
-    _emailAuth.updateEmail(email).then((_) => Navigator.pop(context));
+  void updateUserEmail(context) async {
+    await _emailAuth.updateEmail(email);
+    _showDialog(context);
   }
 
   void _validateAndSubmit(context) {
@@ -58,6 +59,32 @@ class _AccountSettingsEmailState extends State<AccountSettingsEmail> {
         ),
       ),
     );
+  }
+
+  Future<dynamic> _showDialog(context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Email Changed"),
+            content: Text("You can now sign in with your new email."),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Done",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Color(0xFF00ADB5),
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   @override
