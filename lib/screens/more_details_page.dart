@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
-import 'package:project_eureka_flutter/components/side_menu.dart';
+
+import 'package:project_eureka_flutter/screens/home_page.dart';
 
 class MoreDetails extends StatefulWidget {
   @override
@@ -9,7 +11,6 @@ class MoreDetails extends StatefulWidget {
 }
 
 class _MoreDetailsState extends State<MoreDetails> {
-  String questionsDetails; // variable for question text
   String id; // user id
 
   @override
@@ -20,70 +21,64 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   void initGetQuestionDetails(String id) {}
 
-  Stack _headerStack() {
-    return Stack(
+  Column _headerStack() {
+    return Column(
       children: [
         Container(
-          height: 300.0,
-        ),
-        EurekaAppBar(
-          title: 'Question Details',
-          appBar: AppBar(),
+          height: 0,
         ),
         _profileNameAndIcon(),
         _answerQuestion(),
-        //_questionField(),
       ],
     );
   }
 
-  Positioned _profileNameAndIcon() {
-    return Positioned(
-      top: 140.0,
-      left: 15.0,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 55.0,
-            backgroundColor: Colors.white,
-            child: CircleAvatar(
-              radius: 50.0,
-              backgroundImage: AssetImage('assets/images/dn.jpg'),
+  Row _profileNameAndIcon() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircleAvatar(
+          radius: 55.0,
+          backgroundColor: Colors.grey[300],
+          child: CircleAvatar(
+            radius: 40.0,
+            backgroundImage: AssetImage('assets/images/dn.jpg'),
+          ),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Question Title here",
+              style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.left,
             ),
-          ),
-          Text(
-            "Mr Pickles",
-            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.right,
-          ),
-          Text(
-            "tonynguyen0925@gmail.com",
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontSize: 15.0,
+            Text(
+              "Technology - Computer Hardware",
+              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w300),
+              textAlign: TextAlign.left,
             ),
-          ),
-        ],
-      ),
+            Text(
+              "Asked : 2 days ago",
+              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.left,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
-  Positioned _answerQuestion() {
-    return Positioned(
-      top: 200.0,
-      right: 15.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          // add if else statement here : if username logged in matches username of question creator -> _questionArchiveButton() else call _answerQuestionButton()
-          _answerQuestionButton(),
-          SizedBox(
-            height: 15.0,
-          ),
-        ],
-      ),
+  Column _answerQuestion() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // add if else statement here : if username logged in matches username of question creator -> _questionArchiveButton() else call _answerQuestionButton()
+        SizedBox(
+          height: 15.0,
+        ),
+      ],
     );
   }
 
@@ -96,8 +91,7 @@ class _MoreDetailsState extends State<MoreDetails> {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => MoreDetails()), // accept question
+          MaterialPageRoute(builder: (context) => Home()), // accept question
         );
       },
       child: Container(
@@ -108,6 +102,8 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
+  // this button is not visible now. When we connect this page to database,
+  // we will check if user is creator of question, and user IS -> they will be shown "Archive question" button
   FlatButton _questionArchiveButton() {
     return FlatButton(
       color: Color(0xFF00ADB5),
@@ -117,8 +113,7 @@ class _MoreDetailsState extends State<MoreDetails> {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => MoreDetails()), //archive question
+          MaterialPageRoute(builder: (context) => Home()), //archive question
         );
       },
       child: Container(
@@ -129,52 +124,68 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
-  Column _questionFieldViewer() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-          child: Text('Is this a question title???',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, height: 5, fontSize: 15)),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+  Container _questionFieldViewer() {
+    return Container(
+      padding: const EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 10),
+      height: MediaQuery.of(context).size.height - 440,
+      child: SingleChildScrollView(
           child: Text(
-              'We move under cover and we move as one'
-              'Through the night, we have one shot to live another day'
-              'We cannot let a stray gunshot give us away'
-              'We will fight up close, seize the moment and stay in it'
-              'It’s either that or meet the business end of a bayonet'
-              'The code word is ‘Rochambeau,’ dig me?',
-              style: TextStyle()),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-          child: Text('Media attached: ',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, height: 5, fontSize: 15)),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-          child: Text('image_1.jpg',
-              style: TextStyle(
-                  fontSize: 12, decoration: TextDecoration.underline)),
-        )
-      ],
+              "Long text here which is longer than the container heightLong text"
+              " here which is longer than the container heightLong text here"
+              " which is longer than the container heightLong text here which"
+              " is longer than the container heightLong text here which is "
+              "longer than the container heightLong text here which is longer"
+              " than the container heightLong text here which is longer than "
+              "the container heightLong text here which is longer than the contained"
+              " heightLong text here which is longer than the container height"
+              "Long text here which is longer than the container heightLong text"
+              " here which is longer than the container heightLong text here"
+              " which is longer than the container heightLong text here which"
+              " is longer than the container heightLong text here which is "
+              "longer than the container heightLong text here which is longer"
+              " than the container heightLong text here which is longer than "
+              "the container heightLong text here which is longer than the container"
+              " heightLong text here which is longer than the container height")),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideMenu(),
+      appBar: EurekaAppBar(
+        title: 'Question Details',
+        appBar: AppBar(),
+      ),
       body: Column(
         children: [
-          _headerStack(),
-          _questionFieldViewer(),
+          Container(
+            margin: EdgeInsets.all(20),
+            padding: EdgeInsets.only(left: 3, top: 0, right: 3, bottom: 5),
+            alignment: Alignment.topLeft,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.all(
+                Radius.circular(20.0),
+              ),
+            ),
+            child: Column(
+              children: [
+                _headerStack(),
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        _questionFieldViewer(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _answerQuestionButton(),
         ],
       ),
     );
