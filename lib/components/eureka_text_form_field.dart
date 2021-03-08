@@ -13,6 +13,11 @@ class EurekaTextFormField extends StatefulWidget {
   final RegExp regExp;
   final Function onSaved;
   final String initialValue;
+  final bool obscureText;
+  final bool customValidator;
+  final String validatorCheck;
+  final String regexValidatorMessage;
+  final String customValidatorMessage;
 
   /// labelText, errValidatorMsg, validator RegEx, and onSaved functions are
   /// all required. textCapitalization, keyboardType, textInputAction, and
@@ -25,9 +30,14 @@ class EurekaTextFormField extends StatefulWidget {
       this.textInputAction,
       this.maxLines,
       @required this.errValidatorMsg,
-      @required this.regExp,
+      this.regExp,
       @required this.onSaved,
-      this.initialValue});
+      this.initialValue,
+      this.obscureText,
+      this.customValidator,
+      this.validatorCheck,
+      this.regexValidatorMessage,
+      this.customValidatorMessage});
 
   @override
   _EurekaTextFormFieldState createState() => _EurekaTextFormFieldState();
@@ -55,7 +65,13 @@ class _EurekaTextFormFieldState extends State<EurekaTextFormField> {
             if (value.isEmpty) {
               return widget.errValidatorMsg;
             } else if (!widget.regExp.hasMatch(value)) {
-              return 'Invalid input.';
+              return widget.regexValidatorMessage == null
+                  ? 'Invalid input.'
+                  : widget.regexValidatorMessage;
+            } else if (widget.customValidator == null
+                ? false
+                : (value != widget.validatorCheck)) {
+              return widget.customValidatorMessage;
             }
             return null;
           },
@@ -66,6 +82,7 @@ class _EurekaTextFormFieldState extends State<EurekaTextFormField> {
           onSaved: widget.onSaved,
           initialValue:
               widget.initialValue == null ? null : widget.initialValue,
+          obscureText: widget.obscureText == null ? false : widget.obscureText,
         ),
         SizedBox(
           height: 20.0,

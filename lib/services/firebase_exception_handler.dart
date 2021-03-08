@@ -4,10 +4,10 @@ class FirebaseExceptionHandler {
   String getExceptionText(e) {
     switch (e.message) {
       case 'There is no user record corresponding to this identifier. The user may have been deleted.':
-        return 'Email/Password not found.';
+        return 'Your email or password was not found.';
         break;
       case 'The password is invalid or the user does not have a password.':
-        return 'Invalid Email/Password.';
+        return 'The password you entered is invalid.';
         break;
       case 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.':
         return 'Network error.';
