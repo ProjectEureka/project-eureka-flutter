@@ -4,6 +4,7 @@ import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/screens/settings_screen.dart';
+import 'package:project_eureka_flutter/screens/test_CRUD.dart';
 
 class SideMenu extends StatelessWidget {
   final String title;
@@ -44,6 +45,13 @@ class SideMenu extends StatelessWidget {
         Icons.settings,
       ),
       Divider(color: Colors.grey.shade400, height: 1.0),
+          sideMenuListTile(
+            context,
+            'Test CRUD',
+            TestSpring(),
+            Icons.info,
+          ),
+          Divider(color: Colors.grey.shade400, height: 1.0),
     ]));
   }
 }
