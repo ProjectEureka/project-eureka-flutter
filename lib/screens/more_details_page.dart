@@ -64,6 +64,36 @@ class _MoreDetailsState extends State<MoreDetails> {
               style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.left,
             ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 0, top: 30, right: 0, bottom: 0),
+              child: RichText(
+                text: TextSpan(
+                    // set the default style for the children TextSpans
+                    style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: 'Attached media: ',
+                      ),
+                      TextSpan(
+                          text: 'Image1',
+                          style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline)),
+                      TextSpan(
+                        text: '  ',
+                      ),
+                      TextSpan(
+                          text: 'Image2',
+                          style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline)),
+                    ]),
+              ),
+            ),
           ],
         ),
       ],
@@ -127,7 +157,7 @@ class _MoreDetailsState extends State<MoreDetails> {
   Container _questionFieldViewer() {
     return Container(
       padding: const EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 10),
-      height: MediaQuery.of(context).size.height - 440,
+      height: MediaQuery.of(context).size.height - 405,
       child: SingleChildScrollView(
           child: Text(
               "Long text here which is longer than the container heightLong text"
