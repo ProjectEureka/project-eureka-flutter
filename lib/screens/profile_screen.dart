@@ -177,6 +177,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // NOTE: This is a demo. It lists user's questions, not the answers. Requires to create an answer model
   Column _answersList() {
     return _toggleSwtichListBuilder(
       answersList.length,
