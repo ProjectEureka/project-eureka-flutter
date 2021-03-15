@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class AllQuestionService {
 
   // GET
-  Future<List<QuestionModel>> fetchQuestion() async {
+  Future<List<QuestionModel>> getQuestions() async {
     final response = await http.get(Uri.http('IP ADDRESS', '/v1/questions'));
 
     if (response.statusCode == 200) {

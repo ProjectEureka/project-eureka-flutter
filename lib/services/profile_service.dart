@@ -6,9 +6,9 @@ import 'package:http/http.dart' as http;
 class ProfileService {
 
   // GET
-  Future<List<QuestionModel>> fetchProfileQuestion() async {
+  Future<List<QuestionModel>> getProfileQuestions() async {
     // profile id will be changed to the current user id associated with firebase id
-    final response = await http.get(Uri.http('IP ADDRESS', '/v1/profile/SOME USER ID'));
+    final response = await http.get(Uri.http('IP ADDRESS', '/v1/profile/604597560441df1e551d9605'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.

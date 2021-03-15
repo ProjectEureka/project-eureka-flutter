@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
   }
 
   void initGetQuestions() {
-    AllQuestionService().fetchQuestion().then((payload) {
+    AllQuestionService().getQuestions().then((payload) {
       setState(() {
         data = questionsListFiltered = questionsListFilteredSearch =
             questionsListFilteredCategory = payload;
