@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
 
@@ -10,7 +11,11 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home>  {
+
+
+  List<QuestionModel> futureLastQuestion;
+
   // Questions data. Unfiltered list of questions
   List data = [];
   // Will filter the list of questions
@@ -34,14 +39,13 @@ class _HomeState extends State<Home> {
   }
 
   void initGetQuestions() {
-    AllQuestionService().getQuestions().then(
-      (payload) {
-        setState(() {
-          data = questionsListFiltered = questionsListFilteredSearch =
-              questionsListFilteredCategory = payload;
-        });
-      },
-    );
+
+    AllQuestionService().fetchQuestion().then((payload) {
+      setState(() {
+        data = questionsListFiltered = questionsListFilteredSearch =
+            questionsListFilteredCategory = payload;
+      });
+    });
   }
 
   // Called from widget (class) category filter
@@ -184,9 +188,8 @@ class _HomeState extends State<Home> {
         'All Categories',
         'Technology',
         'Household',
-        'Category 3',
-        'Category 4',
-        'Category 5'
+        'Lifestyle',
+        'Academic'
       ].map<DropdownMenuItem<String>>(
         (String value) {
           return DropdownMenuItem<String>(

@@ -37,6 +37,8 @@ dependencies:
   toggle_switch: ^0.1.8
   introduction_screen: ^1.0.9
   shared_preferences: ^0.5.12+4
+  http: ^0.12.2
+  timeago: ^2.0.30
 
 dev_dependencies:
   flutter_test:
