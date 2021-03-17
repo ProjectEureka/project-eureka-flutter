@@ -9,6 +9,7 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotpasswordState extends State<ForgotPassword> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   EmailAuth _emailAuth = new EmailAuth();
   FirebaseExceptionHandler _firebaseExceptionHandler =
       new FirebaseExceptionHandler();
@@ -16,15 +17,11 @@ class _ForgotpasswordState extends State<ForgotPassword> {
   String _email;
   String _exception = "";
 
-  void submit() async {
+  Future<void> _submit(context) async {
+    _formKey.currentState.save();
     try {
       await _emailAuth.forgotPassword(_email);
-
-      SnackBar(
-        content: const Text('request sent'),
-      );
-
-      Navigator.of(context).pop();
+      _showDialog(context);
     } catch (e) {
       setState(() {
         _exception = _firebaseExceptionHandler.getExceptionText(e);
@@ -32,29 +29,41 @@ class _ForgotpasswordState extends State<ForgotPassword> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: EurekaAppBar(
-        title: 'Reset Password',
-        appBar: AppBar(),
-      ),
-      body: Container(
-        color: Colors.lightBlueAccent[100],
+  Container _emailField() {
+    return Container(
+      child: Form(
+        key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(bottom: 20.0),
+              child: Text(
+                "If you've lost your password or wish to reset it, enter your email address and we'll send you instructions to create a new password.",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: 'Email',
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Color(0xF6F6F6F6),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[300]),
+                ),
+                prefixIcon: Icon(Icons.email),
+                labelText: 'Email',
               ),
-              onChanged: (value) {
+              onSaved: (value) {
                 setState(() {
                   _email = value.trim();
                 });
               },
             ),
+            SizedBox(height: 10.0),
             Visibility(
               visible: _exception == "" ? false : true,
               child: Text(
@@ -62,15 +71,81 @@ class _ForgotpasswordState extends State<ForgotPassword> {
                 style: TextStyle(color: Colors.red),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () => submit(),
-                child: Text('Send Request'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container _sendRequestButton(context) {
+    return Container(
+      width: 370.0,
+      height: 45.0,
+      child: RaisedButton(
+        color: Color(0xFF00ADB5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        onPressed: () => _submit(context),
+        child: Text(
+          'Reset My Password',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> _showDialog(context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Request Sent"),
+          content: Text(
+              "Head over to your email and follow the instructions provided to reset your password."),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Done",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFF00ADB5),
+                ),
               ),
             ),
           ],
-        ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: EurekaAppBar(
+        title: "Reset Password",
+        appBar: AppBar(),
+      ),
+      body: Column(
+        children: <Widget>[
+          SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+            child: Column(
+              children: <Widget>[
+                _emailField(),
+                SizedBox(height: 260.0),
+                _sendRequestButton(context),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
