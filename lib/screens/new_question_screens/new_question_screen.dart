@@ -81,12 +81,12 @@ class NewQuestionScreen extends StatelessWidget {
           <Widget>[
             categoryButton(
               context,
-              'household.png',
+              'home.png',
               "Household",
             ),
             categoryButton(
               context,
-              'technology.png',
+              'tech.png',
               "Technology",
             ),
           ],

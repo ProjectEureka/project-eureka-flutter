@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/styles/styles.dart';
 
 /*This is a custom made AppBar made specifically for Project
  Eureka. Please use this Widget when implementing an appbar in our pages, so
@@ -20,7 +21,8 @@ class EurekaAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: title is String ? Text(title) : title, //Text(title),
-      backgroundColor: Color(0xFF37474F),
+      //backgroundColor: Theme.of(context).backgroundColor,
+      //backgroundColor: Color(0xFF37474F),
       centerTitle: true,
       toolbarHeight: toolbarHeight,
       actions: actions == null ? null : actions,
