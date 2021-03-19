@@ -1,5 +1,5 @@
 class QuestionModel {
-  final int id;
+  final String id;
   final String title;
   final DateTime date;
   final String description;
