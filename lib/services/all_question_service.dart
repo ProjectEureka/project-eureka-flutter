@@ -1,4 +1,5 @@
 import 'package:project_eureka_flutter/models/question_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,10 @@ class AllQuestionService {
 
   // GET
   Future<List<QuestionModel>> getQuestions() async {
-    final response = await http.get(Uri.http('IP ADDRESS', '/v1/questions'));
+
+    await DotEnv.load();
+
+    final response = await http.get(Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/questions'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
