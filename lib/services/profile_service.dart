@@ -1,4 +1,5 @@
 import 'package:project_eureka_flutter/models/question_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -8,7 +9,9 @@ class ProfileService {
   // GET
   Future<List<QuestionModel>> getProfileQuestions() async {
     // profile id will be changed to the current user id associated with firebase id
-    final response = await http.get(Uri.http('IP ADDRESS', '/v1/profile/604597560441df1e551d9605'));
+    await DotEnv.load();
+
+    final response = await http.get(Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/profile/604597560441df1e551d9605'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
