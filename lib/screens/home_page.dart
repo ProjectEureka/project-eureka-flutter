@@ -35,6 +35,8 @@ class _HomeState extends State<Home> {
 
   Future<void> _getData() async {
     setState(() {
+      selectedCategory = "All Categories";
+      isSearching = false;
       initGetQuestions();
     });
   }
