@@ -47,17 +47,10 @@ class _EurekaCameraFormState extends State<EurekaCameraForm> {
   /// the image (camera or gallery)
   Future<void> _getImage(ImageSource source) async {
     try {
-      await Permission.photos.request();
-      PermissionStatus galleyPermissionStatus = await Permission.photos.status;
-      PermissionStatus cameraPermissionStatus = await Permission.camera.status;
-
-      if (galleyPermissionStatus.isGranted &&
-          cameraPermissionStatus.isGranted) {
-        _image = await widget.picker.getImage(
-          source: source,
-          imageQuality: 25,
-        );
-      }
+      _image = await widget.picker.getImage(
+        source: source,
+        imageQuality: 25,
+      );
     } catch (e) {
       print(e);
     }
