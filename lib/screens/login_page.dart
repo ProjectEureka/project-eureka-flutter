@@ -292,64 +292,52 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _spinner() {
-    return ModalProgressHUD(
-      inAsyncCall: showSpinner,
-      color: Colors.white,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: Stack(
           children: <Widget>[
-            _loginTextForm(context),
-            Visibility(
-              visible: exception == "" ? false : true,
-              child: Text(
-                exception,
-                style: TextStyle(
-                  color: Colors.red,
-                ),
+            SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: 25,
+                vertical: 120,
+              ),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'Sign In',
+                    style: TextStyle(
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 40.0),
+                  _loginTextForm(context),
+                  SizedBox(height: 10.0),
+                  Visibility(
+                    visible: exception == "" ? false : true,
+                    child: Text(
+                      exception,
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                  _forgotPasswordButton(context),
+                  SizedBox(height: 20.0),
+                  _loginButton(context),
+                  _signUpButton(context),
+                  SizedBox(height: 20.0),
+                  _orLoginWith(),
+                  SizedBox(height: 10.0),
+                  _googleSignInButton(context),
+                ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 25,
-              vertical: 120,
-            ),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  'Sign In',
-                  style: TextStyle(
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 40.0),
-                _loginTextForm(context),
-                _spinner(),
-                _forgotPasswordButton(context),
-                SizedBox(height: 20.0),
-                _loginButton(context),
-                _signUpButton(context),
-                SizedBox(height: 20.0),
-                _orLoginWith(),
-                SizedBox(height: 10.0),
-                _googleSignInButton(context),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

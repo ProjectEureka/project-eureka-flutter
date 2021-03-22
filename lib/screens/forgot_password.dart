@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
+import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
+
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
 
@@ -31,12 +33,12 @@ class _ForgotpasswordState extends State<ForgotPassword> {
 
   Container _emailField() {
     return Container(
+      padding: EdgeInsets.all(20.0),
       child: Form(
         key: _formKey,
         child: Column(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(bottom: 20.0),
               child: Text(
                 "If you've lost your password or wish to reset it, enter your email address and we'll send you instructions to create a new password.",
                 style: TextStyle(
@@ -46,13 +48,14 @@ class _ForgotpasswordState extends State<ForgotPassword> {
                 textAlign: TextAlign.center,
               ),
             ),
+            SizedBox(height: 10.0),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Color(0xF6F6F6F6),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[300]),
+                  borderSide: BorderSide(color: Colors.grey[200]),
                 ),
                 prefixIcon: Icon(Icons.email),
                 labelText: 'Email',
@@ -79,21 +82,9 @@ class _ForgotpasswordState extends State<ForgotPassword> {
 
   Container _sendRequestButton(context) {
     return Container(
-      width: 370.0,
-      height: 45.0,
-      child: RaisedButton(
-        color: Color(0xFF00ADB5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
+      child: EurekaRoundedButton(
+        buttonText: "Reset My Password",
         onPressed: () => _submit(context),
-        child: Text(
-          'Reset My Password',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20.0,
-          ),
-        ),
       ),
     );
   }
@@ -133,20 +124,8 @@ class _ForgotpasswordState extends State<ForgotPassword> {
         title: "Reset Password",
         appBar: AppBar(),
       ),
-      body: Column(
-        children: <Widget>[
-          SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-            child: Column(
-              children: <Widget>[
-                _emailField(),
-                SizedBox(height: 260.0),
-                _sendRequestButton(context),
-              ],
-            ),
-          ),
-        ],
-      ),
+      body: _emailField(),
+      bottomNavigationBar: _sendRequestButton(context),
     );
   }
 }

@@ -117,6 +117,8 @@ class _SignupPageState extends State<SignupPage> {
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Password required.';
+                } else if (!_passwordValid.hasMatch(value)) {
+                  return 'Please enter a valid password.';
                 }
                 _password = value;
                 return null;
@@ -178,7 +180,7 @@ class _SignupPageState extends State<SignupPage> {
         Text(
           "Already have an account?",
           style: TextStyle(
-            color: Color(0xFF00ADB5),
+            color: Colors.black,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -186,7 +188,7 @@ class _SignupPageState extends State<SignupPage> {
           child: Text(
             "Sign In",
             style: TextStyle(
-              color: Colors.black,
+              color: Color(0xFF00ADB5),
             ),
           ),
           onPressed: () {
