@@ -54,7 +54,9 @@ class _LoginPageState extends State<LoginPage> {
         },
       );
     } catch (e) {
-      exception = _firebaseExceptionHandler.getExceptionText(e);
+      setState(() {
+        exception = _firebaseExceptionHandler.getExceptionText(e);
+      });
     }
   }
 
@@ -242,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
         Text(
           "Don't have an account?",
           style: TextStyle(
-            color: Color(0xFF00ADB5),
+            color: Colors.black,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -250,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text(
             "Sign up",
             style: TextStyle(
-              color: Colors.black,
+              color: Color(0xFF00ADB5),
             ),
           ),
           onPressed: () async {
@@ -315,7 +317,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   SizedBox(height: 40.0),
                   _loginTextForm(context),
-                  SizedBox(height: 10.0),
                   Visibility(
                     visible: exception == "" ? false : true,
                     child: Text(
@@ -326,7 +327,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   _forgotPasswordButton(context),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 30.0),
                   _loginButton(context),
                   _signUpButton(context),
                   SizedBox(height: 20.0),

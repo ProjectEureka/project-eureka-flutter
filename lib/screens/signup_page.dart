@@ -34,28 +34,29 @@ class _SignupPageState extends State<SignupPage> {
     super.initState();
   }
 
-  void _validateAndSubmit() {
+  Future<void> _validateAndSubmit() async {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
 
     try {
-      _emailAuth.signUp(_userEmail, _password).then((newUser) {
-        if (newUser != null) {
-          Navigator.pop(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return RootPage();
-              },
-            ),
-          );
-        }
-      });
+      String newUser = await _emailAuth.signUp(_userEmail, _password);
+
+      if (newUser != null) {
+        Navigator.pop(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return RootPage();
+            },
+          ),
+        );
+      }
     } catch (e) {
       setState(() {
         exception = _firebaseExceptionHandler.getExceptionText(e);
+        print("exception" + exception);
       });
     }
   }
@@ -89,6 +90,13 @@ class _SignupPageState extends State<SignupPage> {
                 _userEmail = value.trim();
                 return null;
               },
+            ),
+            Visibility(
+              visible: exception == "" ? false : true,
+              child: Text(
+                exception,
+                style: TextStyle(color: Colors.red),
+              ),
             ),
             SizedBox(height: 20.0),
             TextFormField(
@@ -226,13 +234,6 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
                 _form(context),
-                Visibility(
-                  visible: exception == "" ? false : true,
-                  child: Text(
-                    exception,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
                 _backToSignIn(context),
               ],
             ),
