@@ -4,6 +4,7 @@ import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
+import 'package:project_eureka_flutter/services/all_users_service.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  //Made for testing purposes. Used to see if the Users Will Properly show on the home page
+  List userData = [];
   // Questions data. Unfiltered list of questions
   List data = [];
   // Will filter the list of questions
@@ -30,12 +33,14 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     initGetQuestions();
+    initGetUsers();
     super.initState();
   }
 
   Future<void> _getData() async {
     setState(() {
       initGetQuestions();
+      initGetUsers();
     });
   }
 
@@ -45,6 +50,19 @@ class _HomeState extends State<Home> {
         data = questionsListFiltered = questionsListFilteredSearch =
             questionsListFilteredCategory = payload;
       });
+    });
+  }
+
+  //just currently used to grab the users from the backend]
+  Future<void> _getUserData() async {
+    setState(() {
+      initGetUsers();
+    });
+  }
+
+  void initGetUsers() {
+    AllUsersService().getUsers().then((payload) {
+      userData = payload;
     });
   }
 
@@ -81,11 +99,14 @@ class _HomeState extends State<Home> {
           questionsListFilteredCategory
               .where((question) =>
                   question.title.toLowerCase().contains(value.toLowerCase()) |
-                  question.description.toLowerCase().contains(value.toLowerCase()) |
-                  question.category.toLowerCase().contains(value.toLowerCase())
+                          question.description
+                              .toLowerCase()
+                              .contains(value.toLowerCase()) |
+                          question.category
+                              .toLowerCase()
+                              .contains(value.toLowerCase())
                       ? true
-                      : false
-                  )
+                      : false)
               .toList();
     });
   }
