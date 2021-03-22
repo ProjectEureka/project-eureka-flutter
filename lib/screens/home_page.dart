@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/chat_sceen.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
+
+import 'chat_screens/user_chats.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -154,7 +157,14 @@ class _HomeState extends State<Home> {
         // Chat button
         FlatButton(
           textColor: Colors.white,
-          onPressed: () {}, // redirect to Chat page
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatScreen(),
+              ),
+            );
+          }, // redirect to Chat page
           child: Icon(Icons.chat_sharp, color: Colors.cyan),
           shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
         ),
@@ -279,7 +289,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideMenu(),
-      resizeToAvoidBottomPadding:
+      resizeToAvoidBottomInset:
           false, // fixed: "Create New Question" button was moving up while in keyboard mode
       appBar: homeAppBar(),
 

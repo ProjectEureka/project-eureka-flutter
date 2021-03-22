@@ -38,6 +38,7 @@ dependencies:
   toggle_switch: ^0.1.8
   introduction_screen: ^1.0.7
   shared_preferences: ^0.5.12+4
+  cloud_firestore: ^0.14.0
 
 dev_dependencies:
   flutter_test:
