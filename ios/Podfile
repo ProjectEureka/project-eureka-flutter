@@ -34,13 +34,11 @@ target 'Runner' do
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
-post_install do |pi|
-  pi.pods_project.targets.each do |t|
-    t.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
-    end
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+   target.build_configurations.each do |config|
+    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+   end
   end
-end
-
-pod 'Firebase/Auth'
+ end
 pod 'Firebase/Firestore'
