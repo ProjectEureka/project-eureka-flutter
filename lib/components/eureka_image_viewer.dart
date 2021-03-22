@@ -12,7 +12,7 @@ class EurekaImageViewer extends StatelessWidget {
 
   const EurekaImageViewer({
     this.imagePath,
-    this.isUrl,
+    this.isUrl = false,
   });
 
   @override
