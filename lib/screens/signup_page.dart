@@ -125,8 +125,10 @@ class _SignupPageState extends State<SignupPage> {
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Password required.';
+                } else if (value.length < 6) {
+                  return 'Password must be at least 6 characters.';
                 } else if (!_passwordValid.hasMatch(value)) {
-                  return 'Please enter a valid password.';
+                  return 'Must contain a number, special character and uppercase letter.';
                 }
                 _password = value;
                 return null;
