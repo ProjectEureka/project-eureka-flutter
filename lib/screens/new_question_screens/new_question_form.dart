@@ -120,15 +120,15 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
     setState(() {
       _question = new QuestionModel(
         title: _questionTitle,
-        date: _date,
+        questionDate: _date.toIso8601String(), // format date to add `T` character
         description: _questionBody,
         category: widget.categoryName,
-        status: 0,
-        visible: 1,
+        status: true,
+        visible: true,
       );
 
       print(
-          "${_question.title}, ${_question.date}, ${_question.description}, ${_question.category}, ${_question.status}, ${_question.visible}");
+          "${_question.title}, ${_question.questionDate}, ${_question.description}, ${_question.category}, ${_question.status}, ${_question.visible}");
     });
 
     Navigator.push(
