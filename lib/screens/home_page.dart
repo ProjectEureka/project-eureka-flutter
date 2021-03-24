@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
 import 'package:project_eureka_flutter/services/all_users_service.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,7 +15,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   //Made for testing purposes. Used to see if the Users Will Properly show on the home page
-  List userData = [];
+  UserModel user;
+  String userId = EmailAuth().getCurrentUser().uid;
   // Questions data. Unfiltered list of questions
   List data = [];
   // Will filter the list of questions
@@ -33,15 +36,20 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     initGetQuestions();
-    initGetUsers();
+    initGetCurrentUser();
+
     super.initState();
   }
 
   Future<void> _getData() async {
     setState(() {
+      selectedCategory = "All Categories";
+      isSearching = false;
       initGetQuestions();
-      initGetUsers();
+      initGetCurrentUser();
     });
+    print("User Name: " + user.firstName + " " + user.lastName);
+    print(user.firebaseUuid);
   }
 
   void initGetQuestions() {
@@ -53,16 +61,9 @@ class _HomeState extends State<Home> {
     });
   }
 
-  //just currently used to grab the users from the backend]
-  Future<void> _getUserData() async {
-    setState(() {
-      initGetUsers();
-    });
-  }
-
-  void initGetUsers() {
-    UsersService().getUsers().then((payload) {
-      userData = payload;
+  void initGetCurrentUser() {
+    UsersService().getUserById(userId).then((payload) {
+      user = payload;
     });
   }
 

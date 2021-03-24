@@ -24,9 +24,22 @@ class UserModel {
       this.ratings,
       this.averageRating});
 
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'firstName': firstName,
+        'lastName': lastName,
+        'firebaseUuid': firebaseUuid,
+        'email': email,
+        'city': city,
+        'category': category,
+        'pictureUrl': pictureUrl,
+        'role': role,
+        'ratings': ratings,
+        'averageRating': averageRating,
+      };
+
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
       firstName: json['firstName'],
       lastName: json['lastName'],
       firebaseUuid: json['firebaseUuid'],
@@ -38,5 +51,13 @@ class UserModel {
       ratings: json['ratings'],
       averageRating: json['averageRating'],
     );
+  }
+  String toString() {
+    print("User Name: " +
+        this.firstName +
+        " " +
+        this.lastName +
+        " ID: " +
+        this.id);
   }
 }

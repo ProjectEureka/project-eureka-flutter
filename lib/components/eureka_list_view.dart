@@ -78,8 +78,10 @@ class _EurekaListViewState extends State<EurekaListView> {
                   // status is a boolean
                   widget.filteredQuestionsList[index].status
                       ? "Active"
-                      : "",
-              color: Colors.blue,
+                      : "Closed",
+              color: widget.filteredQuestionsList[index].status
+                      ? Colors.blue
+                      : Colors.grey,
               fontWeight: FontWeight.bold,
             ),
           ],

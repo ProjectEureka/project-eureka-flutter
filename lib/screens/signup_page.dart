@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/screens/root_page.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
-
-import 'login_page.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -22,6 +21,7 @@ class _SignupPageState extends State<SignupPage> {
   String _userEmail;
   String _password;
   String exception = "";
+  bool _isHiddenPassword;
 
   final RegExp _emailValid = RegExp(
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
@@ -29,134 +29,209 @@ class _SignupPageState extends State<SignupPage> {
   final RegExp _passwordValid =
       RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
 
-  void _validateAndSubmit() {
+  void initState() {
+    _isHiddenPassword = true;
+    super.initState();
+  }
+
+  Future<void> _validateAndSubmit() async {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
 
     try {
-      _emailAuth.signUp(_userEmail, _password).then((newUser) {
-        if (newUser != null) {
-          Navigator.pop(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return RootPage();
-              },
-            ),
-          );
-        }
-      });
+      String newUser = await _emailAuth.signUp(_userEmail, _password);
+
+      if (newUser != null) {
+        Navigator.pop(
+          context,
+          true,
+        );
+      }
     } catch (e) {
       setState(() {
         exception = _firebaseExceptionHandler.getExceptionText(e);
+        print("exception" + exception);
       });
     }
   }
 
   Widget _form(BuildContext context) {
-    return Form(
+    return Container(
+      child: Form(
         key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            SizedBox(height: 40.0),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: 'Email',
+              decoration: InputDecoration(
+                labelText: 'Email',
+                filled: true,
+                fillColor: Color(0xF6F6F6F6),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey[200],
+                  ),
+                ),
+                prefixIcon: Icon(Icons.email),
               ),
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Email needed';
+                  return 'Email required.';
                 } else if (!_emailValid.hasMatch(value)) {
-                  return 'You must enter a valid email address';
+                  return 'Please enter a valid email address.';
                 }
                 _userEmail = value.trim();
                 return null;
               },
-              textAlign: TextAlign.center,
             ),
+            Visibility(
+              visible: exception == "" ? false : true,
+              child: Text(
+                exception,
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+            SizedBox(height: 20.0),
             TextFormField(
-              obscureText: true,
-              decoration: const InputDecoration(
-                hintText: 'Password',
+              obscureText: _isHiddenPassword,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                filled: true,
+                fillColor: Color(0xF6F6F6F6),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey[200],
+                  ),
+                ),
+                prefixIcon: Icon(Icons.lock),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isHiddenPassword = !_isHiddenPassword;
+                    });
+                  },
+                  icon: Icon(
+                    _isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                  ),
+                ),
               ),
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Password Needed';
+                  return 'Password required.';
+                } else if (value.length < 6) {
+                  return 'Password must be at least 6 characters.';
+                } else if (!_passwordValid.hasMatch(value)) {
+                  return 'Must contain a number, special character and uppercase letter.';
                 }
                 _password = value;
                 return null;
               },
-              textAlign: TextAlign.center,
             ),
+            SizedBox(height: 20.0),
             TextFormField(
-              obscureText: true,
-              decoration: const InputDecoration(
-                hintText: 'Confirm Password',
+              obscureText: _isHiddenPassword,
+              decoration: InputDecoration(
+                labelText: 'Confirm Password',
+                filled: true,
+                fillColor: Color(0xF6F6F6F6),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey[200],
+                  ),
+                ),
+                prefixIcon: Icon(Icons.lock),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isHiddenPassword = !_isHiddenPassword;
+                    });
+                  },
+                  icon: Icon(
+                    _isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                  ),
+                ),
               ),
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Retype Password';
+                  return 'Password required.';
                 } else if (_password != value) {
-                  return 'Password does not match';
+                  return 'Passwords do not match.';
                 }
                 _password = value;
                 return null;
               },
-              textAlign: TextAlign.center,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () => _validateAndSubmit(),
-                child: Text('Register'),
-              ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
-  Widget _back(BuildContext context) {
-    return ElevatedButton(
-      child: Text('Return to login'),
-      onPressed: () {
-        Navigator.pop(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return RootPage();
-            },
+  Container _signUpbutton() {
+    return Container(
+      child: EurekaRoundedButton(
+        buttonText: 'Create Account',
+        onPressed: () => _validateAndSubmit(),
+      ),
+    );
+  }
+
+  Row _backToSignIn(context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          "Already have an account?",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
           ),
-        );
-      },
+        ),
+        TextButton(
+          child: Text(
+            "Sign In",
+            style: TextStyle(
+              color: Color(0xFF00ADB5),
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _form(context),
-              Visibility(
-                visible: exception == "" ? false : true,
-                child: Text(
-                  exception,
-                  style: TextStyle(color: Colors.red),
+      body: Stack(
+        children: <Widget>[
+          SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: 25,
+              vertical: 120,
+            ),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'Sign Up',
+                  style: TextStyle(
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              _back(context),
-            ],
+                _form(context),
+                _backToSignIn(context),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
+      bottomNavigationBar: _signUpbutton(),
     );
   }
 }

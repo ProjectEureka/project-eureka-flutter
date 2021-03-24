@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
-import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
+import 'package:project_eureka_flutter/services/profile_onboarding_service.dart';
 
 class ProfileOnboarding extends StatefulWidget {
   final bool isProfile;
@@ -46,7 +50,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
                   color: Color(0xFF00ADB5),
                 ),
                 onPressed: () => Navigator.pop(context))
-            : null
+            : Container(),
       ],
     );
   }
@@ -162,26 +166,56 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     );
   }
 
-  void _validateAndSubmit() {
+  void _validateAndSubmit() async {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
 
-    _birthDate = DateTime.parse('$_birthYear-$_birthMonth-$_birthDay');
+    _birthDate = DateTime.parse(
+        '$_birthYear-$_birthMonth-$_birthDay'); // we're not even using this
+    User _firebaseUser = EmailAuth().getCurrentUser();
+    ProfileOnboardingService _profileOnboardingService =
+        new ProfileOnboardingService();
 
-    print('$_role, $_firstName, $_lastName, $_city, $_birthDate');
+    /// Create the user object to be sent out.
+    UserModel user = new UserModel(
+      id: _firebaseUser.uid,
+      firstName: _firstName,
+      lastName: _lastName,
+      firebaseUuid: _firebaseUser.uid,
+      email: _firebaseUser.email,
+      city: _city,
+      category: [], //we don't have form field for this
+      pictureUrl: '',
+      role: _role,
+      ratings: [],
+      averageRating: 0.0,
+    );
 
-    widget.isProfile
-        ? Navigator.pop(context)
-        : Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SideMenu(
-                title: 'Project Eureka',
-              ),
-            ),
-          );
+    /// Using the profile onboarding serivce, send data to backend
+    try {
+      if (widget.isProfile) {
+        // Using HTTP PUT to update instead
+        // This currently doesn't work until we can get the current user_id
+        await _profileOnboardingService.updateUser(_firebaseUser.uid, user);
+
+        Navigator.pop(context);
+      } else {
+        // Using HTTP POST to add new user
+        await _profileOnboardingService.addUser(user);
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Home(),
+          ),
+          (Route<void> route) => false,
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
