@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
+import 'package:project_eureka_flutter/components/profile_answers_list.dart';
 import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
 import 'package:project_eureka_flutter/services/user_category_service.dart';
 import 'package:project_eureka_flutter/services/profile_service.dart';
@@ -36,15 +37,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // NOTE: This is a demo. It lists user's questions, not the answers.
-   void initGetAnswers() {
-    ProfileService().getProfileQuestions().then(
-           (payload) {
-             setState(() {
-               answersList = payload;
-             });
-           },
-         );
+  void initGetAnswers() {
+    ProfileService().getProfileAnswers().then(
+       (payload) {
+         setState(() {
+           answersList = payload;
+         });
+       },
+     );
    }
 
   void initGetActiveCategories() {
@@ -167,6 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return _toggleSwtichListBuilder(
       questionsList.length,
       ListView.builder(
+        padding: EdgeInsets.all(0.0),
         itemCount: questionsList.length,
         itemBuilder: (context, index) {
           return EurekaListView(
@@ -182,10 +183,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return _toggleSwtichListBuilder(
       answersList.length,
       ListView.builder(
+        padding: EdgeInsets.all(0.0),
         itemCount: answersList.length,
         itemBuilder: (context, index) {
-          return EurekaListView(
-            filteredQuestionsList: answersList,
+          return ProfileAnswersView(
+            answersList: answersList,
             index: index,
           );
         },

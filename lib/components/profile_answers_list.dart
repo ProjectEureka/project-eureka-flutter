@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-/// Function to return List of Questions and category filter. Called from 'body'.
-class EurekaListView extends StatefulWidget {
-  final List<dynamic> filteredQuestionsList;
+class ProfileAnswersView extends StatefulWidget {
+  final List<dynamic> answersList;
   final int index;
 
-  EurekaListView({
-    @required this.filteredQuestionsList,
+  ProfileAnswersView({
+    @required this.answersList,
     @required this.index,
   });
   @override
-  _EurekaListViewState createState() => _EurekaListViewState();
+  _ProfileAnswersViewState createState() => _ProfileAnswersViewState();
 }
 
-class _EurekaListViewState extends State<EurekaListView> {
+class _ProfileAnswersViewState extends State<ProfileAnswersView> {
   SizedBox _sizedBox() {
     return SizedBox(
       height: 5.0,
@@ -38,21 +37,9 @@ class _EurekaListViewState extends State<EurekaListView> {
     );
   }
 
-  Column categoryRow(int index) {
-    return Column(
-      children: [
-        _eurekaListViewTextStyle(
-          value: widget.filteredQuestionsList[index].category,
-          color: Colors.grey,
-        ),
-        _sizedBox(),
-      ],
-    );
-  }
-
   Column timeAndIsActiveRow(int index) {
     // this is used to format data to return " X days/hours/minutes ago"
-    final dateTime = DateTime.parse(widget.filteredQuestionsList[index].questionDate).subtract(new Duration(minutes: 1));
+    final dateTime = DateTime.parse(widget.answersList[index].answerDate).subtract(new Duration(minutes: 1));
 
     return Column(
       children: [
@@ -62,7 +49,7 @@ class _EurekaListViewState extends State<EurekaListView> {
             Row(
               children: [
                 _eurekaListViewTextStyle(
-                  value: "Asked:\t",
+                  value: "Answered:\t",
                   color: Colors.grey,
                 ),
                 _eurekaListViewTextStyle(
@@ -73,14 +60,8 @@ class _EurekaListViewState extends State<EurekaListView> {
               ],
             ),
             _eurekaListViewTextStyle(
-              value:
-                  // status is a boolean
-                  widget.filteredQuestionsList[index].status
-                      ? "Active"
-                      : "Closed",
-              color: widget.filteredQuestionsList[index].status
-                      ? Colors.blue
-                      : Colors.grey,
+              value: index == 1 ? "Best Answer" : "", // for testing purposes it only shows one best answer
+              color: Colors.blue,
               fontWeight: FontWeight.bold,
             ),
           ],
@@ -90,28 +71,15 @@ class _EurekaListViewState extends State<EurekaListView> {
     );
   }
 
-  Column titleRow(int index) {
-    return Column(
-      children: [
-        _eurekaListViewTextStyle(
-          value: widget.filteredQuestionsList[index].title,
-          color: Colors.black,
-          fontSize: 20.0,
-        ),
-        _sizedBox(),
-      ],
-    );
-  }
-
   Text descriptionRow(int index) {
     return Text(
-      widget.filteredQuestionsList[index].description,
+      widget.answersList[index].description,
       textAlign: TextAlign.left,
       style: TextStyle(
         fontSize: 15.0,
-        color: Colors.grey,
+        color: Colors.grey[600],
       ),
-      maxLines: 3,
+      maxLines: 4,
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -127,7 +95,7 @@ class _EurekaListViewState extends State<EurekaListView> {
             // Question page redirection here
           },
           child: Text(
-            "More Details",
+            "Question Details",
             style: TextStyle(
               fontSize: 15.0,
               color: Colors.purple,
@@ -152,9 +120,7 @@ class _EurekaListViewState extends State<EurekaListView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  categoryRow(index),
                   timeAndIsActiveRow(index),
-                  titleRow(index),
                   descriptionRow(index),
                   moreDetailsButtonRow(index),
                   Divider(
