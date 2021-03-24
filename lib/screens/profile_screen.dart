@@ -18,34 +18,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List questionsList = [];
   List answersList = [];
   List categories = [];
+  String firstName = ""; // this will be changed later
+  bool loading = true;
 
   @override
   void initState() {
-    initGetQuestions();
-    initGetAnswers();
+    initGetProfileInfo();
     initGetActiveCategories();
     super.initState();
   }
 
-  void initGetQuestions() {
-    ProfileService().getProfileQuestions().then(
+  void initGetProfileInfo() {
+    ProfileService().getProfileInformation().then(
       (payload) {
         setState(() {
-          questionsList = payload;
+          questionsList = payload[0];
+          answersList = payload[1];
+          firstName = payload[2];
+          loading = false;
         });
       },
     );
   }
-
-  void initGetAnswers() {
-    ProfileService().getProfileAnswers().then(
-       (payload) {
-         setState(() {
-           answersList = payload;
-         });
-       },
-     );
-   }
 
   void initGetActiveCategories() {
     UserCategoryService().getCategories().then(
@@ -55,6 +49,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       },
     );
+  }
+
+  Center _noResults(String message) {
+    return loading
+        ? Center(child: CircularProgressIndicator())
+        : Center(
+            child: Text(message),
+          );
   }
 
   Positioned _profileNameAndIcon() {
@@ -227,11 +229,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Visibility(
           visible: _tab == 0 ? true : false,
-          child: _questionsList(),
+          child: questionsList.length == 0
+              ? _noResults(firstName + " have not posted any questions yet")
+              : _questionsList(),
         ),
         Visibility(
           visible: _tab == 1 ? true : false,
-          child: _answersList(),
+          child: answersList.length == 0
+              ? _noResults(firstName + " have not answered to any questions yet")
+              : _answersList(),
         ),
         Visibility(
           visible: _tab == 2 ? true : false,

@@ -7,11 +7,12 @@ import 'package:http/http.dart' as http;
 
 class ProfileService {
 
-  Future<List<QuestionModel>> getProfileQuestions() async {
+  Future<List<dynamic>> getProfileInformation() async {
+
     // profile id will be changed to the current user id associated with firebase id
     await DotEnv.load();
 
-    final response = await http.get(Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/profile/605800d2218f8a46677f3d41'));
+    final response = await http.get(Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/profile/605ac383218f8a46677f3d55'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
@@ -22,38 +23,28 @@ class ProfileService {
       //   (new questions are appending to the bottom of the database)
 
       final body = json.decode(response.body);
-      print("Profile questions were loaded");
+
+      body['questions'].length != 0 ? print("Profile questions were loaded") : print("Profile questions were load. No questions found with this user ID");
+      body['answers'].length != 0 ? print("Profile answers were loaded") : print("Profile answers were load. No answers found with this user ID");
 
       List<QuestionModel> questions = new List();
+      List<AnswerModel> answers = new List();
+      // profileInfo will be a dynamic List containing user's info, questions list, answers list
+      List<dynamic> profileInfo = new List();
+
       for (var i = body['questions'].length - 1; i >= 0; i--) {
         questions.add(QuestionModel.fromJson(body['questions'][i]));
       }
-
-      return questions;
-    } else {
-      throw Exception('Failed to load questions');
-    }
-  }
-
-  Future<List<AnswerModel>> getProfileAnswers() async {
-
-    await DotEnv.load();
-
-    final response = await http.get(Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/profile/605800d2218f8a46677f3d41'));
-
-    if (response.statusCode == 200) {
-
-      final body = json.decode(response.body);
-      print("Profile answers were loaded");
-
-      List<AnswerModel> answers = new List();
       for (var i = body['answers'].length - 1; i >= 0; i--) {
         answers.add(AnswerModel.fromJson(body['answers'][i]));
       }
-      return answers;
+      profileInfo.add(questions); // index 0
+      profileInfo.add(answers); // index 1
+      profileInfo.add(body['user']['firstName']); // index 2. display "<firstName> have not posted any questions yet". this will be later changed to full user's info
 
+      return profileInfo;
     } else {
-      throw Exception('Failed to load answers');
+      throw Exception('Failed to load profile data');
     }
   }
 }

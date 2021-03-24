@@ -4,8 +4,6 @@ import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/screens/rating_page.dart';
 
-import '../home_page.dart';
-
 class NewQuestionConfirmation extends StatefulWidget {
   final QuestionModel questionModel;
 

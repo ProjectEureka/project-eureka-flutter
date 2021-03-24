@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_eureka_flutter/screens/settings/settings_payment.dart';
 
 class PaymentConfirmation extends StatelessWidget {
 
