@@ -4,8 +4,7 @@ import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
 import 'package:project_eureka_flutter/services/user_category_service.dart';
-import 'package:project_eureka_flutter/services/user_question_service.dart';
-import 'package:project_eureka_flutter/services/user_answer_service.dart';
+import 'package:project_eureka_flutter/services/profile_service.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -28,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void initGetQuestions() {
-    UserQuestionService().getQuestions().then(
+    ProfileService().getProfileQuestions().then(
       (payload) {
         setState(() {
           questionsList = payload;
@@ -37,15 +36,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void initGetAnswers() {
-    UserAnswerService().getAnswers().then(
-      (payload) {
-        setState(() {
-          answersList = payload;
-        });
-      },
-    );
-  }
+  // NOTE: This is a demo. It lists user's questions, not the answers.
+   void initGetAnswers() {
+    ProfileService().getProfileQuestions().then(
+           (payload) {
+             setState(() {
+               answersList = payload;
+             });
+           },
+         );
+   }
 
   void initGetActiveCategories() {
     UserCategoryService().getCategories().then(

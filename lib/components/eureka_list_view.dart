@@ -1,5 +1,5 @@
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 /// Function to return List of Questions and category filter. Called from 'body'.
 class EurekaListView extends StatefulWidget {
@@ -51,7 +51,10 @@ class _EurekaListViewState extends State<EurekaListView> {
   }
 
   Column timeAndIsActiveRow(int index) {
-    DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
+    // this is used to format data to return " X days/hours/minutes ago"
+    final dateTime =
+        DateTime.parse(widget.filteredQuestionsList[index].questionDate)
+            .subtract(new Duration(minutes: 1));
 
     return Column(
       children: [
@@ -65,19 +68,21 @@ class _EurekaListViewState extends State<EurekaListView> {
                   color: Colors.grey,
                 ),
                 _eurekaListViewTextStyle(
-                  value: dateFormat
-                      .format(widget.filteredQuestionsList[index].date)
-                      .toString(),
+                  // timeago is used to format data to return " X days/hours/minutes ago"
+                  value: timeago.format(dateTime),
                   color: Colors.black,
                 ),
               ],
             ),
             _eurekaListViewTextStyle(
               value:
-                  widget.filteredQuestionsList[index].status.toString() == '1'
+                  // status is a boolean
+                  widget.filteredQuestionsList[index].status
                       ? "Active"
-                      : "",
-              color: Colors.blue,
+                      : "Closed",
+              color: widget.filteredQuestionsList[index].status
+                  ? Colors.blue
+                  : Colors.grey,
               fontWeight: FontWeight.bold,
             ),
           ],

@@ -176,19 +176,20 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
       _question = new QuestionModel(
         id: _questionId,
         title: _questionTitle,
-        date: _date,
+        questionDate:
+            _date.toIso8601String(), // format date to add `T` character
         description: _questionBody,
         mediaUrls: downloadUrls,
         category: widget.categoryName,
-        status: 0,
-        visible: 1,
+        status: true,
+        visible: true,
       );
     });
 
     /// temp print object instead of send to back-end.
     /// when connecting backend, replace this print
     print(
-        "${_question.id}, ${_question.title}, ${_question.date}, ${_question.description}, ${_question.mediaUrls}, ${_question.category}, ${_question.status}, ${_question.visible}");
+        "${_question.id}, ${_question.title}, ${_question.questionDate}, ${_question.description}, ${_question.mediaUrls}, ${_question.category}, ${_question.status}, ${_question.visible}");
 
     Navigator.pushAndRemoveUntil(
       context,
