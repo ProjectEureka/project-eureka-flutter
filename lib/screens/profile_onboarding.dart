@@ -180,6 +180,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
 
     /// Create the user object to be sent out.
     UserModel user = new UserModel(
+      id: _firebaseUser.uid,
       firstName: _firstName,
       lastName: _lastName,
       firebaseUuid: _firebaseUser.uid,
@@ -197,7 +198,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       if (widget.isProfile) {
         // Using HTTP PUT to update instead
         // This currently doesn't work until we can get the current user_id
-        await _profileOnboardingService.updateUser(user);
+        await _profileOnboardingService.updateUser(_firebaseUser.uid, user);
 
         Navigator.pop(context);
       } else {

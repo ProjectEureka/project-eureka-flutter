@@ -20,11 +20,11 @@ class ProfileOnboardingService {
     );
   }
 
-  Future<http.Response> updateUser(UserModel user) {
+  Future<http.Response> updateUser(String userId, UserModel user) {
     return http.put(
       Uri.http(
         DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
-        '/v1/users',
+        '/v1/users/$userId',
       ),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

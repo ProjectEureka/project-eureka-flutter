@@ -25,6 +25,7 @@ class UserModel {
       this.averageRating});
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'firstName': firstName,
         'lastName': lastName,
         'firebaseUuid': firebaseUuid,
