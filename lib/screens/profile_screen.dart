@@ -25,7 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final User user = EmailAuth().getCurrentUser();
 
-
   @override
   void initState() {
     initGetProfileData();
@@ -36,10 +35,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ProfileService().getProfileInformation(user.uid).then(
       (payload) {
         setState(() {
-          questionsList = payload[0];
-          answersList = payload[1];
+          questionsList = payload[0]; // PE-73 testing: change it to [] to check the case when user haven't posted questions
+          answersList = payload[1]; // PE-73 testing: change it to [] to check the case when user haven't answered to any questions
           userInfo = payload[2];
-          categories = userInfo.category;
+          categories = userInfo.category; // PE-73 testing: change it to [] to check th case when user haven't chosen a category
           loading = false;
         });
       },
@@ -68,7 +67,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: CircleAvatar(
               radius: 50.0,
               backgroundColor: Colors.transparent,
-              backgroundImage: loading ? AssetImage('assets/images/profile_default_image.png') : NetworkImage(userInfo.pictureUrl),
+              backgroundImage: loading
+                  ? AssetImage('assets/images/profile_default_image.png')
+                  : userInfo.pictureUrl == "" // PE-73 testing: you can change it "true" which means that user haven't uploaded an image
+                      ? AssetImage('assets/images/profile_default_image.png')
+                      : NetworkImage(userInfo.pictureUrl),
             ),
           ),
           loading
@@ -126,10 +129,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           loading
               ? Text("-.- ⭐", style: TextStyle(fontWeight: FontWeight.bold))
-              : Text(
-                  userInfo.averageRating.toString() + " ⭐",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+              : userInfo.averageRating == 0.0 // PE-73 testing: you can change it "true" which means that user hasn't been rated yet
+                  ? Text("Not rated yet ⭐")
+                  : Text(
+                      userInfo.averageRating.toString() + " ⭐",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
         ],
       ),
     );
@@ -242,7 +247,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         Visibility(
           visible: _tab == 2 ? true : false,
-          child: _interestList(),
+          child: categories.length == 0
+              ? _noResults(" does not have categories of interest")
+              : _interestList(),
         )
       ],
     );
