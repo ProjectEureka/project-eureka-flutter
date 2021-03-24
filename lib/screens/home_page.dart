@@ -61,7 +61,7 @@ class _HomeState extends State<Home> {
   }
 
   void initGetUsers() {
-    AllUsersService().getUsers().then((payload) {
+    UsersService().getUsers().then((payload) {
       userData = payload;
     });
   }

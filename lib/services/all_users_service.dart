@@ -3,9 +3,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:project_eureka_flutter/services/email_auth.dart';
 
-class AllUsersService {
+class UsersService {
   // GET
+  Future<UserModel> getCurrentUser() async {
+    String userID = EmailAuth().getCurrentUser().uid;
+    await DotEnv.load();
+    final response = await http.get(Uri.http(
+        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/users/' + userID));
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      print("Current User was loaded");
+    }
+  }
 
   Future<List<UserModel>> getUsers() async {
     await DotEnv.load();
