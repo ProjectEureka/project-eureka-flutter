@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/components/profile_answers_list.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
-import 'package:project_eureka_flutter/services/user_category_service.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_service.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
@@ -17,35 +19,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _tab = 0;
   List questionsList = [];
   List answersList = [];
+  UserModel userInfo = new UserModel();
   List categories = [];
-  String firstName = ""; // this will be changed later
   bool loading = true;
+
+  final User user = EmailAuth().getCurrentUser();
+
 
   @override
   void initState() {
-    initGetProfileInfo();
-    initGetActiveCategories();
+    initGetProfileData();
     super.initState();
   }
 
-  void initGetProfileInfo() {
-    ProfileService().getProfileInformation().then(
+  void initGetProfileData() {
+    ProfileService().getProfileInformation(user.uid).then(
       (payload) {
         setState(() {
           questionsList = payload[0];
           answersList = payload[1];
-          firstName = payload[2];
+          userInfo = payload[2];
+          categories = userInfo.category;
           loading = false;
-        });
-      },
-    );
-  }
-
-  void initGetActiveCategories() {
-    UserCategoryService().getCategories().then(
-      (payload) {
-        setState(() {
-          categories = payload;
         });
       },
     );
@@ -55,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return loading
         ? Center(child: CircularProgressIndicator())
         : Center(
-            child: Text(message),
+            child: Text(userInfo.firstName + message),
           );
   }
 
@@ -72,19 +67,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor: Colors.white,
             child: CircleAvatar(
               radius: 50.0,
-              backgroundImage: AssetImage('assets/images/money.gif'),
+              backgroundColor: Colors.transparent,
+              backgroundImage: loading ? AssetImage('assets/images/profile_default_image.png') : NetworkImage(userInfo.pictureUrl),
             ),
           ),
-          Text(
-            "Tony Nguyen",
-            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            "tonynguyen0925@gmail.com",
-            style: TextStyle(
-              fontSize: 15.0,
-            ),
-          ),
+          loading
+              ? Text("")
+              : Text(userInfo.firstName + " " + userInfo.lastName,
+                  style:
+                      TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
+          loading
+              ? Text("")
+              : Text(
+                  userInfo.email,
+                  style: TextStyle(
+                    fontSize: 15.0,
+                  ),
+                ),
         ],
       ),
     );
@@ -125,10 +124,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(
             height: 15.0,
           ),
-          Text(
-            "5.0 ⭐",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          loading
+              ? Text("-.- ⭐", style: TextStyle(fontWeight: FontWeight.bold))
+              : Text(
+                  userInfo.averageRating.toString() + " ⭐",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
         ],
       ),
     );
@@ -230,13 +231,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Visibility(
           visible: _tab == 0 ? true : false,
           child: questionsList.length == 0
-              ? _noResults(firstName + " have not posted any questions yet")
+              ? _noResults(" have not posted any questions yet")
               : _questionsList(),
         ),
         Visibility(
           visible: _tab == 1 ? true : false,
           child: answersList.length == 0
-              ? _noResults(firstName + " have not answered to any questions yet")
+              ? _noResults(" have not answered to any questions yet")
               : _answersList(),
         ),
         Visibility(

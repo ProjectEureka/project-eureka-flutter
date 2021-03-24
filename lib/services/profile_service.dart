@@ -1,18 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/answer_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:project_eureka_flutter/models/user_model.dart';
+
+import 'email_auth.dart';
 
 class ProfileService {
 
-  Future<List<dynamic>> getProfileInformation() async {
+  Future<List<dynamic>> getProfileInformation(String userID) async {
 
     // profile id will be changed to the current user id associated with firebase id
     await DotEnv.load();
 
-    final response = await http.get(Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/profile/605ac383218f8a46677f3d55'));
+    final response = await http.get(Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/profile/' + userID));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
@@ -24,11 +28,14 @@ class ProfileService {
 
       final body = json.decode(response.body);
 
+      body['user'].length != 0 ? print("Profile user info was loaded") : print("Profile user info wasn't loaded");
       body['questions'].length != 0 ? print("Profile questions were loaded") : print("Profile questions were load. No questions found with this user ID");
       body['answers'].length != 0 ? print("Profile answers were loaded") : print("Profile answers were load. No answers found with this user ID");
 
       List<QuestionModel> questions = new List();
       List<AnswerModel> answers = new List();
+      UserModel user = UserModel.fromJson(body['user']);
+
       // profileInfo will be a dynamic List containing user's info, questions list, answers list
       List<dynamic> profileInfo = new List();
 
@@ -38,9 +45,10 @@ class ProfileService {
       for (var i = body['answers'].length - 1; i >= 0; i--) {
         answers.add(AnswerModel.fromJson(body['answers'][i]));
       }
+
       profileInfo.add(questions); // index 0
       profileInfo.add(answers); // index 1
-      profileInfo.add(body['user']['firstName']); // index 2. display "<firstName> have not posted any questions yet". this will be later changed to full user's info
+      profileInfo.add(user); // index 2
 
       return profileInfo;
     } else {
