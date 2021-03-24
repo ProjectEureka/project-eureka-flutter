@@ -46,11 +46,7 @@ class _SignupPageState extends State<SignupPage> {
       if (newUser != null) {
         Navigator.pop(
           context,
-          MaterialPageRoute(
-            builder: (context) {
-              return RootPage();
-            },
-          ),
+          true,
         );
       }
     } catch (e) {
@@ -202,14 +198,7 @@ class _SignupPageState extends State<SignupPage> {
             ),
           ),
           onPressed: () {
-            Navigator.pop(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return RootPage();
-                },
-              ),
-            );
+            Navigator.pop(context);
           },
         ),
       ],

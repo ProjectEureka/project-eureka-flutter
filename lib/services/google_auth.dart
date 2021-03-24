@@ -6,7 +6,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
 class GoogleAuth {
-  Future<String> signInWithGoogle() async {
+  Future<UserCredential> signInWithGoogle() async {
     await Firebase.initializeApp();
 
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -29,9 +29,7 @@ class GoogleAuth {
       final User currentUser = _auth.currentUser;
       assert(user.uid == currentUser.uid);
 
-      print('signInWithGoogle succeeded, uid displayed: ${user.uid}');
-
-      return '$user';
+      return authResult;
     }
 
     return null;
