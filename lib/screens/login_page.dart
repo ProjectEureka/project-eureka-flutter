@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   String password;
   bool showSpinner = false;
   String exception = "";
+  bool _isHiddenPassword;
 
   final RegExp _emailValid = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
@@ -32,30 +33,9 @@ class _LoginPageState extends State<LoginPage> {
       RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _form(context),
-              Visibility(
-                visible: exception == "" ? false : true,
-                child: Text(
-                  exception,
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-              _googleSignInButton(context),
-            ],
-          ),
-        ),
-      ),
-    );
+  void initState() {
+    _isHiddenPassword = true;
+    super.initState();
   }
 
   void signInGoogle(result) async {
@@ -74,7 +54,9 @@ class _LoginPageState extends State<LoginPage> {
         },
       );
     } catch (e) {
-      exception = _firebaseExceptionHandler.getExceptionText(e);
+      setState(() {
+        exception = _firebaseExceptionHandler.getExceptionText(e);
+      });
     }
   }
 
@@ -105,113 +87,256 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Widget _form(BuildContext context) {
-    return Form(
+  Widget _loginTextForm(context) {
+    return Center(
+      child: Form(
         key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextFormField(
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: 'Email',
+              decoration: InputDecoration(
+                labelText: 'Email',
+                filled: true,
+                fillColor: Color(0xF6F6F6F6),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey[200],
+                  ),
+                ),
+                prefixIcon: Icon(Icons.email),
               ),
               validator: (value) {
                 if (value.isEmpty) {
                   showSpinner = false;
-                  return 'Email needed';
+                  return 'Email required.';
                 } else if (!_emailValid.hasMatch(value)) {
                   showSpinner = false;
-                  return 'Invalid Input';
+                  return 'Invalid input.';
                 }
                 email = value.trim();
                 return null;
               },
-              textAlign: TextAlign.center,
             ),
+            SizedBox(height: 20.0),
             TextFormField(
-              obscureText: true,
-              decoration: const InputDecoration(
-                hintText: 'Password',
+              obscureText: _isHiddenPassword,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                filled: true,
+                fillColor: Color(0xF6F6F6F6),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey[200],
+                  ),
+                ),
+                prefixIcon: Icon(Icons.lock),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isHiddenPassword = !_isHiddenPassword;
+                    });
+                  },
+                  icon: Icon(
+                    _isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                  ),
+                ),
               ),
               validator: (value) {
                 if (value.isEmpty) {
                   showSpinner = false;
-                  return 'Password Needed';
+                  return 'Password required.';
                 } else if (!_passwordValid.hasMatch(value)) {
                   showSpinner = false;
-                  return 'Invalid input';
+                  return 'Invalid input.';
                 }
                 password = value;
                 return null;
               },
-              textAlign: TextAlign.center,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  setState(() {
-                    showSpinner = true;
-                  });
-                  validateAndSubmitEmail();
-                },
-                child: Text('Submit'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SignupPage(),
-                    ),
-                  );
-                },
-                child: Text('signup'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: TextButton(
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ForgotPassword(),
-                    ),
-                  );
-                },
-                child: Text('Forgot password?'),
-              ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
-  Widget _googleSignInButton(BuildContext context) {
-    return FlatButton(
-      color: Colors.red,
-      onPressed: () => signInGoogle(context),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                'Google',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+  Center _orLoginWith() {
+    return Center(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 1.0, 10.0, 1.0),
+              child: Divider(color: Colors.black),
+            ),
+          ),
+          Text(
+            'OR SIGN IN WITH',
+            style: TextStyle(color: Colors.black45),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 1.0, 10.0, 1.0),
+              child: Divider(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _forgotPasswordButton(context) {
+    return Container(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        child: Text(
+          "Forgot password?",
+          style: TextStyle(color: Colors.grey),
+        ),
+        onPressed: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ForgotPassword(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Container _loginButton(context) {
+    return Container(
+      width: 350.0,
+      height: 45.0,
+      child: RaisedButton(
+        onPressed: () async {
+          setState(() {
+            showSpinner = true;
+          });
+          validateAndSubmitEmail();
+        },
+        color: Color(0xFF00ADB5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.0,
+          ),
+          child: Text(
+            'Sign In',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Row _signUpButton(context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          "Don't have an account?",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        TextButton(
+          child: Text(
+            "Sign up",
+            style: TextStyle(
+              color: Color(0xFF00ADB5),
+            ),
+          ),
+          onPressed: () async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SignupPage(),
               ),
-            )
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Container _googleSignInButton(context) {
+    return Container(
+      width: 350.0,
+      height: 45.0,
+      child: RaisedButton(
+        onPressed: () => signInGoogle(context),
+        color: Colors.red,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.0,
+          ),
+          child: Text(
+            'Google',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: Stack(
+          children: <Widget>[
+            SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: 25,
+                vertical: 120,
+              ),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'Sign In',
+                    style: TextStyle(
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 40.0),
+                  _loginTextForm(context),
+                  Visibility(
+                    visible: exception == "" ? false : true,
+                    child: Text(
+                      exception,
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                  _forgotPasswordButton(context),
+                  SizedBox(height: 30.0),
+                  _loginButton(context),
+                  _signUpButton(context),
+                  SizedBox(height: 20.0),
+                  _orLoginWith(),
+                  SizedBox(height: 10.0),
+                  _googleSignInButton(context),
+                ],
+              ),
+            ),
           ],
         ),
       ),

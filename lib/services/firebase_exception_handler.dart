@@ -1,5 +1,3 @@
-import 'package:flutter/services.dart';
-
 class FirebaseExceptionHandler {
   String getExceptionText(e) {
     switch (e.message) {
@@ -17,6 +15,9 @@ class FirebaseExceptionHandler {
         break;
       case 'We have blocked all requests from this device due to unusual activity. Try again later.':
         return 'Too many failed login attempts, please try again later.';
+        break;
+      case 'Given String is empty or null':
+        return 'Email required.';
         break;
       default:
         return e.message;
