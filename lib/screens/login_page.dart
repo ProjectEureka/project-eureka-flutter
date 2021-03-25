@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:project_eureka_flutter/screens/forgot_password.dart';
@@ -73,16 +72,12 @@ class _LoginPageState extends State<LoginPage> {
     _formKey.currentState.save();
 
     try {
-      UserCredential result = await _emailAuth.signIn(email, password);
+      _emailAuth.signIn(email, password);
 
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => result.additionalUserInfo.isNewUser
-              ? ProfileOnboarding(
-                  isProfile: false,
-                )
-              : Home(),
+          builder: (context) => Home(),
         ),
         (Route<void> route) => false,
       );
