@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
     _formKey.currentState.save();
 
     try {
-      _emailAuth.signIn(email, password);
+      await _emailAuth.signIn(email, password);
 
       Navigator.pushAndRemoveUntil(
         context,
