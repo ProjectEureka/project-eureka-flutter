@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:project_eureka_flutter/screens/forgot_password.dart';
@@ -27,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   bool showSpinner = false;
   String exception = "";
   bool _isHiddenPassword;
-  bool _isNewUser = false;
 
   final RegExp _emailValid = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
@@ -73,12 +73,12 @@ class _LoginPageState extends State<LoginPage> {
     _formKey.currentState.save();
 
     try {
-      await _emailAuth.signIn(email, password);
+      UserCredential result = await _emailAuth.signIn(email, password);
 
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => _isNewUser
+          builder: (context) => result.additionalUserInfo.isNewUser
               ? ProfileOnboarding(
                   isProfile: false,
                 )
@@ -266,14 +266,12 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           onPressed: () async {
-            setState(() async {
-              _isNewUser = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignupPage(),
-                ),
-              );
-            });
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SignupPage(),
+              ),
+            );
           },
         ),
       ],
