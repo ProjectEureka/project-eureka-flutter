@@ -5,7 +5,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ProfileOnboardingService {
-  Future<http.Response> addUser(UserModel user) {
+  Future<http.Response> addUser(UserModel user) async {
+    await DotEnv.load();
+
     return http.post(
       Uri.http(
         DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
@@ -20,7 +22,9 @@ class ProfileOnboardingService {
     );
   }
 
-  Future<http.Response> updateUser(String userId, UserModel user) {
+  Future<http.Response> updateUser(String userId, UserModel user) async {
+    await DotEnv.load();
+
     return http.put(
       Uri.http(
         DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
