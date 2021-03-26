@@ -19,26 +19,45 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   //media links mock up
   List<String> links = [
-    "Media1 ",
-    "Media2 ",
-    "Media3 ",
-    "Media4 ",
+    "pic1.jpg",
+    "pic2.jpg",
+    "pic3.jpg",
+    "pic4.jpg",
+    "pic5.jpg",
+    "pic6.jpg",
+    "pic7.jpg",
+    "pic8.jpg",
+    "pic9.jpg",
+    "pic10.jpg",
+    "pic11.jpg",
   ];
 
   Widget _getMediaLinks() {
-    return Row(
+    return Column(
       children: <Widget>[
-        Text(
-          'Media: ',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        for (var item in links)
+        Row(children: <Widget>[
           Text(
-            item,
-            style: TextStyle(
-                color: Colors.blue, decoration: TextDecoration.underline),
+            'Media: ',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-        Text(" "),
+        ]),
+        GridView.count(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 4,
+          childAspectRatio: 4 / 2,
+          children: <Widget>[
+            for (var item in links)
+              FlatButton(
+                onPressed: () {},
+                child: Text("Media " + (1 + links.indexOf(item)).toString(),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline)),
+              ),
+          ],
+        )
       ],
     );
   }
@@ -79,42 +98,40 @@ class _MoreDetailsState extends State<MoreDetails> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 0, top: 0, right: 0, bottom: 5),
-              child: SizedBox(
-                width: 260,
-                height: 50,
-                child: SingleChildScrollView(
-                  child: Text(
-                    "Question Title here is very long, and to be honest is sooooo unnecessary , but we are testing fixed size box with scroll, so this field can accommodate freaking essays in the question fields",
-                    style:
-                        TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
+              padding: EdgeInsets.only(left: 0, top: 5, right: 0, bottom: 10),
+            ),
+            Row(children: [
+              Text(
+                "John Van Persie",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.left,
               ),
-            ),
-            Text(
-              "Technology - Computer Hardware",
-              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),
-              textAlign: TextAlign.left,
-            ),
-            Text(
-              "Asked : 2 days ago",
-              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.left,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 0, top: 10, right: 0, bottom: 0),
-              child: SizedBox(
-                width: 260,
-                height: 30,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: _getMediaLinks(),
-                ),
+            ]),
+            Divider(color: Colors.transparent, height: 10.0),
+            Row(children: [
+              Text(
+                "Category: ",
+                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.left,
               ),
-            ),
+              Text(
+                " Technology",
+                style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),
+                textAlign: TextAlign.left,
+              ),
+            ]),
+            Row(children: [
+              Text(
+                "Asked: ",
+                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.left,
+              ),
+              Text(
+                " 2 days ago",
+                style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),
+                textAlign: TextAlign.left,
+              ),
+            ]),
           ],
         ),
       ],
@@ -164,27 +181,25 @@ class _MoreDetailsState extends State<MoreDetails> {
   Container _questionFieldViewer() {
     return Container(
       padding: const EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 10),
-      height: MediaQuery.of(context).size.height - 358,
-      child: SingleChildScrollView(
-          child: Text(
-              "Long text here which is longer than the container heightLong text"
-              " here which is longer than the container heightLong text here"
-              " which is longer than the container heightLong text here which"
-              " is longer than the container heightLong text here which is "
-              "longer than the container heightLong text here which is longer"
-              " than the container heightLong text here which is longer than "
-              "the container heightLong text here which is longer than the contained"
-              " heightLong text here which is longer than the container height"
-              "Long text here which is longer than the container heightLong text"
-              " here which is longer than the container heightLong text here"
-              " here which is longer than the container heightLong text here"
-              " here which is longer than the container heightLong text here"
-              " which is longer than the container heightLong text here which"
-              " is longer than the container heightLong text here which is "
-              "longer than the container heightLong text here which is longer"
-              " than the container heightLong text here which is longer than "
-              "the container heightLong text here which is longer than the container"
-              " heightLong text here which is longer than the container height")),
+      child: Column(children: [
+        Text(
+          "Question Title here is very long, and to be honest is sooooo unnecessary , but we are testing fixed size box with scroll, so this field can accommodate freaking essays in the question fields",
+          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
+        ),
+        Divider(color: Colors.transparent, height: 15.0),
+        Text(
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
+            "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "
+            "when an unknown printer took a galley of type and scrambled it to make a type "
+            "specimen book. It has survived not only five centuries, but also the leap into"
+            " electronic typesetting, remaining essentially unchanged. It was popularised in"
+            " the 1960s with the release of Letraset sheets containing "
+            "Lorem Ipsum passages, and more recently with desktop publishing software "
+            "like Aldus PageMaker including versions of Lorem Ipsum."),
+        Divider(color: Colors.transparent, height: 15.0),
+        _getMediaLinks()
+      ]),
     );
   }
 
@@ -204,7 +219,7 @@ class _MoreDetailsState extends State<MoreDetails> {
         title: 'Question Details',
         appBar: AppBar(),
       ),
-      body: Column(
+      body: ListView(
         children: [
           Container(
             margin: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0),
