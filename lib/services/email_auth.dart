@@ -4,13 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 class EmailAuth {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<String> signIn(String email, String password) async {
+  Future<UserCredential> signIn(String email, String password) async {
     UserCredential result = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    User user = result.user;
-    return user.uid;
+    return result;
   }
 
   Future<String> signUp(String email, String password) async {
