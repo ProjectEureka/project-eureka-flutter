@@ -11,7 +11,37 @@ class MoreDetails extends StatefulWidget {
 }
 
 class _MoreDetailsState extends State<MoreDetails> {
-  String id; // user id
+  String id;
+  String owner_id =
+      "abdwk23na1nfaol9fnj35"; // fake user id represents owner of the question
+  String user_id =
+      "123412313ddd"; // fake user id represents a peer who is checking out question
+
+  //media links mock up
+  List<String> links = [
+    "Media1 ",
+    "Media2 ",
+    "Media3 ",
+    "Media4 ",
+  ];
+
+  Widget _getMediaLinks() {
+    return Row(
+      children: <Widget>[
+        Text(
+          'Media: ',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        for (var item in links)
+          Text(
+            item,
+            style: TextStyle(
+                color: Colors.blue, decoration: TextDecoration.underline),
+          ),
+        Text(" "),
+      ],
+    );
+  }
 
   @override
   void initState() {
@@ -28,7 +58,6 @@ class _MoreDetailsState extends State<MoreDetails> {
           height: 0,
         ),
         _profileNameAndIcon(),
-        _answerQuestion(),
       ],
     );
   }
@@ -49,64 +78,44 @@ class _MoreDetailsState extends State<MoreDetails> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Question Title here",
-              style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.left,
+            Padding(
+              padding: EdgeInsets.only(left: 0, top: 0, right: 0, bottom: 5),
+              child: SizedBox(
+                width: 260,
+                height: 50,
+                child: SingleChildScrollView(
+                  child: Text(
+                    "Question Title here is very long, and to be honest is sooooo unnecessary , but we are testing fixed size box with scroll, so this field can accommodate freaking essays in the question fields",
+                    style:
+                        TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ),
             ),
             Text(
               "Technology - Computer Hardware",
-              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w300),
+              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),
               textAlign: TextAlign.left,
             ),
             Text(
               "Asked : 2 days ago",
-              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.left,
             ),
             Padding(
               padding:
-                  const EdgeInsets.only(left: 0, top: 30, right: 0, bottom: 0),
-              child: RichText(
-                text: TextSpan(
-                    // set the default style for the children TextSpans
-                    style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                    children: [
-                      TextSpan(
-                        text: 'Attached media: ',
-                      ),
-                      TextSpan(
-                          text: 'Image1',
-                          style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline)),
-                      TextSpan(
-                        text: '  ',
-                      ),
-                      TextSpan(
-                          text: 'Image2',
-                          style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline)),
-                    ]),
+                  const EdgeInsets.only(left: 0, top: 10, right: 0, bottom: 0),
+              child: SizedBox(
+                width: 260,
+                height: 30,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: _getMediaLinks(),
+                ),
               ),
             ),
           ],
-        ),
-      ],
-    );
-  }
-
-  Column _answerQuestion() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        // add if else statement here : if username logged in matches username of question creator -> _questionArchiveButton() else call _answerQuestionButton()
-        SizedBox(
-          height: 15.0,
         ),
       ],
     );
@@ -132,8 +141,6 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
-  // this button is not visible now. When we connect this page to database,
-  // we will check if user is creator of question, and user IS -> they will be shown "Archive question" button
   FlatButton _questionArchiveButton() {
     return FlatButton(
       color: Color(0xFF00ADB5),
@@ -157,7 +164,7 @@ class _MoreDetailsState extends State<MoreDetails> {
   Container _questionFieldViewer() {
     return Container(
       padding: const EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 10),
-      height: MediaQuery.of(context).size.height - 405,
+      height: MediaQuery.of(context).size.height - 358,
       child: SingleChildScrollView(
           child: Text(
               "Long text here which is longer than the container heightLong text"
@@ -170,6 +177,8 @@ class _MoreDetailsState extends State<MoreDetails> {
               " heightLong text here which is longer than the container height"
               "Long text here which is longer than the container heightLong text"
               " here which is longer than the container heightLong text here"
+              " here which is longer than the container heightLong text here"
+              " here which is longer than the container heightLong text here"
               " which is longer than the container heightLong text here which"
               " is longer than the container heightLong text here which is "
               "longer than the container heightLong text here which is longer"
@@ -177,6 +186,15 @@ class _MoreDetailsState extends State<MoreDetails> {
               "the container heightLong text here which is longer than the container"
               " heightLong text here which is longer than the container height")),
     );
+  }
+
+  //user id checker, if user is not the owner of the question, they have option to answer
+  //if user is owner, they can archive question
+  Widget _answerOrArchiveButton() {
+    if (user_id != owner_id) {
+      return _answerQuestionButton();
+    }
+    return _questionArchiveButton();
   }
 
   @override
@@ -189,8 +207,8 @@ class _MoreDetailsState extends State<MoreDetails> {
       body: Column(
         children: [
           Container(
-            margin: EdgeInsets.all(20),
-            padding: EdgeInsets.only(left: 3, top: 0, right: 3, bottom: 5),
+            margin: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0),
+            padding: EdgeInsets.only(left: 3, top: 0, right: 3, bottom: 0),
             alignment: Alignment.topLeft,
             width: double.infinity,
             decoration: BoxDecoration(
@@ -203,20 +221,23 @@ class _MoreDetailsState extends State<MoreDetails> {
               children: [
                 _headerStack(),
                 Container(
-                  padding: EdgeInsets.all(5.0),
-                  child: Center(
-                    child: Column(
-                      children: <Widget>[
-                        _questionFieldViewer(),
-                      ],
-                    ),
-                  ),
+                  padding:
+                      EdgeInsets.only(left: 2, top: 0, right: 2, bottom: 0),
+                  child: _questionFieldViewer(),
                 ),
               ],
             ),
           ),
-          _answerQuestionButton(),
         ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.transparent,
+        elevation: 0,
+        child: Padding(
+          padding:
+              const EdgeInsets.only(left: 110, top: 0, right: 110, bottom: 0),
+          child: _answerOrArchiveButton(),
+        ),
       ),
     );
   }
