@@ -13,33 +13,34 @@ class UserModel {
 
   UserModel(
       {this.id,
-      this.firstName,
-      this.lastName,
-      this.firebaseUuid,
-      this.email,
-      this.city,
-      this.category,
-      this.pictureUrl,
-      this.role,
-      this.ratings,
-      this.averageRating});
+        this.firstName,
+        this.lastName,
+        this.firebaseUuid,
+        this.email,
+        this.city,
+        this.category,
+        this.pictureUrl,
+        this.role,
+        this.ratings,
+        this.averageRating});
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'firstName': firstName,
-        'lastName': lastName,
-        'firebaseUuid': firebaseUuid,
-        'email': email,
-        'city': city,
-        'category': category,
-        'pictureUrl': pictureUrl,
-        'role': role,
-        'ratings': ratings,
-        'averageRating': averageRating,
-      };
+    'id': id,
+    'firstName': firstName,
+    'lastName': lastName,
+    'firebaseUuid': firebaseUuid,
+    'email': email,
+    'city': city,
+    'category': category,
+    'pictureUrl': pictureUrl,
+    'role': role,
+    'ratings': ratings,
+    'averageRating': averageRating,
+  };
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
+      id: json['id'],
       firstName: json['firstName'],
       lastName: json['lastName'],
       firebaseUuid: json['firebaseUuid'],
