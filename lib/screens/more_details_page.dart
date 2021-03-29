@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
+import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 
 import 'package:project_eureka_flutter/screens/home_page.dart';
 
@@ -138,43 +139,46 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
-  FlatButton _answerQuestionButton() {
-    return FlatButton(
-      color: Color(0xFF00ADB5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
+  EurekaRoundedButton _answerQuestionButton() {
+    return EurekaRoundedButton(
+      // color: Color(0xFF00ADB5),
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(20.0),
+      // ),
       onPressed: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Home()), // accept question
         );
       },
-      child: Container(
-          child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text("Answer this question"),
-      )),
+      buttonText: "Answer",
+      // child: Container(
+      //     child: Padding(
+      //   padding: const EdgeInsets.all(8.0),
+      //   child: Text("Answer this question"),
+      // )),
     );
   }
 
-  FlatButton _questionArchiveButton() {
-    return FlatButton(
-      color: Color(0xFF00ADB5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
+  EurekaRoundedButton _questionArchiveButton() {
+    return EurekaRoundedButton(
+      // color: Color(0xFF00ADB5),
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(20.0),
+      // ),
       onPressed: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Home()), //archive question
         );
       },
-      child: Container(
-          child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text("Archive this question"),
-      )),
+      buttonText: "Archive",
+      //   child: Container(
+      //       child: Padding(
+      //     padding: const EdgeInsets.all(8.0),
+      //     child: Text("Archive this question"),
+      //   )
+      // ),
     );
   }
 
