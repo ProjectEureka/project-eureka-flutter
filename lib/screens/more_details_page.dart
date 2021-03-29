@@ -141,10 +141,6 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   EurekaRoundedButton _answerQuestionButton() {
     return EurekaRoundedButton(
-      // color: Color(0xFF00ADB5),
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(20.0),
-      // ),
       onPressed: () {
         Navigator.push(
           context,
@@ -152,20 +148,11 @@ class _MoreDetailsState extends State<MoreDetails> {
         );
       },
       buttonText: "Answer",
-      // child: Container(
-      //     child: Padding(
-      //   padding: const EdgeInsets.all(8.0),
-      //   child: Text("Answer this question"),
-      // )),
     );
   }
 
   EurekaRoundedButton _questionArchiveButton() {
     return EurekaRoundedButton(
-      // color: Color(0xFF00ADB5),
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(20.0),
-      // ),
       onPressed: () {
         Navigator.push(
           context,
@@ -173,12 +160,6 @@ class _MoreDetailsState extends State<MoreDetails> {
         );
       },
       buttonText: "Archive",
-      //   child: Container(
-      //       child: Padding(
-      //     padding: const EdgeInsets.all(8.0),
-      //     child: Text("Archive this question"),
-      //   )
-      // ),
     );
   }
 
