@@ -53,4 +53,12 @@ class UserModel {
       averageRating: json['averageRating'],
     );
   }
+  String toString() {
+    print("User Name: " +
+        this.firstName +
+        " " +
+        this.lastName +
+        " ID: " +
+        this.id);
+  }
 }
