@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
+import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
+
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
 
@@ -8,6 +11,7 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotpasswordState extends State<ForgotPassword> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   EmailAuth _emailAuth = new EmailAuth();
   FirebaseExceptionHandler _firebaseExceptionHandler =
       new FirebaseExceptionHandler();
@@ -15,15 +19,11 @@ class _ForgotpasswordState extends State<ForgotPassword> {
   String _email;
   String _exception = "";
 
-  void submit() async {
+  Future<void> _submit(context) async {
+    _formKey.currentState.save();
     try {
       await _emailAuth.forgotPassword(_email);
-
-      SnackBar(
-        content: const Text('request sent'),
-      );
-
-      Navigator.of(context).pop();
+      _showDialog(context);
     } catch (e) {
       setState(() {
         _exception = _firebaseExceptionHandler.getExceptionText(e);
@@ -31,26 +31,42 @@ class _ForgotpasswordState extends State<ForgotPassword> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Reset Password')),
-      body: Container(
-        color: Colors.lightBlueAccent[100],
+  Container _emailField() {
+    return Container(
+      padding: EdgeInsets.all(20.0),
+      child: Form(
+        key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            Container(
+              child: Text(
+                "If you've lost your password or wish to reset it, enter your email address and we'll send you instructions to create a new password.",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 10.0),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: 'Email',
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Color(0xF6F6F6F6),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[200]),
+                ),
+                prefixIcon: Icon(Icons.email),
+                labelText: 'Email',
               ),
-              onChanged: (value) {
+              onSaved: (value) {
                 setState(() {
                   _email = value.trim();
                 });
               },
             ),
+            SizedBox(height: 10.0),
             Visibility(
               visible: _exception == "" ? false : true,
               child: Text(
@@ -58,16 +74,58 @@ class _ForgotpasswordState extends State<ForgotPassword> {
                 style: TextStyle(color: Colors.red),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () => submit(),
-                child: Text('Send Request'),
-              ),
-            ),
           ],
         ),
       ),
+    );
+  }
+
+  Container _sendRequestButton(context) {
+    return Container(
+      child: EurekaRoundedButton(
+        buttonText: "Reset My Password",
+        onPressed: () => _submit(context),
+      ),
+    );
+  }
+
+  Future<dynamic> _showDialog(context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Request Sent"),
+          content: Text(
+              "Head over to your email and follow the instructions provided to reset your password."),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Done",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFF00ADB5),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: EurekaAppBar(
+        title: "Reset Password",
+        appBar: AppBar(),
+      ),
+      body: _emailField(),
+      bottomNavigationBar: _sendRequestButton(context),
     );
   }
 }

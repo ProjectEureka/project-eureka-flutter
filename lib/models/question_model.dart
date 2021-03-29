@@ -1,23 +1,37 @@
 class QuestionModel {
-  final int id;
+  final String id;
   final String title;
-  final DateTime date;
+  final String questionDate;
   final String description;
-  final List<String> mediaUrls;
   final String category;
-  final int status;
-  final int visible;
-  final String uuid;
+  // for Lists (both for list of string and list of integers), use List<dynamic>, e
+  final List<dynamic> mediaUrls;
+  final bool status;
+  final bool visible;
+  final String userId;
 
-  QuestionModel({
-    this.id,
-    this.title,
-    this.date,
-    this.description,
-    this.mediaUrls,
-    this.category,
-    this.status,
-    this.visible,
-    this.uuid,
-  });
+  QuestionModel(
+      {this.id,
+        this.title,
+        this.questionDate,
+        this.description,
+        this.category,
+        this.mediaUrls,
+        this.status,
+        this.visible,
+        this.userId});
+
+  factory QuestionModel.fromJson(Map<String, dynamic> json) {
+    return QuestionModel(
+      id: json['id'],
+      title: json['title'],
+      questionDate: json['questionDate'],
+      description: json['description'],
+      category: json['category'],
+      mediaUrls: json['mediaUrls'],
+      status: json['status'],
+      visible: json['visible'],
+      userId: json['userId'],
+    );
+  }
 }

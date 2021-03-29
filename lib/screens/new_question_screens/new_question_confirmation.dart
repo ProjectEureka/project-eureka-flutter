@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
+import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/screens/rating_page.dart';
-
-import '../home_page.dart';
 
 class NewQuestionConfirmation extends StatefulWidget {
   final QuestionModel questionModel;
@@ -41,6 +41,7 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
   Text _questionCornfirmationTextStyling(String text, [bool bold]) {
     return Text(
       text,
+      //maxLines: 4,
       style: TextStyle(
           fontSize: 18.0, fontWeight: bold == null ? null : FontWeight.bold),
     );
@@ -60,15 +61,50 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _questionCornfirmationTextStyling(
-                  widget.questionModel.title, true),
-              SizedBox(
-                height: 40.0,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _questionCornfirmationTextStyling('Title:', true),
+                  _questionCornfirmationTextStyling(widget.questionModel.title),
+                  _questionCornfirmationTextStyling('Details:', true),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .20,
+                    child: SingleChildScrollView(
+                      child: _questionCornfirmationTextStyling(
+                          widget.questionModel.description),
+                    ),
+                  ),
+                ],
               ),
-              _questionCornfirmationTextStyling(
-                  widget.questionModel.description),
+              Container(
+                height: MediaQuery.of(context).size.height * .15,
+                child: ListView.builder(
+                  itemCount: widget.questionModel.mediaUrls.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(2.5, 0.0, 2.5, 0.0),
+                      child: GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EurekaImageViewer(
+                              imagePath: widget.questionModel.mediaUrls[index],
+                              isUrl: true,
+                            ),
+                          ),
+                        ),
+                        child: Image.network(
+                          widget.questionModel.mediaUrls[index],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -79,9 +115,9 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("New Question"),
-        backgroundColor: Colors.blueGrey[800],
+      appBar: EurekaAppBar(
+        title: 'New Question',
+        appBar: AppBar(),
       ),
       body: _questionConfirmationBody(),
       bottomNavigationBar: EurekaRoundedButton(
