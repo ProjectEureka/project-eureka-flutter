@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
+import 'package:project_eureka_flutter/models/rating_model.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
+import 'package:project_eureka_flutter/services/rating_service.dart';
 
 class RatingPage extends StatefulWidget {
   @override
@@ -58,19 +61,28 @@ class _RatingPageState extends State<RatingPage> {
                   height: 40.0,
                 ),
                 EurekaRoundedButton(
-                    buttonText: 'Done!',
-                    onPressed: () async {
-                      checkRating();
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return Home();
-                        },
-                      ));
-                    }),
+                  buttonText: _rating == null ? 'Skip' : 'Done!',
+                  onPressed: () => _submit(),
+                ),
               ],
             ),
           )),
         ));
+  }
+
+  Future<void> _submit() async {
+    RatingModel rating =
+        new RatingModel(id: EmailAuth().getCurrentUser().uid, rating: _rating);
+    try {
+      await RatingService().updateRating(rating);
+    } catch (e) {
+      print(e);
+    }
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return Home();
+      },
+    ));
   }
 
   void checkRating() {
