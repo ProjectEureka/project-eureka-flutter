@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:project_eureka_flutter/screens/forgot_password.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/signup_page.dart';
+import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
@@ -46,7 +47,11 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => Home(),
+                builder: (context) => result.additionalUserInfo.isNewUser
+                    ? ProfileOnboarding(
+                        isProfile: false,
+                      )
+                    : Home(),
               ),
               (Route<void> route) => false,
             );
@@ -256,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           onPressed: () async {
-            Navigator.push(
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => SignupPage(),

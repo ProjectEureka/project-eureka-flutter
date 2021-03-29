@@ -51,15 +51,6 @@ class _RatingPageState extends State<RatingPage> {
                 SizedBox(
                   height: 20.0,
                 ),
-                _rating != null
-                    ? Text(
-                        'Rating: $_rating',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    : Container(),
-                SizedBox(
-                  height: 40.0,
-                ),
                 EurekaRoundedButton(
                   buttonText: _rating == null ? 'Skip' : 'Done!',
                   onPressed: () => _submit(),
@@ -133,7 +124,7 @@ class _RatingPageState extends State<RatingPage> {
   Widget _ratingBar(int mode) {
     return RatingBar.builder(
       glow: false,
-      initialRating: 2,
+      initialRating: 0,
       minRating: 0,
       direction: Axis.horizontal,
       allowHalfRating: true,
