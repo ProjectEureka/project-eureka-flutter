@@ -27,7 +27,6 @@ class _LoginPageState extends State<LoginPage> {
   bool showSpinner = false;
   String exception = "";
   bool _isHiddenPassword;
-  bool _isNewUser = false;
 
   final RegExp _emailValid = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
@@ -78,11 +77,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => _isNewUser
-              ? ProfileOnboarding(
-                  isProfile: false,
-                )
-              : Home(),
+          builder: (context) => Home(),
         ),
         (Route<void> route) => false,
       );
@@ -266,14 +261,12 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           onPressed: () async {
-            setState(() async {
-              _isNewUser = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignupPage(),
-                ),
-              );
-            });
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SignupPage(),
+              ),
+            );
           },
         ),
       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
+import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
 import 'package:project_eureka_flutter/screens/root_page.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
@@ -44,9 +45,14 @@ class _SignupPageState extends State<SignupPage> {
       String newUser = await _emailAuth.signUp(_userEmail, _password);
 
       if (newUser != null) {
-        Navigator.pop(
+        Navigator.pushAndRemoveUntil(
           context,
-          true,
+          MaterialPageRoute(
+            builder: (context) => ProfileOnboarding(
+              isProfile: false,
+            ),
+          ),
+          (Route<void> route) => false,
         );
       }
     } catch (e) {
