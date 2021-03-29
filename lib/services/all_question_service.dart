@@ -5,13 +5,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AllQuestionService {
-
   // GET
   Future<List<QuestionModel>> getQuestions() async {
-
     await DotEnv.load();
 
-    final response = await http.get(Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/questions'));
+    final response = await http.get(Uri.http(
+        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/questions'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
@@ -29,7 +28,8 @@ class AllQuestionService {
         questions.add(QuestionModel.fromJson(body[i]));
       }
       // Sort questions by status (Active or closed)
-      questions.sort((a, b) => b.status.toString().compareTo(a.status.toString()));
+      questions
+          .sort((a, b) => b.status.toString().compareTo(a.status.toString()));
       return questions;
     } else {
       throw Exception('Failed to load questions');

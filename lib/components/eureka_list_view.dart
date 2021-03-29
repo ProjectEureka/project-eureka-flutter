@@ -52,7 +52,9 @@ class _EurekaListViewState extends State<EurekaListView> {
 
   Column timeAndIsActiveRow(int index) {
     // this is used to format data to return " X days/hours/minutes ago"
-    final dateTime = DateTime.parse(widget.filteredQuestionsList[index].questionDate).subtract(new Duration(minutes: 1));
+    final dateTime =
+        DateTime.parse(widget.filteredQuestionsList[index].questionDate)
+            .subtract(new Duration(minutes: 1));
 
     return Column(
       children: [
@@ -79,8 +81,8 @@ class _EurekaListViewState extends State<EurekaListView> {
                       ? "Active"
                       : "Closed",
               color: widget.filteredQuestionsList[index].status
-                      ? Colors.blue
-                      : Colors.grey,
+                  ? Colors.blue
+                  : Colors.grey,
               fontWeight: FontWeight.bold,
             ),
           ],
