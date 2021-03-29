@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 /// Function to return List of Questions and category filter. Called from 'body'.
@@ -126,7 +127,10 @@ class _EurekaListViewState extends State<EurekaListView> {
         FlatButton(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onPressed: () {
-            // Question page redirection here
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MoreDetails()),
+            );
           },
           child: Text(
             "More Details",
