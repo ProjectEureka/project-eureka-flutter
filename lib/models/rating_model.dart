@@ -8,11 +8,4 @@ class RatingModel {
         'id': id,
         'rating': rating,
       };
-
-  factory RatingModel.fromJSON(Map<String, dynamic> json) {
-    return RatingModel(
-      id: json['id'],
-      rating: json['rating'],
-    );
-  }
 }
