@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
@@ -12,6 +12,7 @@ import 'package:project_eureka_flutter/screens/new_question_screens/new_question
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:uuid/uuid.dart';
+import 'package:project_eureka_flutter/services/new_question_service.dart';
 
 class NewQuestionForm extends StatefulWidget {
   final String categoryName;
@@ -174,22 +175,20 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
     /// Create new Object to be sent to backend.
     setState(() {
       _question = new QuestionModel(
-        id: _questionId,
-        title: _questionTitle,
-        questionDate:
-            _date.toIso8601String(), // format date to add `T` character
-        description: _questionBody,
-        mediaUrls: downloadUrls,
-        category: widget.categoryName,
-        status: true,
-        visible: true,
-      );
+          id: _questionId,
+          title: _questionTitle,
+          questionDate:
+              _date.toIso8601String(), // format date to add `T` character
+          description: _questionBody,
+          mediaUrls: downloadUrls,
+          category: widget.categoryName,
+          status: true,
+          visible: true,
+          userId: EmailAuth().getCurrentUser().uid);
+      _question.toJson();
+      NewQuestionService()
+          .postNewQuestion(_question); // POST question to database
     });
-
-    /// temp print object instead of send to back-end.
-    /// when connecting backend, replace this print
-    print(
-        "${_question.id}, ${_question.title}, ${_question.questionDate}, ${_question.description}, ${_question.mediaUrls}, ${_question.category}, ${_question.status}, ${_question.visible}");
 
     Navigator.pushAndRemoveUntil(
       context,
