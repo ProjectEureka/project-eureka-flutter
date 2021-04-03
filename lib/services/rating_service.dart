@@ -6,10 +6,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RatingService {
-  Future<void> updateRating(RatingModel rating) async {
+  Future<http.Response> updateRating(RatingModel rating) async {
     await DotEnv.load();
 
-    final response = await http.put(
+    return await http.put(
       Uri.http(
         DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
         '/v1/users/${rating.id}/rating',
@@ -21,11 +21,5 @@ class RatingService {
         rating.toJson(),
       ),
     );
-
-    if (response.statusCode == 200) {
-      print('User was rated successfully.');
-    } else {
-      throw Exception('Failed to load user ratings.');
-    }
   }
 }
