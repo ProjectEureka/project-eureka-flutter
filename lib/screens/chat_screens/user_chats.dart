@@ -1,101 +1,177 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
 import 'chat_sceen.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
+String toId = "hJGcQsILP7XQDSvWY2Qx2k3MD0V2";
 
 class ChatScreenConversations extends StatefulWidget {
+  final String fromId;
+  ChatScreenConversations(this.fromId);
   @override
-  _ChatScreenConversations createState() => _ChatScreenConversations();
+  _ChatScreenConversations createState() => _ChatScreenConversations(fromId);
 }
 
 class _ChatScreenConversations extends State<ChatScreenConversations> {
   final _auth = FirebaseAuth.instance;
+  String fromId;
+  final _firestore = FirebaseFirestore.instance;
+  _ChatScreenConversations(this.fromId);
+
   @override
   void initState() {
     super.initState();
   }
 
   Widget build(BuildContext context) {
-    return Container(
-      child: StreamBuilder<QuerySnapshot>(
-        stream: _firestore
-            .collection('messages')
-            .orderBy('timestamp', descending: true)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: Text("Start a New chat in the Questions Page"),
-            );
-          } else {
-            final allConversations = snapshot.data.docs;
-            final sortedConvos = [];
-            for (var convo in allConversations) {
-              final convoText = convo.data()['text'];
-              final convoSender = convo.data()['sender'];
-            }
+    return Scaffold(
+        appBar: EurekaAppBar(
+          title: 'Chat',
+          appBar: AppBar(),
+        ),
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              ConversationsStream(
+                fromId: fromId,
+              )
+            ],
+          ),
+        ));
+  }
+}
 
-            // return ListView.builder(
-            //   padding: EdgeInsets.all(10.0),
-            //   itemBuilder: (context, index) =>
-            //       buildItem(context, snapshot.data.docs[index]),
-            //   itemCount: snapshot.data.docs.length,
-            // );
+class ConversationsStream extends StatelessWidget {
+  //final String groupChatId;
+  final String fromId;
+  ConversationsStream({this.fromId});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('messages').snapshots(),
+      builder: (context, snapshot) {
+        //uses async snapshot
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        final conversations = snapshot.data.docs;
+        List<ConversationBubble> conversationBubbles = [];
+        for (var userChat in conversations) {
+          final conversationText = userChat.data()['text'];
+          final conversationUserID = userChat.data()['chatIDUser'];
+          final recipeintID = userChat.data()['recipientId'];
+          final recipientName = userChat.data()['recipient'];
+          //print(loggedInUser.email);
+          print("name: ");
+          print(recipientName);
+          print(conversationUserID);
+
+          final conversationBubble = ConversationBubble(
+              recipient: recipientName,
+              recipientId: recipeintID,
+              text: conversationText);
+          if (conversationUserID == loggedInUser.uid) {
+            conversationBubbles.add(conversationBubble);
           }
-        },
-      ),
+        }
+        return Expanded(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            children: conversationBubbles,
+          ),
+        );
+      },
     );
   }
 }
 
-// Widget buildItem(BuildContext context, DocumentSnapshot snapshot) {
-//   if (snapshot.data()['idTo'] == loggedInUser) {
-//     return Container();
-//   } else {
-//     return Container(
-//       child: FlatButton(
-//         onPressed: () {
-//           Navigator.push(
-//               context, MaterialPageRoute(builder: (context) => ChatScreen()));
-//         },
-//         child: Row(
-//           children: <Widget>[
-//             Flexible(
-//                 child: Container(
-//               child: Column(
-//                 children: <Widget>[
-//                   Container(
-//                     child: Text(
-//                       snapshot.data()['sender'],
-//                       style: TextStyle(color: Colors.black),
-//                     ),
-//                     alignment: Alignment.centerLeft,
-//                     margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
-//                   ),
-//                   Container(
-//                     child: Text(
-//                       snapshot.data()['text'],
-//                       style: TextStyle(color: Colors.black),
-//                     ),
-//                     alignment: Alignment.centerLeft,
-//                     margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
-//                   ),
-//                 ],
-//               ),
-//             ))
-//           ],
-//         ),
-//         color: Colors.grey,
-//         padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
-//         shape:
-//             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-//       ),
-//       margin: EdgeInsets.only(bottom: 10.0, left: 5.0, right: 5.0),
-//     );
-//   }
-//}
+class ConversationBubble extends StatelessWidget {
+  ConversationBubble({this.recipient, this.text, this.recipientId});
+  final String recipient;
+  final String text;
+  final String recipientId;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+            color: Colors.cyan,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.only()),
+        child: FlatButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChatScreen(recipientId)));
+          },
+          child: Row(
+            children: <Widget>[
+              Flexible(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      child: Text(recipient,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+                    ),
+                    Container(
+                      child: Text(text,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      alignment: Alignment.centerRight,
+                      margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // child: FlatButton(
+    //   child: Padding(
+    //     padding: const EdgeInsets.all(10.0),
+    //     child: Column(children: <Widget>[
+    //       Text(
+    //         recipient,
+    //         style: TextStyle(fontSize: 12.0, color: Colors.black),
+    //       ),
+    //       Material(
+    //         child: Padding(
+    //           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+    //           child: Text(
+    //             text,
+    //             style: TextStyle(
+    //               fontSize: 15.0,
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ]),
+    //   ),
+    //   onPressed: () {
+    //     Navigator.push(context,
+    //         MaterialPageRoute(builder: (context) => ChatScreen(recipientId)));
+    //   },
+    // );
+  }
+}

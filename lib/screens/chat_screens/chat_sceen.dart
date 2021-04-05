@@ -1,26 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
 
 class ChatScreen extends StatefulWidget {
+  final String fromId;
+  ChatScreen(this.fromId);
+
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _ChatScreenState createState() => new _ChatScreenState(fromId);
 }
 
 class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
+  String fromId;
+  _ChatScreenState(this.fromId);
 
   String messageText;
+  String groupChatId;
+  String userId;
 
   @override
   void initState() {
     super.initState();
     getCurrentuser();
+    userId = loggedInUser.uid;
+
+    print(userId);
+    print(fromId);
+    groupChatId = '$userId-$fromId';
+    print(groupChatId);
   }
 
   void getCurrentuser() async {
@@ -29,6 +43,11 @@ class _ChatScreenState extends State<ChatScreen> {
       if (user != null) {
         loggedInUser = user;
         print(loggedInUser.email);
+        print(loggedInUser.metadata.lastSignInTime.month);
+        print(loggedInUser.metadata.lastSignInTime.day);
+        print(loggedInUser.metadata.lastSignInTime.year);
+        print(loggedInUser.metadata.lastSignInTime.minute);
+        print(loggedInUser.metadata.lastSignInTime.hour);
       }
     } catch (e) {
       print(e);
@@ -45,24 +64,26 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                messagesStream();
-              }),
-        ],
-        title: Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
+      appBar: EurekaAppBar(
+        appBar: AppBar(
+          leading: null,
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  messagesStream();
+                }),
+          ],
+          backgroundColor: Colors.lightBlueAccent,
+        ),
+        title: 'Answer Question',
       ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            MessagesStream(),
+            MessagesStream(groupChatId: groupChatId, fromId: fromId),
             Container(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,11 +101,17 @@ class _ChatScreenState extends State<ChatScreen> {
                       messageTextController.clear();
                       var currentTimeAndDate = DateTime.now();
                       //message text + loggedInuser.email
-                      _firestore.collection('messages').add({
+
+                      _firestore
+                          .collection('messages')
+                          .doc(groupChatId)
+                          .collection(groupChatId)
+                          .add({
                         'text': messageText,
                         'sender': loggedInUser.email,
                         'timestamp': currentTimeAndDate,
-                        'idTo': loggedInUser.uid,
+                        'idFrom': userId,
+                        'idTo': fromId,
                       });
                     },
                     child: Text(
@@ -102,11 +129,17 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessagesStream extends StatelessWidget {
+  final String groupChatId;
+  final String fromId;
+  MessagesStream({this.groupChatId, this.fromId});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore
           .collection('messages')
+          .doc(groupChatId)
+          .collection(groupChatId)
           .orderBy('timestamp', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
@@ -122,12 +155,13 @@ class MessagesStream extends StatelessWidget {
           final messageText = message.data()['text'];
           final messageSender = message.data()['sender'];
           //print(loggedInUser.email);
-          final currentUser = loggedInUser.email;
+
+          final currentUser = fromId;
 
           final messageBubble = MessageBubble(
             sender: messageSender,
             text: messageText,
-            isMe: currentUser == messageSender,
+            isMe: loggedInUser.email == messageSender,
           );
           messageBubbles.add(messageBubble);
         }
@@ -187,3 +221,5 @@ class MessageBubble extends StatelessWidget {
     );
   }
 }
+//user id: NX3lTrYhiiZfV12WgPlWuUBykqI2
+// idFrom: hJGcQsILP7XQDSvWY2Qx2k3MD0V2 victor
