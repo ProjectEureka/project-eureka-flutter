@@ -35,4 +35,16 @@ class QuestionModel {
       userId: json['userId'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'questionDate': questionDate,
+        'description': description,
+        'category': category,
+        'mediaUrls': mediaUrls,
+        'status': status,
+        'visible': visible,
+        'userId': userId,
+      };
 }

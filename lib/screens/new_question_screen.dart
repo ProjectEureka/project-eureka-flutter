@@ -103,7 +103,7 @@ class NewQuestionScreen extends StatelessWidget {
     return Scaffold(
       drawer: SideMenu(),
       appBar: EurekaAppBar(
-        title: 'New Questions',
+        title: 'New Question',
         appBar: AppBar(),
       ),
       body: categorySelector(context),

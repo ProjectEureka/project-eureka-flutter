@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
@@ -13,6 +13,7 @@ import 'package:project_eureka_flutter/screens/new_form_screens/new_form_confirm
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:uuid/uuid.dart';
+import 'package:project_eureka_flutter/services/new_question_service.dart';
 
 class NewForm extends StatefulWidget {
   final String categoryName;
@@ -131,7 +132,7 @@ class _NewFormState extends State<NewForm> {
           );
   }
 
-  Future<List<String>> uploadFiles(String _questionId) async {
+  Future<List<String>> uploadFiles(String _id) async {
     List<String> _mediaUrls = [];
 
     setState(() {
@@ -146,8 +147,9 @@ class _NewFormState extends State<NewForm> {
       String fileName = path
           .substring(path.lastIndexOf("/"), path.lastIndexOf("."))
           .replaceAll("/", "");
-      String uploadName =
-          'images/userId_${EmailAuth().getCurrentUser().uid}/questionId_$_questionId/$fileName.jpg';
+      String uploadName = widget.isAnswer
+          ? 'images/answers/userId_${EmailAuth().getCurrentUser().uid}/answerId_$_id/$fileName.jpg'
+          : 'images/questions/userId_${EmailAuth().getCurrentUser().uid}/questionId_$_id/$fileName.jpg';
 
       try {
         /// uploads the file
@@ -184,7 +186,7 @@ class _NewFormState extends State<NewForm> {
       setState(() {
         _answer = new AnswerModel(
           id: _id,
-          mediaUrls: _mediaPaths,
+          mediaUrls: downloadUrls,
           answerDate: _date.toIso8601String(),
           description: _body,
           questionId:
@@ -209,13 +211,9 @@ class _NewFormState extends State<NewForm> {
           category: widget.categoryName,
           status: true,
           visible: true,
+          userId: EmailAuth().getCurrentUser().uid,
         );
       });
-
-      /// temp print object instead of send to back-end.
-      /// when connecting backend, replace this print
-      print(
-          "${_question.id}, ${_question.title}, ${_question.questionDate}, ${_question.description}, ${_question.mediaUrls}, ${_question.category}, ${_question.status}, ${_question.visible}");
 
       return _question;
     }
@@ -234,21 +232,30 @@ class _NewFormState extends State<NewForm> {
 
     dynamic _model = _createModel(_id, _date, downloadUrls);
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => widget.isAnswer
-            ? NewFormConfirmation(
-                answerModel: _model,
-                isAnswer: true,
-              )
-            : NewFormConfirmation(
-                questionModel: _model,
-                isAnswer: false,
-              ),
-      ),
-      (Route<void> route) => false,
-    );
+    try {
+      widget.isAnswer
+          ? null //Add POST answer here
+          : await NewQuestionService()
+              .postNewQuestion(_model); // POST question to database
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => widget.isAnswer
+              ? NewFormConfirmation(
+                  answerModel: _model,
+                  isAnswer: true,
+                )
+              : NewFormConfirmation(
+                  questionModel: _model,
+                  isAnswer: false,
+                ),
+        ),
+        (Route<void> route) => false,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override

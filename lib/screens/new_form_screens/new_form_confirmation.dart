@@ -45,7 +45,6 @@ class _NewFormConfirmationState extends State<NewFormConfirmation> {
   Text _formConfirmationTextStyling(String text, [bool bold]) {
     return Text(
       text,
-      //maxLines: 4,
       style: TextStyle(
         fontSize: 18.0,
         fontWeight: bold == null ? null : FontWeight.bold,
