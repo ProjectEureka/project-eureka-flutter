@@ -7,6 +7,11 @@ import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/rating_service.dart';
 
 class RatingPage extends StatefulWidget {
+  final String id;
+  final double rating;
+
+  RatingPage({this.id, this.rating});
+
   @override
   _RatingPageState createState() => _RatingPageState();
 }
@@ -61,6 +66,7 @@ class _RatingPageState extends State<RatingPage> {
         ));
   }
 
+  //Rates the current user for now until the answer page is created
   Future<void> _submit() async {
     RatingModel rating =
         new RatingModel(id: EmailAuth().getCurrentUser().uid, rating: _rating);

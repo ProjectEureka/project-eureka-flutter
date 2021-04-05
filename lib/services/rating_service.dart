@@ -1,5 +1,4 @@
 import 'package:project_eureka_flutter/models/rating_model.dart';
-import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
