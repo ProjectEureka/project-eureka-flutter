@@ -7,14 +7,15 @@ class AnswerModel {
   //final bool bestAnswer  // this may be used later
   final String userId;
 
-  AnswerModel(
-      {this.id,
-        this.mediaUrls,
-        this.answerDate,
-        this.description,
-        this.questionId,
-        //this.bestAnswer
-        this.userId});
+  AnswerModel({
+    this.id,
+    this.mediaUrls,
+    this.answerDate,
+    this.description,
+    this.questionId,
+    //this.bestAnswer
+    this.userId,
+  });
 
   factory AnswerModel.fromJson(Map<String, dynamic> json) {
     return AnswerModel(
