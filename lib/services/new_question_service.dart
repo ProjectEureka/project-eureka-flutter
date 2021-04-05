@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class NewQuestionService {
-  void postNewQuestion(QuestionModel question) async {
+  Future<http.Response> postNewQuestion(QuestionModel question) async {
     await DotEnv.load();
 
     final response = await http.post(
@@ -21,8 +21,9 @@ class NewQuestionService {
       ),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       print('Question was added to database.');
+      return response;
     } else {
       throw Exception('Failed to add question to database.');
     }

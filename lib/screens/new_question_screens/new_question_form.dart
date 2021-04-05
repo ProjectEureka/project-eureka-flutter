@@ -185,20 +185,25 @@ class _NewQuestionFormState extends State<NewQuestionForm> {
           status: true,
           visible: true,
           userId: EmailAuth().getCurrentUser().uid);
-      _question.toJson();
-      NewQuestionService()
-          .postNewQuestion(_question); // POST question to database
     });
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NewQuestionConfirmation(
-          questionModel: _question,
+    try {
+      _question.toJson();
+      await NewQuestionService()
+          .postNewQuestion(_question); // POST question to database
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NewQuestionConfirmation(
+            questionModel: _question,
+          ),
         ),
-      ),
-      (Route<void> route) => false,
-    );
+        (Route<void> route) => false,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
