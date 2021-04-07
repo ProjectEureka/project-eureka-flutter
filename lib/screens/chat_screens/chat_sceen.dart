@@ -1,3 +1,4 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -154,15 +155,16 @@ class MessagesStream extends StatelessWidget {
         for (var message in messages) {
           final messageText = message.data()['text'];
           final messageSender = message.data()['sender'];
+          final messageTimestamp = message.data()['timestamp'];
           //print(loggedInUser.email);
 
           final currentUser = fromId;
 
           final messageBubble = MessageBubble(
-            sender: messageSender,
-            text: messageText,
-            isMe: loggedInUser.email == messageSender,
-          );
+              sender: messageSender,
+              text: messageText,
+              isMe: loggedInUser.email == messageSender,
+              timestamp: messageTimestamp.toDate());
           messageBubbles.add(messageBubble);
         }
         return Expanded(
@@ -177,15 +179,22 @@ class MessagesStream extends StatelessWidget {
   }
 }
 
+String getTime(DateTime dateTime) {
+  String formattedTime = DateFormat.jm().format(dateTime);
+  return formattedTime;
+}
+
 class MessageBubble extends StatelessWidget {
-  MessageBubble({this.sender, this.text, this.isMe});
+  MessageBubble({this.sender, this.text, this.isMe, this.timestamp});
   final String sender;
   final String text;
   final bool isMe;
+  final DateTime timestamp;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
           crossAxisAlignment:
               isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -205,16 +214,35 @@ class MessageBubble extends StatelessWidget {
                       bottomLeft: Radius.circular(30.0),
                       bottomRight: Radius.circular(30.0)),
               elevation: 5.0, //adds shadow
-              color: isMe ? Colors.lightBlueAccent : Colors.white,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    color: isMe ? Colors.white : Colors.black,
+              color: isMe ? Colors.cyan : Colors.white,
+
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    child: Container(
+                      child: Text(text,
+                          style: TextStyle(
+                            fontSize: 17.0,
+                            color: isMe ? Colors.white : Colors.black,
+                          ),
+                          textAlign: isMe ? TextAlign.start : TextAlign.end),
+                    ),
                   ),
-                ),
+                  Container(
+                    child: Text(
+                      getTime(timestamp),
+                      textAlign: isMe ? TextAlign.start : TextAlign.end,
+                      style: TextStyle(
+                          fontSize: 11.5,
+                          color: isMe ? Colors.white : Colors.black),
+                    ),
+                    margin: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 15.0),
+                  ),
+                ],
+                crossAxisAlignment:
+                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               ),
             ),
           ]),

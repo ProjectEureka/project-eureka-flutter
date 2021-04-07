@@ -28,6 +28,9 @@ class _HomeState extends State<Home> {
   String selectedCategory = "All Categories";
   String dropdownValue = 'All Categories';
 
+  ///
+  ///for chat screen testing purposes
+  String fromId = "hJGcQsILP7XQDSvWY2Qx2k3MD0V2";
   // Get data from the database to the list. Questions are shown on home page is always questionsListFiltered,
   // which at this point is a copy of a `data`, as no filters have been applied yet
   @override
@@ -161,7 +164,7 @@ class _HomeState extends State<Home> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ChatScreen(),
+                builder: (context) => ChatScreenConversations(fromId),
               ),
             );
           }, // redirect to Chat page

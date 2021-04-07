@@ -146,32 +146,5 @@ class ConversationBubble extends StatelessWidget {
         ),
       ),
     );
-
-    // child: FlatButton(
-    //   child: Padding(
-    //     padding: const EdgeInsets.all(10.0),
-    //     child: Column(children: <Widget>[
-    //       Text(
-    //         recipient,
-    //         style: TextStyle(fontSize: 12.0, color: Colors.black),
-    //       ),
-    //       Material(
-    //         child: Padding(
-    //           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-    //           child: Text(
-    //             text,
-    //             style: TextStyle(
-    //               fontSize: 15.0,
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ]),
-    //   ),
-    //   onPressed: () {
-    //     Navigator.push(context,
-    //         MaterialPageRoute(builder: (context) => ChatScreen(recipientId)));
-    //   },
-    // );
   }
 }
