@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/video_communication.dart';
-
-import '../components/call_page.dart';
+import 'package:project_eureka_flutter/components/call_page.dart';
 
 class VideoCommunication extends StatefulWidget {
   @override
@@ -16,34 +14,40 @@ class VideoCommunication extends StatefulWidget {
 }
 
 class IndexState extends State<VideoCommunication> {
-  final User user = EmailAuth().getCurrentUser();
+  // Once called, server will associate token with the user id of the caller
+  // Once merged with the Chat screen, user id of the companion will be available
+  final User _currentUser = EmailAuth().getCurrentUser();
+  final String _companionId = "targetuserid";
 
+  // chanel name is the caller's user id
   String _channelController = "";
-  String _token = "";
 
-  ClientRole _role = ClientRole.Broadcaster;
+  // initialize tokens that will be requested from the backend
+  String _tokenCall = "";
+  String _tokenAnswer = "";
 
   @override
-  void dispose() {
-    _channelController = user.uid;
-    super.dispose();
+  void initState() {
+    _channelController = _currentUser.uid + _companionId;
+    super.initState();
   }
 
   Future<void> initGetTokenCall() async {
-    await VideoCallService().getTokenCall(user.uid).then(
+    // will be later companion+currentUser.uid, for the user who answers call
+    await VideoCallService().getTokenCall(_channelController).then(
       (payload) {
         setState(() {
-          _token = payload;
+          _tokenCall = payload;
         });
       },
     );
   }
 
   Future<void> initGetTokenAnswer() async {
-    await VideoCallService().getTokenAnswer(user.uid).then(
-          (payload) {
+    await VideoCallService().getTokenAnswer(_channelController).then(
+      (payload) {
         setState(() {
-          _token = payload;
+          _tokenAnswer = payload;
         });
       },
     );
@@ -68,21 +72,41 @@ class IndexState extends State<VideoCommunication> {
                 child: Column(
                   children: <Widget>[
                     RaisedButton(
-                        onPressed: callUser,
-                        child: Text('Call'),
-                        color: Colors.blueAccent,
-                        textColor: Colors.white,
-                      ),
-
+                      onPressed: callUser,
+                      child: Text('Call'),
+                      color: Colors.blueAccent,
+                      textColor: Colors.white,
+                    ),
                     RaisedButton(
-                        onPressed: answerCall,
-                        child: Text('Answer'),
-                        color: Colors.blueAccent,
-                        textColor: Colors.white,
-                      ),
+                      onPressed: //answerCall,
+                          () async {
+                        await answerCall();
+                        // Once call is ended, answer button must not work.
+                        // Thus, if server returned error due the not active call (or if token is empty), display an error message
+                        if (_tokenAnswer == "error")
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text('Error'),
+                                    content: Text(
+                                      'Call is inactive.',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: Text('Close')),
+                                    ],
+                                  ));
+                      },
+                      child: Text('Answer'),
+                      color: Colors.blueAccent,
+                      textColor: Colors.white,
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -92,16 +116,14 @@ class IndexState extends State<VideoCommunication> {
 
   Future<void> callUser() async {
     await initGetTokenCall();
-    dispose();
     await _handleCameraAndMic(Permission.camera);
     await _handleCameraAndMic(Permission.microphone);
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CallPage(
-          token: _token,
+          token: _tokenCall,
           channelName: _channelController,
-          role: _role,
         ),
       ),
     );
@@ -109,23 +131,23 @@ class IndexState extends State<VideoCommunication> {
 
   Future<void> answerCall() async {
     await initGetTokenAnswer();
-    dispose();
-    await _handleCameraAndMic(Permission.camera);
-    await _handleCameraAndMic(Permission.microphone);
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CallPage(
-          token: _token,
-          channelName: _channelController,
-          role: _role,
+    if (_tokenAnswer != "error") {
+      await _handleCameraAndMic(Permission.camera);
+      await _handleCameraAndMic(Permission.microphone);
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CallPage(
+            token: _tokenAnswer,
+            channelName: _channelController,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   Future<void> _handleCameraAndMic(Permission permission) async {
     final status = await permission.request();
-    //print(status);
+    print(status);
   }
 }
