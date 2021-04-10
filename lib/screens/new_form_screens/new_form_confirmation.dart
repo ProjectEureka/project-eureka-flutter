@@ -136,7 +136,7 @@ class _NewFormConfirmationState extends State<NewFormConfirmation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EurekaAppBar(
-        title: widget.isAnswer ? 'New Answer' : 'New Question',
+        title: widget.isAnswer ? 'Answer' : 'Question',
         appBar: AppBar(),
       ),
       body: _formConfirmationBody(),

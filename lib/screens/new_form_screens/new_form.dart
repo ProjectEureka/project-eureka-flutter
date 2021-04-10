@@ -262,7 +262,7 @@ class _NewFormState extends State<NewForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EurekaAppBar(
-        title: widget.isAnswer ? 'New Answer' : 'New Question',
+        title: widget.isAnswer ? 'Answer' : 'Question',
         appBar: AppBar(),
       ),
       body: Form(

@@ -5,7 +5,7 @@ import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
-import 'package:project_eureka_flutter/services/all_users_service.dart';
+import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class Home extends StatefulWidget {
@@ -36,8 +36,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     initGetQuestions();
-    initGetCurrentUser();
-
     super.initState();
   }
 
@@ -46,10 +44,7 @@ class _HomeState extends State<Home> {
       selectedCategory = "All Categories";
       isSearching = false;
       initGetQuestions();
-      initGetCurrentUser();
     });
-    print("User Name: " + user.firstName + " " + user.lastName);
-    print(user.firebaseUuid);
   }
 
   void initGetQuestions() {
@@ -58,12 +53,6 @@ class _HomeState extends State<Home> {
         data = questionsListFiltered = questionsListFilteredSearch =
             questionsListFilteredCategory = payload;
       });
-    });
-  }
-
-  void initGetCurrentUser() {
-    UsersService().getUserById(userId).then((payload) {
-      user = payload;
     });
   }
 
