@@ -3,7 +3,7 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
-import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
+import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';

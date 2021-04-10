@@ -17,7 +17,7 @@ class NewQuestionService {
         'Content-type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(
-        question,
+        question.toJson(),
       ),
     );
 

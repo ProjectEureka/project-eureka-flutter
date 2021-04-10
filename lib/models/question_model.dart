@@ -10,16 +10,17 @@ class QuestionModel {
   final bool visible;
   final String userId;
 
-  QuestionModel(
-      {this.id,
-      this.title,
-      this.questionDate,
-      this.description,
-      this.category,
-      this.mediaUrls,
-      this.status,
-      this.visible,
-      this.userId});
+  QuestionModel({
+    this.id,
+    this.title,
+    this.questionDate,
+    this.description,
+    this.category,
+    this.mediaUrls,
+    this.status,
+    this.visible,
+    this.userId,
+  });
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(

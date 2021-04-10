@@ -5,6 +5,7 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 
 import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 
 class MoreDetails extends StatefulWidget {
   @override
@@ -51,11 +52,13 @@ class _MoreDetailsState extends State<MoreDetails> {
             for (var item in links)
               FlatButton(
                 onPressed: () {},
-                child: Text("Media " + (1 + links.indexOf(item)).toString(),
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline)),
+                child: Text(
+                  "Media " + (1 + links.indexOf(item)).toString(),
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline),
+                ),
               ),
           ],
         )
@@ -144,7 +147,11 @@ class _MoreDetailsState extends State<MoreDetails> {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Home()), // accept question
+          MaterialPageRoute(
+            builder: (context) => NewForm(
+              isAnswer: true,
+            ),
+          ), // accept question
         );
       },
       buttonText: "Answer",

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
-import 'package:project_eureka_flutter/screens/new_question_screens/new_question_form.dart';
+import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 
 class NewQuestionScreen extends StatelessWidget {
   Padding categoryButtonRow(
@@ -37,7 +37,10 @@ class NewQuestionScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NewQuestionForm(categoryName),
+              builder: (context) => NewForm(
+                categoryName: categoryName,
+                isAnswer: false,
+              ),
             ),
           );
         },
@@ -100,7 +103,7 @@ class NewQuestionScreen extends StatelessWidget {
     return Scaffold(
       drawer: SideMenu(),
       appBar: EurekaAppBar(
-        title: 'New Questions',
+        title: 'New Question',
         appBar: AppBar(),
       ),
       body: categorySelector(context),
