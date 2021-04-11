@@ -124,6 +124,7 @@ class IndexState extends State<VideoCommunication> {
         builder: (context) => CallPage(
           token: _tokenCall,
           channelName: _channelController,
+          action: "call",
         ),
       ),
     );
@@ -140,6 +141,7 @@ class IndexState extends State<VideoCommunication> {
           builder: (context) => CallPage(
             token: _tokenAnswer,
             channelName: _channelController,
+            action: "answer",
           ),
         ),
       );

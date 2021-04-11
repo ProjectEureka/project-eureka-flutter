@@ -12,8 +12,10 @@ class CallPage extends StatefulWidget {
 
   final String channelName;
 
-  // ChannelName is a combination of user id's
-  const CallPage({Key key, this.token, this.channelName}) : super(key: key);
+  final String action;
+
+  // ChannelName is a combination of user id's (caller's + target's)
+  const CallPage({Key key, this.token, this.channelName, this.action}) : super(key: key);
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -27,10 +29,9 @@ class _CallPageState extends State<CallPage> {
   final _infoStrings = <String>[];
   bool mutedAudio = false;
   bool mutedVideo = false;
-  bool userRole = true;
-  RtcEngine _engine;
+  bool userJoined = false;
 
-  ClientRole _role = ClientRole.Broadcaster;
+  RtcEngine _engine;
 
   @override
   void dispose() {
@@ -44,15 +45,14 @@ class _CallPageState extends State<CallPage> {
 
   @override
   void initState() {
-    super.initState();
     // initialize agora sdk
     initialize();
+    super.initState();
   }
 
   Future<void> initialize() async {
     // load AGORA APP_ID environmental variable
     await DotEnv.load();
-
     if (DotEnv.env['AGORA_ID'].isEmpty) {
       setState(() {
         _infoStrings.add(
@@ -62,8 +62,7 @@ class _CallPageState extends State<CallPage> {
       });
       return;
     }
-
-    await _initAgoraRtcEngine();
+    await _initAgoraRtcEngine(DotEnv.env['AGORA_ID']);
     _addAgoraEventHandlers();
     // ignore: deprecated_member_use
     await _engine.enableWebSdkInteroperability(true);
@@ -74,12 +73,10 @@ class _CallPageState extends State<CallPage> {
   }
 
   /// Create agora sdk instance and initialize
-  Future<void> _initAgoraRtcEngine() async {
-    // ignore: deprecated_member_use
-    _engine = await RtcEngine.create(DotEnv.env['AGORA_ID']);
+  Future<void> _initAgoraRtcEngine(String appId) async {
+    _engine = await RtcEngine.create(appId);
     await _engine.enableVideo();
-    await _engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
-    await _engine.setClientRole(_role);
+    await _engine.setChannelProfile(ChannelProfile.Communication);
   }
 
   /// Add agora event handlers
@@ -104,6 +101,7 @@ class _CallPageState extends State<CallPage> {
     }, userJoined: (uid, elapsed) {
       setState(() {
         final info = 'userJoined: $uid';
+        userJoined = true;
         _infoStrings.add(info);
         _users.add(uid);
       });
@@ -159,8 +157,8 @@ class _CallPageState extends State<CallPage> {
         return Container(
             child: Column(
           children: <Widget>[
+            _expandedVideoRow([views[1]]),
             _expandedVideoRow([views[0]]),
-            _expandedVideoRow([views[1]])
           ],
         ));
       default:
@@ -173,45 +171,19 @@ class _CallPageState extends State<CallPage> {
     return Container(
       alignment: Alignment.bottomCenter,
       padding: const EdgeInsets.symmetric(vertical: 48),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RawMaterialButton(
-            onPressed: _onToggleMuteVideo,
-            child: Icon(
-              mutedVideo ? Icons.pause : Icons.photo_camera,
-              color: mutedVideo ? Colors.white : Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: mutedVideo ? Colors.blueAccent : Colors.white,
-            padding: const EdgeInsets.all(12.0),
-          ),
-          RawMaterialButton(
-            onPressed: _onToggleMuteAudio,
-            child: Icon(
-              mutedAudio ? Icons.mic_off : Icons.mic,
-              color: mutedAudio ? Colors.white : Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: mutedAudio ? Colors.blueAccent : Colors.white,
-            padding: const EdgeInsets.all(12.0),
-          ),
-          RawMaterialButton(
-            // if user on the other end hung up, then call will end on both sides
-            onPressed: () => _onCallEnd(context),
-            child: Icon(
-              Icons.call_end,
-              color: Colors.white,
-              size: 35.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.redAccent,
-            padding: const EdgeInsets.all(15.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if(userJoined == false)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if(widget.action == "call")
+                Text("Calling...", style: TextStyle(fontSize: 35.0, color: Colors.white)),
+              if(widget.action == "answer")
+                Text("Connecting...", style: TextStyle(fontSize: 35.0, color: Colors.white)),
+            ],
           ),
           RawMaterialButton(
             onPressed: _onSwitchCamera,
@@ -223,62 +195,107 @@ class _CallPageState extends State<CallPage> {
             shape: CircleBorder(),
             elevation: 2.0,
             fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
-          )
+            padding: const EdgeInsets.all(20.0),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RawMaterialButton(
+                onPressed: _onToggleMuteVideo,
+                child: Icon(
+                  mutedVideo ? Icons.pause : Icons.photo_camera,
+                  color: mutedVideo ? Colors.white : Colors.blueAccent,
+                  size: 20.0,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: mutedVideo ? Colors.blueAccent : Colors.white,
+                padding: const EdgeInsets.all(12.0),
+              ),
+              RawMaterialButton(
+                // if user on the other end hung up, then call will end on both sides
+                onPressed: () => _onCallEnd(context),
+                child: Icon(
+                  Icons.call_end,
+                  color: Colors.white,
+                  size: 35.0,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: Colors.redAccent,
+                padding: const EdgeInsets.all(15.0),
+              ),
+              RawMaterialButton(
+                onPressed: _onToggleMuteAudio,
+                child: Icon(
+                  mutedAudio ? Icons.mic_off : Icons.mic,
+                  color: mutedAudio ? Colors.white : Colors.blueAccent,
+                  size: 20.0,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: mutedAudio ? Colors.blueAccent : Colors.white,
+                padding: const EdgeInsets.all(12.0),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
   /// Info panel to show logs
-  Widget _panel() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 48),
-      alignment: Alignment.bottomCenter,
-      child: FractionallySizedBox(
-        heightFactor: 0.5,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 48),
-          child: ListView.builder(
-            reverse: true,
-            itemCount: _infoStrings.length,
-            itemBuilder: (BuildContext context, int index) {
-              if (_infoStrings.isEmpty) {
-                return null;
-              }
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 3,
-                  horizontal: 10,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 2,
-                          horizontal: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.yellowAccent,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Text(
-                          _infoStrings[index],
-                          style: TextStyle(color: Colors.blueGrey),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
+  /// Uncomment to test
+   Widget _panel() {
+     return Container();
+   }
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(vertical: 48),
+  //     alignment: Alignment.bottomCenter,
+  //     child: FractionallySizedBox(
+  //       heightFactor: 0.5,
+  //       child: Container(
+  //         padding: const EdgeInsets.symmetric(vertical: 48),
+  //         child: ListView.builder(
+  //           reverse: true,
+  //           itemCount: _infoStrings.length,
+  //           itemBuilder: (BuildContext context, int index) {
+  //             if (_infoStrings.isEmpty) {
+  //               return null;
+  //             }
+  //             return Padding(
+  //               padding: const EdgeInsets.symmetric(
+  //                 vertical: 3,
+  //                 horizontal: 10,
+  //               ),
+  //               child: Row(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   Flexible(
+  //                     child: Container(
+  //                       padding: const EdgeInsets.symmetric(
+  //                         vertical: 2,
+  //                         horizontal: 5,
+  //                       ),
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.yellowAccent,
+  //                         borderRadius: BorderRadius.circular(5),
+  //                       ),
+  //                       child: Text(
+  //                         _infoStrings[index],
+  //                         style: TextStyle(color: Colors.blueGrey),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 ],
+  //               ),
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _onCallEnd(BuildContext context) {
     //callEnded = true;
