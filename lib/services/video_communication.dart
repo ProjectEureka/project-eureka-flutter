@@ -9,7 +9,7 @@ class VideoCallService {
     await DotEnv.load();
 
     print("Call -token requested");
-    final response = await http.get('http://192.168.1.2:8080/v1/call/' + userId);
+    final response = await http.get('http://192.168.1.2:8080/v1/agora/call/' + userId);
     if (response.statusCode == 200) {
       final body = json.decode(response.body);
       print("Call - token received");
@@ -25,7 +25,7 @@ class VideoCallService {
     await DotEnv.load();
 
     print("Call answer - token requested");
-    final response = await http.get('http://192.168.1.2:8080/v1/answer/' + userId);
+    final response = await http.get('http://192.168.1.2:8080/v1/agora/answer/' + userId);
     if (response.statusCode == 200) {
       final body = json.decode(response.body);
       if (body['token'] != "error") {
@@ -46,7 +46,7 @@ class VideoCallService {
 
     await DotEnv.load();
 
-    final response = await http.delete('http://10.0.2.2:8080/v1/hungup/' + userId);
+    final response = await http.delete('http://10.0.2.2:8080/v1/agora/hungup/' + userId);
     if (response.statusCode == 200) {
       print("Caller hung up");
     } else {
