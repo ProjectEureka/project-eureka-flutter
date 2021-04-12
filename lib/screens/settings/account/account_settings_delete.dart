@@ -24,10 +24,10 @@ class _AccountSettingsDeleteState extends State<AccountSettingsDelete> {
   String exception = "";
 
   Future<void> deleteUserAccount(context) async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
     if (providerId == "password") {
+      if (!_formKey.currentState.validate()) {
+        return;
+      }
       _formKey.currentState.save();
     }
     try {
