@@ -349,7 +349,11 @@ class _CallPageState extends State<CallPage> {
                                 Navigator.of(context)
                                     .popUntil((_) => count++ >= 2),
                                 VideoCallService()
-                                    .hungUpCaller(widget.channelName)
+                                    .hungUpCaller(widget.channelName),
+                                Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => CallEnded()),
+                                ),
                               ],
                           child: Text('Leave')),
                       FlatButton(
