@@ -33,7 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     getCurrentuser();
     userId = loggedInUser.uid;
-    if (fromId == userId) {
+    if (fromId != userId) {
       groupChatId = '$userId-$fromId';
     } else {
       groupChatId = '$fromId-$userId';

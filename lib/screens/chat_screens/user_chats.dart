@@ -66,17 +66,22 @@ class ConversationsStream extends StatelessWidget {
           final recipeintID = userChat.data()['recipientId'];
           final recipientName = userChat.data()['recipient'];
           //print(loggedInUser.email);
+          print("<data>");
+          print(recipeintID);
+          print(conversationUserID);
+          print(loggedInUser.uid);
+          print("</data>");
 
           final conversationBubble = ConversationBubble(
               recipient: recipeintID == loggedInUser.uid
                   ? conversationStarter
                   : recipientName,
-              recipientId: recipeintID != conversationUserID
+              recipientId: recipeintID != loggedInUser.uid
                   ? recipeintID
                   : conversationUserID,
               text: conversationText);
-          if (conversationUserID != loggedInUser.uid ||
-              recipeintID != loggedInUser.uid) {
+          if (conversationUserID == loggedInUser.uid ||
+              recipeintID == loggedInUser.uid) {
             print("is this adding to it");
             conversationBubbles.add(conversationBubble);
           }
