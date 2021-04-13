@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project_eureka_flutter/services/shared_preferences_helper.dart';
 
 class SettingsGeneral extends StatefulWidget {
   @override
@@ -10,35 +10,27 @@ class SettingsGeneral extends StatefulWidget {
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _SettingsGeneral extends State<SettingsGeneral> {
+  SharedPreferencesHelper sharedPreferencesHelper =
+      new SharedPreferencesHelper();
+
   // initialized three settings
   bool _darkMode = false;
   bool _emailNotification = false;
   bool _textNotification = false;
 
-  Future<bool> _getBoolValuesSF(String setting) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(setting) ??
-        false; // if setting doesn't exist yet, give false
-  }
-
-  void _switchSetting(String setting, bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(setting, value);
-  }
-
   // get initial values of the settings once coming to the settings page
   void _getValuesSettings() {
-    _getBoolValuesSF('darkMode').then((data) {
+    sharedPreferencesHelper.getSettings('darkMode').then((data) {
       setState(() {
         _darkMode = data;
       });
     });
-    _getBoolValuesSF('emailNotification').then((data) {
+    sharedPreferencesHelper.getSettings('emailNotification').then((data) {
       setState(() {
         _emailNotification = data;
       });
     });
-    _getBoolValuesSF('textNotification').then((data) {
+    sharedPreferencesHelper.getSettings('textNotification').then((data) {
       setState(() {
         _textNotification = data;
       });
@@ -65,7 +57,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
             _darkMode,
             (bool value) {
               setState(() {
-                _switchSetting('darkMode', value);
+                sharedPreferencesHelper.setSettings('darkMode', value);
                 _darkMode = value;
                 print("Dark mode: " + _darkMode.toString());
               });
@@ -76,7 +68,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
             _emailNotification,
             (bool value) {
               setState(() {
-                _switchSetting('emailNotification', value);
+                sharedPreferencesHelper.setSettings('emailNotification', value);
                 _emailNotification = value;
                 print("Email notification: " + _emailNotification.toString());
               });
@@ -87,7 +79,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
             _textNotification,
             (bool value) {
               setState(() {
-                _switchSetting('textNotification', value);
+                sharedPreferencesHelper.setSettings('textNotification', value);
                 _textNotification = value;
                 print("Text notification: " + _textNotification.toString());
               });

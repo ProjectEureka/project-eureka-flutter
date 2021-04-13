@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
-import 'package:project_eureka_flutter/screens/chat_screens/chat_sceen.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/user_chats.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
-
-import 'chat_screens/user_chats.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -14,6 +14,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  //Made for testing purposes. Used to see if the Users Will Properly show on the home page
+  UserModel user;
+  String userId = EmailAuth().getCurrentUser().uid;
   // Questions data. Unfiltered list of questions
   List data = [];
   // Will filter the list of questions
@@ -39,15 +42,21 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
+  Future<void> _getData() async {
+    setState(() {
+      selectedCategory = "All Categories";
+      isSearching = false;
+      initGetQuestions();
+    });
+  }
+
   void initGetQuestions() {
-    AllQuestionService().getQuestions().then(
-      (payload) {
-        setState(() {
-          data = questionsListFiltered = questionsListFilteredSearch =
-              questionsListFilteredCategory = payload;
-        });
-      },
-    );
+    AllQuestionService().getQuestions().then((payload) {
+      setState(() {
+        data = questionsListFiltered = questionsListFilteredSearch =
+            questionsListFilteredCategory = payload;
+      });
+    });
   }
 
   // Called from widget (class) category filter
@@ -74,7 +83,7 @@ class _HomeState extends State<Home> {
   }
 
   // Called by search bar. Returns filtered list
-  // At this point it can only search for a single keyword in question's Title
+  // Works with title and description (and category in case if user enters category in search bar)
   // In case if category filter is applied to the list of questions, search filter is applied to `questionsListFilteredCategory`,
   //    which might or might not have filter applied
   void filterQuestionsSearch(value) {
@@ -82,7 +91,13 @@ class _HomeState extends State<Home> {
       questionsListFiltered = questionsListFilteredSearch =
           questionsListFilteredCategory
               .where((question) =>
-                  question.title.toLowerCase().contains(value.toLowerCase())
+                  question.title.toLowerCase().contains(value.toLowerCase()) |
+                          question.description
+                              .toLowerCase()
+                              .contains(value.toLowerCase()) |
+                          question.category
+                              .toLowerCase()
+                              .contains(value.toLowerCase())
                       ? true
                       : false)
               .toList();
@@ -111,15 +126,24 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Visibility _noResults(int filteredQuestionListLength) {
-    return Visibility(
-      visible: filteredQuestionListLength == 0.0,
-      child: Center(
-        child: Text(
-          "No results",
+  Visibility _noResults(int filteredQuestionListLength, int dataLength) {
+    // if data list length is 0, it means the data is still loading from backend services - show loading circle
+    // if filtered data list is empty, but data list is not, it means that there is no result based on search and/or category - "no results"
+    if (data.length == 0) {
+      return Visibility(
+        visible: filteredQuestionListLength == 0.0,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    } else {
+      return Visibility(
+        visible: filteredQuestionListLength == 0.0,
+        child: Center(
+          child: Text(
+            "No results",
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   EurekaAppBar homeAppBar() {
@@ -164,7 +188,7 @@ class _HomeState extends State<Home> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ChatScreenConversations(fromId),
+                builder: (context) => ChatScreenConversations(),
               ),
             );
           }, // redirect to Chat page
@@ -197,9 +221,8 @@ class _HomeState extends State<Home> {
         'All Categories',
         'Technology',
         'Household',
-        'Category 3',
-        'Category 4',
-        'Category 5'
+        'Lifestyle',
+        'Academic'
       ].map<DropdownMenuItem<String>>(
         (String value) {
           return DropdownMenuItem<String>(
@@ -233,24 +256,30 @@ class _HomeState extends State<Home> {
         Expanded(
           // Show loading circle if results are taking time
           // Show "No results" if input text doesn't match with question title (later will be added to description too)
-          child: ListView.builder(
-            itemCount: questionsListFiltered.length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                // category filter are above the first row. If there is no questions to show, it will still be there.
-                return Column(
-                  children: <Widget>[
-                    _categoryFilter(),
-                    _noResults(questionsListFiltered.length),
-                  ],
+          child: RefreshIndicator(
+            child: ListView.builder(
+              physics: BouncingScrollPhysics(),
+              itemCount: questionsListFiltered.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  // category filter are above the first row. If there is no questions to show, it will still be there.
+                  return Column(
+                    children: <Widget>[
+                      _categoryFilter(),
+                      _noResults(questionsListFiltered.length, data.length),
+                    ],
+                  );
+                }
+                index -= 1;
+                return EurekaListView(
+                  filteredQuestionsList: questionsListFiltered,
+                  index: index,
                 );
-              }
-              index -= 1;
-              return EurekaListView(
-                filteredQuestionsList: questionsListFiltered,
-                index: index,
-              );
-            },
+              },
+            ),
+            // Once list is pulled down, onRefresh will call _getDate that will call all_question_service to update data on the screen
+            // Does not work when category or search bar are in use
+            onRefresh: _getData,
           ),
         ),
       ],

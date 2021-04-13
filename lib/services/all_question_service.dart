@@ -1,50 +1,38 @@
 import 'package:project_eureka_flutter/models/question_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class AllQuestionService {
-  // Here Eureka will get data from the database.
-  // At this point it contains just dummy lists of questions for test purposes
-  Future<List> getQuestions() async {
-    List data = [];
-    // List of 2 dummy questions
-    List list1 = List.generate(2, (index) => "Message")
-        .map((val) => QuestionModel(
-              category: "Technology",
-              date: DateTime.now(),
-              status: 1,
-              visible: 1,
-              title: "Linux installation issue - usb not found",
-              description:
-                  "Hello. I have a Smartbuy 16Gb USB 2.0 flash drive (with new memory controller) that is not recognized in any Linux system, but on Windows it recognized and worked fine. When I connect it to the PC on Linux system, nothing happens",
-            ))
-        .toList();
+  // GET
+  Future<List<QuestionModel>> getQuestions() async {
+    await DotEnv.load();
 
-    // List of another 2 dummy questions (different)
-    List list2 = List.generate(2, (index) => "Message")
-        .map((val) => QuestionModel(
-              category: "Household",
-              date: DateTime.now(),
-              status: 0,
-              visible: 1,
-              title: "Windows Issue",
-              description: "Hello",
-            ))
-        .toList();
+    final response = await http.get(Uri.http(
+        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/questions'));
 
-    // List of another 2 dummy questions (different)
-    List list3 = List.generate(2, (index) => "Message")
-        .map((val) => QuestionModel(
-              category: "Technology",
-              date: DateTime.now(),
-              status: 1,
-              visible: 1,
-              title: "iPhone not working",
-              description: "iphone stopped working",
-            ))
-        .toList();
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response, then parse the JSON.
+      // Backend service returns a list of json instances, while we need a list of question objects.
+      // JSON parser will go through each json instance, transform it to a question object,
+      //   and append to the list that will be used in eureka_list_view
+      // Loop is reversed, as we want to sort the questions by date and show the most recent questions on top
+      //   (new questions are appending to the bottom of the database)
 
-    // Combined 6 dummy questions together
-    List list2list3 = new List.from(list2)..addAll(list3);
-    data = new List.from(list1)..addAll(list2list3);
-    return data;
+      final body = json.decode(response.body);
+      print("All questions were loaded");
+
+      List<QuestionModel> questions = new List();
+      for (var i = body.length - 1; i >= 0; i--) {
+        questions.add(QuestionModel.fromJson(body[i]));
+      }
+      // Sort questions by status (Active or closed)
+      questions
+          .sort((a, b) => b.status.toString().compareTo(a.status.toString()));
+      return questions;
+    } else {
+      throw Exception('Failed to load questions');
+    }
   }
 }

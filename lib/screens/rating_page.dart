@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
+import 'package:project_eureka_flutter/models/rating_model.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
+import 'package:project_eureka_flutter/services/rating_service.dart';
 
 class RatingPage extends StatefulWidget {
+  final String id;
+  final double rating;
+
+  RatingPage({this.id, this.rating});
+
   @override
   _RatingPageState createState() => _RatingPageState();
 }
@@ -48,29 +56,30 @@ class _RatingPageState extends State<RatingPage> {
                 SizedBox(
                   height: 20.0,
                 ),
-                _rating != null
-                    ? Text(
-                        'Rating: $_rating',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    : Container(),
-                SizedBox(
-                  height: 40.0,
-                ),
                 EurekaRoundedButton(
-                    buttonText: 'Done!',
-                    onPressed: () async {
-                      checkRating();
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return Home();
-                        },
-                      ));
-                    }),
+                  buttonText: _rating == null ? 'Skip' : 'Done!',
+                  onPressed: () => _submit(),
+                ),
               ],
             ),
           )),
         ));
+  }
+
+  //Rates the current user for now until the answer page is created
+  Future<void> _submit() async {
+    RatingModel rating =
+        new RatingModel(id: EmailAuth().getCurrentUser().uid, rating: _rating);
+    try {
+      await RatingService().updateRating(rating);
+    } catch (e) {
+      print(e);
+    }
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return Home();
+      },
+    ));
   }
 
   void checkRating() {
@@ -121,7 +130,7 @@ class _RatingPageState extends State<RatingPage> {
   Widget _ratingBar(int mode) {
     return RatingBar.builder(
       glow: false,
-      initialRating: 2,
+      initialRating: 0,
       minRating: 0,
       direction: Axis.horizontal,
       allowHalfRating: true,

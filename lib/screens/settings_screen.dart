@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/screens/root_page.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_account.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_general.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_payment.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
-import 'package:project_eureka_flutter/screens/login_page.dart';
 
 class SettingsScreen extends StatelessWidget {
   final EmailAuth _emailAuth = new EmailAuth();
@@ -32,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
     _emailAuth.signOut().then((_) => Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute<Widget>(
-            builder: (BuildContext context) => LoginPage()),
+            builder: (BuildContext context) => RootPage()),
         (Route<void> route) => false));
   }
 

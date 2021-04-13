@@ -10,17 +10,19 @@ User loggedInUser = EmailAuth().getCurrentUser();
 
 class ChatScreen extends StatefulWidget {
   final String fromId;
-  ChatScreen(this.fromId);
+  final String recipient;
+  ChatScreen(this.fromId, this.recipient);
 
   @override
-  _ChatScreenState createState() => new _ChatScreenState(fromId);
+  _ChatScreenState createState() => new _ChatScreenState(fromId, recipient);
 }
 
 class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String fromId;
-  _ChatScreenState(this.fromId);
+  String recipient;
+  _ChatScreenState(this.fromId, this.recipient);
 
   String messageText;
   String groupChatId;
@@ -31,11 +33,21 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     getCurrentuser();
     userId = loggedInUser.uid;
-
-    print(userId);
+    if (fromId == userId) {
+      groupChatId = '$userId-$fromId';
+    } else {
+      groupChatId = '$fromId-$userId';
+    }
     print(fromId);
-    groupChatId = '$userId-$fromId';
     print(groupChatId);
+  }
+
+  setGroupId() {
+    if (fromId != userId) {
+      groupChatId = '$userId-$fromId';
+    } else {
+      groupChatId = '$fromId-$userId';
+    }
   }
 
   void getCurrentuser() async {
@@ -43,42 +55,23 @@ class _ChatScreenState extends State<ChatScreen> {
       final user = await _auth.currentUser;
       if (user != null) {
         loggedInUser = user;
-        print(loggedInUser.email);
-        print(loggedInUser.metadata.lastSignInTime.month);
-        print(loggedInUser.metadata.lastSignInTime.day);
-        print(loggedInUser.metadata.lastSignInTime.year);
-        print(loggedInUser.metadata.lastSignInTime.minute);
-        print(loggedInUser.metadata.lastSignInTime.hour);
       }
     } catch (e) {
       print(e);
     }
   }
 
-  void messagesStream() async {
-    await for (var snapshot in _firestore.collection('messages').snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
-      }
-    }
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EurekaAppBar(
-        appBar: AppBar(
-          leading: null,
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  messagesStream();
-                }),
-          ],
-          backgroundColor: Colors.lightBlueAccent,
-        ),
-        title: 'Answer Question',
-      ),
+          appBar: AppBar(
+            leading: null,
+            actions: <Widget>[
+              IconButton(icon: Icon(Icons.close), onPressed: () {}),
+            ],
+            backgroundColor: Colors.lightBlueAccent,
+          ),
+          title: recipient),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,9 +150,9 @@ class MessagesStream extends StatelessWidget {
           final messageSender = message.data()['sender'];
           final messageTimestamp = message.data()['timestamp'];
           //print(loggedInUser.email);
-
-          final currentUser = fromId;
-
+          print(messageText);
+          print(messageSender);
+          print(messageTimestamp);
           final messageBubble = MessageBubble(
               sender: messageSender,
               text: messageText,
@@ -200,7 +193,7 @@ class MessageBubble extends StatelessWidget {
               isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              sender,
+              getTime(timestamp),
               style: TextStyle(fontSize: 12.0, color: Colors.black),
             ),
             Material(
@@ -229,16 +222,6 @@ class MessageBubble extends StatelessWidget {
                           ),
                           textAlign: isMe ? TextAlign.start : TextAlign.end),
                     ),
-                  ),
-                  Container(
-                    child: Text(
-                      getTime(timestamp),
-                      textAlign: isMe ? TextAlign.start : TextAlign.end,
-                      style: TextStyle(
-                          fontSize: 11.5,
-                          color: isMe ? Colors.white : Colors.black),
-                    ),
-                    margin: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 15.0),
                   ),
                 ],
                 crossAxisAlignment:

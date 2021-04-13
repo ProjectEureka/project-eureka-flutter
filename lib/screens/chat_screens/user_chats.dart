@@ -8,20 +8,17 @@ import 'chat_sceen.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
-String toId = "hJGcQsILP7XQDSvWY2Qx2k3MD0V2";
 
 class ChatScreenConversations extends StatefulWidget {
-  final String fromId;
-  ChatScreenConversations(this.fromId);
   @override
-  _ChatScreenConversations createState() => _ChatScreenConversations(fromId);
+  _ChatScreenConversations createState() => _ChatScreenConversations();
 }
 
 class _ChatScreenConversations extends State<ChatScreenConversations> {
   final _auth = FirebaseAuth.instance;
-  String fromId;
+
   final _firestore = FirebaseFirestore.instance;
-  _ChatScreenConversations(this.fromId);
+  _ChatScreenConversations();
 
   @override
   void initState() {
@@ -38,11 +35,7 @@ class _ChatScreenConversations extends State<ChatScreenConversations> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              ConversationsStream(
-                fromId: fromId,
-              )
-            ],
+            children: <Widget>[ConversationsStream()],
           ),
         ));
   }
@@ -50,8 +43,8 @@ class _ChatScreenConversations extends State<ChatScreenConversations> {
 
 class ConversationsStream extends StatelessWidget {
   //final String groupChatId;
-  final String fromId;
-  ConversationsStream({this.fromId});
+
+  ConversationsStream();
 
   @override
   Widget build(BuildContext context) {
@@ -68,19 +61,23 @@ class ConversationsStream extends StatelessWidget {
         List<ConversationBubble> conversationBubbles = [];
         for (var userChat in conversations) {
           final conversationText = userChat.data()['text'];
+          final conversationStarter = userChat.data()['chatSender'];
           final conversationUserID = userChat.data()['chatIDUser'];
           final recipeintID = userChat.data()['recipientId'];
           final recipientName = userChat.data()['recipient'];
           //print(loggedInUser.email);
-          print("name: ");
-          print(recipientName);
-          print(conversationUserID);
 
           final conversationBubble = ConversationBubble(
-              recipient: recipientName,
-              recipientId: recipeintID,
+              recipient: recipeintID == loggedInUser.uid
+                  ? conversationStarter
+                  : recipientName,
+              recipientId: recipeintID != conversationUserID
+                  ? recipeintID
+                  : conversationUserID,
               text: conversationText);
-          if (conversationUserID == loggedInUser.uid) {
+          if (conversationUserID != loggedInUser.uid ||
+              recipeintID != loggedInUser.uid) {
+            print("is this adding to it");
             conversationBubbles.add(conversationBubble);
           }
         }
@@ -96,10 +93,12 @@ class ConversationsStream extends StatelessWidget {
 }
 
 class ConversationBubble extends StatelessWidget {
-  ConversationBubble({this.recipient, this.text, this.recipientId});
+  ConversationBubble(
+      {this.recipient, this.text, this.recipientId, this.photoUrl});
   final String recipient;
   final String text;
   final String recipientId;
+  final String photoUrl;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -109,19 +108,38 @@ class ConversationBubble extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.cyan,
             shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.only()),
+            borderRadius: BorderRadius.all(Radius.circular(25.0))),
         child: FlatButton(
           onPressed: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChatScreen(recipientId)));
+                    builder: (context) => ChatScreen(recipientId, recipient)));
           },
           child: Row(
             children: <Widget>[
+              Material(
+                child: Icon(
+                  Icons.account_circle,
+                  size: 50.0,
+                  color: Colors.grey,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                clipBehavior: Clip.hardEdge,
+              ),
               Flexible(
                 child: Column(
                   children: <Widget>[
+                    Container(
+                      child: Text(
+                          'This Question title is very long. I dont know why its long. It should not be this long. its some fucking bullshit', //Qusetion Title from backend should go here
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      alignment: Alignment.centerRight,
+                      margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+                    ),
                     Container(
                       child: Text(recipient,
                           style: TextStyle(
@@ -130,14 +148,6 @@ class ConversationBubble extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
                     ),
-                    Container(
-                      child: Text(text,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                      alignment: Alignment.centerRight,
-                      margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                    )
                   ],
                 ),
               )
