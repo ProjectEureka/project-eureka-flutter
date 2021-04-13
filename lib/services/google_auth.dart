@@ -35,6 +35,21 @@ class GoogleAuth {
     return null;
   }
 
+  Future<void> deleteUser() async {
+    User user = _auth.currentUser;
+
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    await user.reauthenticateWithCredential(credential);
+    await user.delete();
+  }
+
   Future<void> signOutGoogle() async {
     await googleSignIn.signOut();
 
