@@ -81,7 +81,6 @@ class _ChatScreenState extends State<ChatScreen> {
           children: <Widget>[
             MessagesStream(groupChatId: groupChatId, fromId: fromId),
             Container(
-              height: 60,
               width: double.infinity,
               color: Colors.white,
               padding:
@@ -91,10 +90,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      keyboardType: TextInputType.multiline,
                       controller: messageTextController,
                       onChanged: (value) {
                         messageText = value;
                       },
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
                           hintText: "Write message...",
                           hintStyle: TextStyle(color: Colors.black54),
@@ -119,7 +120,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           .doc(groupChatId)
                           .collection(groupChatId)
                           .add({
-                        'text': messageText,
+                        'text': messageText.trim(),
                         'sender': loggedInUser.email,
                         'timestamp': currentTimeAndDate,
                         'idFrom': userId,
@@ -193,7 +194,8 @@ class MessagesStream extends StatelessWidget {
 
 String getTime(DateTime dateTime) {
   String formattedTime = DateFormat.jm().format(dateTime);
-  return formattedTime;
+  String formattedDate = DateFormat.MMMMd().format(dateTime);
+  return formattedDate + ', ' + formattedTime;
 }
 
 class MessageBubble extends StatelessWidget {
@@ -239,12 +241,12 @@ class MessageBubble extends StatelessWidget {
                             fontSize: 17.0,
                             color: isMe ? Colors.white : Colors.black,
                           ),
-                          textAlign: isMe ? TextAlign.start : TextAlign.end),
+                          textAlign: isMe ? TextAlign.start : TextAlign.start),
                     ),
                   ),
                 ],
                 crossAxisAlignment:
-                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               ),
             ),
           ]),
