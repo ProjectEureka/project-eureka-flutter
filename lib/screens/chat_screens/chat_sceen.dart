@@ -33,21 +33,23 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     getCurrentuser();
     userId = loggedInUser.uid;
-    if (fromId != userId) {
-      groupChatId = '$userId-$fromId';
-    } else {
-      groupChatId = '$fromId-$userId';
-    }
-    print(fromId);
-    print(groupChatId);
+    groupChatId = '$userId-$fromId';
+    setGroupId();
   }
 
-  setGroupId() {
-    if (fromId != userId) {
-      groupChatId = '$userId-$fromId';
-    } else {
-      groupChatId = '$fromId-$userId';
-    }
+  void setGroupId() async {
+    List<String> groupChatIds = [];
+    _firestore.collection('messages').get().then((QuerySnapshot) {
+      QuerySnapshot.docs.forEach((result) {
+        groupChatIds.add(result.id.toString());
+      });
+
+      if (!groupChatIds.contains(groupChatId)) {
+        setState(() {
+          groupChatId = '$fromId-$userId';
+        });
+      }
+    });
   }
 
   void getCurrentuser() async {
@@ -79,6 +81,11 @@ class _ChatScreenState extends State<ChatScreen> {
           children: <Widget>[
             MessagesStream(groupChatId: groupChatId, fromId: fromId),
             Container(
+              height: 60,
+              width: double.infinity,
+              color: Colors.white,
+              padding:
+                  EdgeInsets.only(left: 10, bottom: 10, top: 10, right: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -88,9 +95,20 @@ class _ChatScreenState extends State<ChatScreen> {
                       onChanged: (value) {
                         messageText = value;
                       },
+                      decoration: InputDecoration(
+                          hintText: "Write message...",
+                          hintStyle: TextStyle(color: Colors.black54),
+                          border: InputBorder.none),
+                      maxLines: null,
                     ),
                   ),
+                  SizedBox(
+                    width: 15,
+                  ),
                   FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0)),
+                    color: Colors.cyan,
                     onPressed: () {
                       messageTextController.clear();
                       var currentTimeAndDate = DateTime.now();
@@ -110,6 +128,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                     child: Text(
                       'Send',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -232,5 +251,3 @@ class MessageBubble extends StatelessWidget {
     );
   }
 }
-//user id: NX3lTrYhiiZfV12WgPlWuUBykqI2
-// idFrom: hJGcQsILP7XQDSvWY2Qx2k3MD0V2 victor
