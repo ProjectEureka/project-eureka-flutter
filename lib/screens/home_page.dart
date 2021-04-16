@@ -262,7 +262,7 @@ class _HomeState extends State<Home> {
                 }
                 index -= 1;
                 return EurekaListView(
-                  filteredQuestionsList: questionsListFiltered,
+                  questionList: questionsListFiltered,
                   index: index,
                 );
               },

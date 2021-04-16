@@ -111,6 +111,7 @@ class _AccountSettingsDeleteState extends State<AccountSettingsDelete> {
           return AlertDialog(
             title: Text("Are you sure?"),
             content: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                     "You will permanently lose your account and this proccess cannot be undone."),
