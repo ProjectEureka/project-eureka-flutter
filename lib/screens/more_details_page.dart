@@ -265,8 +265,7 @@ class _MoreDetailsState extends State<MoreDetails> {
           padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
           //user id checker, if user is not the owner of the question, they have option to answer
           //if user is owner, they can archive question
-          child: _moreDetailModel.user.id ==
-                  currUserId //TODO: Change == to != after testing
+          child: _moreDetailModel.user.id != currUserId
               ? _answerQuestionButton()
               : _questionArchiveButton(),
         ),
