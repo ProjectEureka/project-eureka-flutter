@@ -3,36 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
+import 'package:project_eureka_flutter/models/more_details_model.dart';
 
 import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
+import 'package:project_eureka_flutter/services/more_detail_serivce.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class MoreDetails extends StatefulWidget {
+  final String questionId;
+
+  MoreDetails({
+    this.questionId,
+  });
+
   @override
   _MoreDetailsState createState() => _MoreDetailsState();
 }
 
 class _MoreDetailsState extends State<MoreDetails> {
-  String id;
-  String owner_id =
-      "abdwk23na1nfaol9fnj35"; // fake user id represents owner of the question
-  String user_id =
-      "123412313ddd"; // fake user id represents a peer who is checking out question
+  MoreDetailModel _moreDetailModel;
 
-  //media links mock up
-  List<String> links = [
-    "pic1.jpg",
-    "pic2.jpg",
-    "pic3.jpg",
-    "pic4.jpg",
-    "pic5.jpg",
-    "pic6.jpg",
-    "pic7.jpg",
-    "pic8.jpg",
-    "pic9.jpg",
-    "pic10.jpg",
-    "pic11.jpg",
-  ];
+  final String currUserId = EmailAuth().getCurrentUser().uid;
 
   Widget _getMediaLinks() {
     return Column(
@@ -49,15 +42,16 @@ class _MoreDetailsState extends State<MoreDetails> {
           crossAxisCount: 4,
           childAspectRatio: 4 / 2,
           children: <Widget>[
-            for (var item in links)
+            for (var item in _moreDetailModel.question.mediaUrls)
               FlatButton(
                 onPressed: () {},
                 child: Text(
-                  "Media " + (1 + links.indexOf(item)).toString(),
+                  "Media ${1 + _moreDetailModel.question.mediaUrls.indexOf(item)}",
                   style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline),
+                    fontSize: 12,
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
           ],
@@ -68,11 +62,19 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   @override
   void initState() {
-    initGetQuestionDetails(id);
+    initGetQuestionDetails();
     super.initState();
   }
 
-  void initGetQuestionDetails(String id) {}
+  Future<void> initGetQuestionDetails() async {
+    MoreDetailModel payload = await MoreDetailService().getMoreDetail(
+      widget.questionId,
+    );
+
+    setState(() {
+      _moreDetailModel = payload;
+    });
+  }
 
   Column _headerStack() {
     return Column(
@@ -86,6 +88,9 @@ class _MoreDetailsState extends State<MoreDetails> {
   }
 
   Row _profileNameAndIcon() {
+    final DateTime dateTime =
+        DateTime.parse(_moreDetailModel.question.questionDate)
+            .subtract(new Duration(minutes: 1));
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +100,9 @@ class _MoreDetailsState extends State<MoreDetails> {
           backgroundColor: Colors.grey[300],
           child: CircleAvatar(
             radius: 40.0,
-            backgroundImage: AssetImage('assets/images/dn.jpg'),
+            backgroundImage: _moreDetailModel.user.pictureUrl == ''
+                ? AssetImage('assets/images/profile_default_image.png')
+                : NetworkImage(_moreDetailModel.user.pictureUrl),
           ),
         ),
         Column(
@@ -106,7 +113,7 @@ class _MoreDetailsState extends State<MoreDetails> {
             ),
             Row(children: [
               Text(
-                "John Van Persie",
+                '${_moreDetailModel.user.firstName} ${_moreDetailModel.user.lastName}',
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.left,
               ),
@@ -119,7 +126,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                 textAlign: TextAlign.left,
               ),
               Text(
-                " Technology",
+                _moreDetailModel.question.category,
                 style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),
                 textAlign: TextAlign.left,
               ),
@@ -131,7 +138,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                 textAlign: TextAlign.left,
               ),
               Text(
-                " 2 days ago",
+                timeago.format(dateTime),
                 style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300),
                 textAlign: TextAlign.left,
               ),
@@ -145,13 +152,35 @@ class _MoreDetailsState extends State<MoreDetails> {
   EurekaRoundedButton _answerQuestionButton() {
     return EurekaRoundedButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NewForm(
-              isAnswer: true,
-            ),
-          ), // accept question
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              EurekaRoundedButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewForm(
+                      isAnswer: true,
+                    ),
+                  ), // standard form
+                ),
+                buttonText: 'No Chat',
+              ),
+              EurekaRoundedButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewForm(
+                      isAnswer: true,
+                    ),
+                  ), // change this to the chat form
+                ),
+                buttonText: 'Chat',
+              ),
+            ],
+          ),
         );
       },
       buttonText: "Answer",
@@ -172,36 +201,26 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   Container _questionFieldViewer() {
     return Container(
-      padding: const EdgeInsets.only(left: 20, top: 0, right: 20, bottom: 10),
-      child: Column(children: [
-        Text(
-          "Question Title here is very long, and to be honest is sooooo unnecessary , but we are testing fixed size box with scroll, so this field can accommodate freaking essays in the question fields",
-          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        Divider(color: Colors.transparent, height: 15.0),
-        Text(
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. "
-            "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "
-            "when an unknown printer took a galley of type and scrambled it to make a type "
-            "specimen book. It has survived not only five centuries, but also the leap into"
-            " electronic typesetting, remaining essentially unchanged. It was popularised in"
-            " the 1960s with the release of Letraset sheets containing "
-            "Lorem Ipsum passages, and more recently with desktop publishing software "
-            "like Aldus PageMaker including versions of Lorem Ipsum."),
-        Divider(color: Colors.transparent, height: 15.0),
-        _getMediaLinks()
-      ]),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _moreDetailModel.question.title,
+            style: TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Divider(color: Colors.transparent, height: 15.0),
+          Text(
+            _moreDetailModel.question.description,
+          ),
+          Divider(color: Colors.transparent, height: 15.0),
+          _getMediaLinks()
+        ],
+      ),
     );
-  }
-
-  //user id checker, if user is not the owner of the question, they have option to answer
-  //if user is owner, they can archive question
-  Widget _answerOrArchiveButton() {
-    if (user_id != owner_id) {
-      return _answerQuestionButton();
-    }
-    return _questionArchiveButton();
   }
 
   @override
@@ -211,39 +230,44 @@ class _MoreDetailsState extends State<MoreDetails> {
         title: 'Question Details',
         appBar: AppBar(),
       ),
-      body: ListView(
-        children: [
-          Container(
-            margin: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0),
-            padding: EdgeInsets.only(left: 3, top: 0, right: 3, bottom: 0),
-            alignment: Alignment.topLeft,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.all(
-                Radius.circular(20.0),
+      body: _moreDetailModel.question == null ||
+              _moreDetailModel.user == null ||
+              _moreDetailModel.userAnswer == null
+          ? Container(
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
-            ),
-            child: Column(
+            )
+          : ListView(
               children: [
-                _headerStack(),
                 Container(
-                  padding:
-                      EdgeInsets.only(left: 2, top: 0, right: 2, bottom: 0),
-                  child: _questionFieldViewer(),
+                  margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  padding: EdgeInsets.fromLTRB(3, 0, 3, 0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20.0),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      _headerStack(),
+                      _questionFieldViewer(),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,
         elevation: 0,
         child: Padding(
-          padding:
-              const EdgeInsets.only(left: 110, top: 0, right: 110, bottom: 0),
-          child: _answerOrArchiveButton(),
+          padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
+          //user id checker, if user is not the owner of the question, they have option to answer
+          //if user is owner, they can archive question
+          child: _moreDetailModel.user.id != currUserId
+              ? _answerQuestionButton()
+              : _questionArchiveButton(),
         ),
       ),
     );
