@@ -7,11 +7,7 @@ class DeleteUserService {
   Future<http.Response> deleteUser(String id) async {
     await DotEnv.load();
     return await http.put(
-      Uri.http(
-        //DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], //When your backend is hosted uncomment this line
-        '10.0.2.2:8080', // when backend is hosted comment this line out
-        '/v1/user/delete/$id',
-      ),
+      Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/user/delete/$id'),
       headers: <String, String>{
         'Content-type': 'application/json; charset=UTF-8',
       },

@@ -209,7 +209,7 @@ class _NewFormState extends State<NewForm> {
           description: _body,
           mediaUrls: downloadUrls,
           category: widget.categoryName,
-          status: true,
+          closed: true,
           visible: true,
           userId: EmailAuth().getCurrentUser().uid,
         );

@@ -10,10 +10,10 @@ class UserAnswerModel {
     this.answer,
   });
 
-  factory UserAnswerModel.fromJson(List<dynamic> json) {
+  factory UserAnswerModel.fromJson(Map<dynamic, dynamic> json) {
     return UserAnswerModel(
-      user: UserModel.fromJson(json[0]), // index 0 contains users
-      answer: AnswerModel.fromJson(json[1]), // index 1 contains answers
+      user: UserModel.fromJson(json['user']), // index 0 contains users
+      answer: AnswerModel.fromJson(json['answer']), // index 1 contains answers
     );
   }
 }
