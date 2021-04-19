@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
+import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 
 import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
@@ -188,41 +189,53 @@ class _MoreDetailsState extends State<MoreDetails> {
   }
 
   Row _questionArchiveButton() {
-    return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-          FlatButton(
-            color: Color(0xFF00ADB5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Home()), //archive question
-              );
-            },
-            child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Archive", style: TextStyle(color: Colors.white)),
-                )),
+    // In development:
+    // 1: must show Archive button if question is not archived
+    // 2: must show Close button if question is not closed yet or not archived yet
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        FlatButton(
+          color: Color(0xFF00ADB5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
           ),
-              SizedBox(width: 50),
-          FlatButton(
-            color: Color(0xFF00ADB5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            onPressed: () {
-            },
-            child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Close", style: TextStyle(color: Colors.white)),
-                )),
-          ),
-        ]);
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Home()), //archive question
+            );
+          },
+          child: Container(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Archive", style: TextStyle(color: Colors.white)),
+          )),
+        ),
+      SizedBox(width: 50),
+      FlatButton(
+        color: Color(0xFF00ADB5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChooseBestAnswer(
+                  questionId: _moreDetailModel.question.id,
+                  // Demo of choosing best answer
+                  // In development: pass the answers list that will have all answers ID's
+                  answerId: "607ce610930fdd5f952c1ce1",
+                )), //archive question
+          );
+        },
+        child: Container(
+            child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Close", style: TextStyle(color: Colors.white)),
+        )),
+      ),
+    ]);
   }
 
   Container _questionFieldViewer() {
