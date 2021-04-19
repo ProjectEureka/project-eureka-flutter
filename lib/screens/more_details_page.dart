@@ -8,7 +8,7 @@ import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
-import 'package:project_eureka_flutter/services/more_detail_serivce.dart';
+import 'package:project_eureka_flutter/services/more_detail_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class MoreDetails extends StatefulWidget {
@@ -187,16 +187,42 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
-  EurekaRoundedButton _questionArchiveButton() {
-    return EurekaRoundedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()), //archive question
-        );
-      },
-      buttonText: "Archive",
-    );
+  Row _questionArchiveButton() {
+    return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+          FlatButton(
+            color: Color(0xFF00ADB5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Home()), //archive question
+              );
+            },
+            child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Archive", style: TextStyle(color: Colors.white)),
+                )),
+          ),
+              SizedBox(width: 50),
+          FlatButton(
+            color: Color(0xFF00ADB5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            onPressed: () {
+            },
+            child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Close", style: TextStyle(color: Colors.white)),
+                )),
+          ),
+        ]);
   }
 
   Container _questionFieldViewer() {
@@ -259,17 +285,15 @@ class _MoreDetailsState extends State<MoreDetails> {
               ],
             ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
-          //user id checker, if user is not the owner of the question, they have option to answer
-          //if user is owner, they can archive question
-          child: _moreDetailModel.user.id != currUserId
-              ? _answerQuestionButton()
-              : _questionArchiveButton(),
-        ),
-      ),
+          color: Colors.transparent,
+          elevation: 0,
+          child: _moreDetailModel.user.id == currUserId
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
+                  //user id checker, if user is not the owner of the question, they have option to answer
+                  //if user is owner, they can archive question
+                  child: _answerQuestionButton())
+              : _questionArchiveButton()),
     );
   }
 }

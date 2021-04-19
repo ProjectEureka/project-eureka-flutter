@@ -10,7 +10,7 @@ class AllQuestionService {
     await DotEnv.load();
 
     final response = await http.get(Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/questions'));
+        DotEnv.env['HOST_LOCAL'] + ':' + DotEnv.env['PORT_LOCAL'], '/v1/questions'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
@@ -29,7 +29,7 @@ class AllQuestionService {
       }
       // Sort questions by status (Active or closed)
       questions
-          .sort((a, b) => b.status.toString().compareTo(a.status.toString()));
+          .sort((a, b) => b.closed.toString().compareTo(a.closed.toString()));
       return questions;
     } else {
       throw Exception('Failed to load questions');

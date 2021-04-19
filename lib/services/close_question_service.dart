@@ -3,15 +3,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class DeleteUserService {
-  Future<http.Response> deleteUser(String id) async {
+class CloseQuestionService {
+  Future<http.Response> closeQuestion(String questionId, String answerId) async {
     await DotEnv.load();
-    return await http.put(
-      Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/user/delete/$id'),
+
+    return await http.put(Uri.http(DotEnv.env['HOST_LOCAL'] + ':' + DotEnv.env['PORT_LOCAL'], '/v1/users/$questionId/rating'),
+
       headers: <String, String>{
         'Content-type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(null),
+      body: jsonEncode(answerId),
     );
   }
 }
