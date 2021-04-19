@@ -66,13 +66,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EurekaAppBar(
-          appBar: AppBar(
-            leading: null,
-            actions: <Widget>[
-              IconButton(icon: Icon(Icons.close), onPressed: () {}),
-            ],
-            backgroundColor: Colors.lightBlueAccent,
-          ),
+          appBar: AppBar(),
+          actions: <Widget>[
+            IconButton(icon: Icon(Icons.close), onPressed: () {}),
+            //camera button for call will go here
+          ],
           title: recipient),
       body: SafeArea(
         child: Column(

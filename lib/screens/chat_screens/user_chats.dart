@@ -125,7 +125,7 @@ class ConversationBubble extends StatelessWidget {
                   children: <Widget>[
                     Container(
                       child: Text(
-                          'This Question title is very long. I dont know why its long. It should not be this long. its some fucking bullshit', //Qusetion Title from backend should go here
+                          'This Question title is very long.', //Qusetion Title from backend should go here
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Colors.white,
