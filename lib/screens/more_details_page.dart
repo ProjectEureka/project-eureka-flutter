@@ -220,7 +220,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                             MaterialPageRoute(
                                 builder: (context) => Home()), //archive question
                           ),
-                          child: Text('Close')),
+                          child: Text('Back to Home')),
                     ],
                   ));
         },
@@ -319,6 +319,7 @@ class _MoreDetailsState extends State<MoreDetails> {
       bottomNavigationBar: BottomAppBar(
           color: Colors.transparent,
           elevation: 0,
+          // For demo purposes this is true, however will be changed to != later
           child: _moreDetailModel.user.id == currUserId
               ? Padding(
                   padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
