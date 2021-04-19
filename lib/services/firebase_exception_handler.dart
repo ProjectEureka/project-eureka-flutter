@@ -16,9 +16,9 @@ class FirebaseExceptionHandler {
       case 'We have blocked all requests from this device due to unusual activity. Try again later.':
         return 'Too many failed login attempts, please try again later.';
         break;
-      case 'Given String is empty or null':
+      /*case 'Given String is empty or null':
         return 'Email required.';
-        break;
+        break;*/
       default:
         return e.message;
     }

@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
+import 'package:project_eureka_flutter/components/profile_answers_list.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
-import 'package:project_eureka_flutter/services/user_category_service.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_service.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
@@ -16,45 +19,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _tab = 0;
   List questionsList = [];
   List answersList = [];
+  UserModel userInfo = new UserModel();
   List categories = [];
+  bool loading = true;
+
+  final User user = EmailAuth().getCurrentUser();
 
   @override
   void initState() {
-    initGetQuestions();
-    initGetAnswers();
-    initGetActiveCategories();
+    initGetProfileData();
     super.initState();
   }
 
-  void initGetQuestions() {
-    ProfileService().getProfileQuestions().then(
+  void initGetProfileData() {
+    ProfileService().getProfileInformation(user.uid).then(
       (payload) {
         setState(() {
-          questionsList = payload;
+          questionsList = payload[
+              0]; // PE-73 testing: change it to [] to check the case when user haven't posted questions
+          answersList = payload[
+              1]; // PE-73 testing: change it to [] to check the case when user haven't answered to any questions
+          userInfo = payload[2];
+          categories = userInfo
+              .category; // PE-73 testing: change it to [] to check th case when user haven't chosen a category
+          loading = false;
         });
       },
     );
   }
 
-  // NOTE: This is a demo. It lists user's questions, not the answers.
-   void initGetAnswers() {
-    ProfileService().getProfileQuestions().then(
-           (payload) {
-             setState(() {
-               answersList = payload;
-             });
-           },
-         );
-   }
-
-  void initGetActiveCategories() {
-    UserCategoryService().getCategories().then(
-      (payload) {
-        setState(() {
-          categories = payload;
-        });
-      },
-    );
+  Center _noResults(String message) {
+    return loading
+        ? Center(child: CircularProgressIndicator())
+        : Center(
+            child: Text(userInfo.firstName + message),
+          );
   }
 
   Positioned _profileNameAndIcon() {
@@ -70,19 +69,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor: Colors.white,
             child: CircleAvatar(
               radius: 50.0,
-              backgroundImage: AssetImage('assets/images/money.gif'),
+              backgroundColor: Colors.transparent,
+              backgroundImage: loading
+                  ? AssetImage('assets/images/profile_default_image.png')
+                  : userInfo.pictureUrl ==
+                          "" // PE-73 testing: you can change it "true" which means that user haven't uploaded an image
+                      ? AssetImage('assets/images/profile_default_image.png')
+                      : NetworkImage(userInfo.pictureUrl),
             ),
           ),
-          Text(
-            "Tony Nguyen",
-            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            "tonynguyen0925@gmail.com",
-            style: TextStyle(
-              fontSize: 15.0,
-            ),
-          ),
+          loading
+              ? Text("")
+              : Text(userInfo.firstName + " " + userInfo.lastName,
+                  style:
+                      TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
+          loading
+              ? Text("")
+              : Text(
+                  userInfo.email,
+                  style: TextStyle(
+                    fontSize: 15.0,
+                  ),
+                ),
         ],
       ),
     );
@@ -123,10 +131,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(
             height: 15.0,
           ),
-          Text(
-            "5.0 ⭐",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          loading
+              ? Text("-.- ⭐", style: TextStyle(fontWeight: FontWeight.bold))
+              : userInfo.averageRating ==
+                      0.0 // PE-73 testing: you can change it "true" which means that user hasn't been rated yet
+                  ? Text("Not rated yet ⭐")
+                  : Text(
+                      userInfo.averageRating.toString() + " ⭐",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
         ],
       ),
     );
@@ -167,10 +180,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return _toggleSwtichListBuilder(
       questionsList.length,
       ListView.builder(
+        padding: EdgeInsets.all(0.0),
         itemCount: questionsList.length,
         itemBuilder: (context, index) {
           return EurekaListView(
-            filteredQuestionsList: questionsList,
+            questionList: questionsList,
             index: index,
           );
         },
@@ -182,10 +196,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return _toggleSwtichListBuilder(
       answersList.length,
       ListView.builder(
+        padding: EdgeInsets.all(0.0),
         itemCount: answersList.length,
         itemBuilder: (context, index) {
-          return EurekaListView(
-            filteredQuestionsList: answersList,
+          return ProfileAnswersView(
+            answersList: answersList,
             index: index,
           );
         },
@@ -225,15 +240,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Visibility(
           visible: _tab == 0 ? true : false,
-          child: _questionsList(),
+          child: questionsList.length == 0
+              ? _noResults(" have not posted any questions yet")
+              : _questionsList(),
         ),
         Visibility(
           visible: _tab == 1 ? true : false,
-          child: _answersList(),
+          child: answersList.length == 0
+              ? _noResults(" have not answered to any questions yet")
+              : _answersList(),
         ),
         Visibility(
           visible: _tab == 2 ? true : false,
-          child: _interestList(),
+          child: categories.length == 0
+              ? _noResults(" does not have categories of interest")
+              : _interestList(),
         )
       ],
     );

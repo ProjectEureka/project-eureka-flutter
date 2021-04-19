@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
-import 'package:project_eureka_flutter/screens/new_question_screens/new_question_screen.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
+import 'package:project_eureka_flutter/services/users_service.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -11,6 +14,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  //Made for testing purposes. Used to see if the Users Will Properly show on the home page
+  UserModel user;
+  String userId = EmailAuth().getCurrentUser().uid;
   // Questions data. Unfiltered list of questions
   List data = [];
   // Will filter the list of questions
@@ -83,11 +89,14 @@ class _HomeState extends State<Home> {
           questionsListFilteredCategory
               .where((question) =>
                   question.title.toLowerCase().contains(value.toLowerCase()) |
-                  question.description.toLowerCase().contains(value.toLowerCase()) |
-                  question.category.toLowerCase().contains(value.toLowerCase())
+                          question.description
+                              .toLowerCase()
+                              .contains(value.toLowerCase()) |
+                          question.category
+                              .toLowerCase()
+                              .contains(value.toLowerCase())
                       ? true
-                      : false
-                  )
+                      : false)
               .toList();
     });
   }
@@ -253,7 +262,7 @@ class _HomeState extends State<Home> {
                 }
                 index -= 1;
                 return EurekaListView(
-                  filteredQuestionsList: questionsListFiltered,
+                  questionList: questionsListFiltered,
                   index: index,
                 );
               },

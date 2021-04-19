@@ -2,52 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
+import 'package:project_eureka_flutter/models/answer_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/screens/rating_page.dart';
 
-class NewQuestionConfirmation extends StatefulWidget {
+class NewFormConfirmation extends StatefulWidget {
+  final bool isAnswer; // true: this for is for Answers
   final QuestionModel questionModel;
+  final AnswerModel answerModel;
 
-  NewQuestionConfirmation({
-    @required this.questionModel,
+  NewFormConfirmation({
+    this.questionModel,
+    @required this.isAnswer,
+    this.answerModel,
   });
 
   @override
-  _NewQuestionConfirmationState createState() =>
-      _NewQuestionConfirmationState();
+  _NewFormConfirmationState createState() => _NewFormConfirmationState();
 }
 
-class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
-  Container _questionConfirmationBody() {
+class _NewFormConfirmationState extends State<NewFormConfirmation> {
+  Container _formConfirmationBody() {
     return Container(
       padding: EdgeInsets.all(20.0),
       child: Center(
         child: Column(
           children: <Widget>[
             Text(
-              "Question Submitted!",
+              widget.isAnswer ? "Answer Submitted" : "Question Submitted!",
               style: TextStyle(fontSize: 24.0),
             ),
             SizedBox(
               height: 20.0,
             ),
-            _questionConfirmationContainer(),
+            _formConfirmationContainer(),
           ],
         ),
       ),
     );
   }
 
-  Text _questionCornfirmationTextStyling(String text, [bool bold]) {
+  Text _formConfirmationTextStyling(String text, [bool bold]) {
     return Text(
       text,
-      //maxLines: 4,
       style: TextStyle(
-          fontSize: 18.0, fontWeight: bold == null ? null : FontWeight.bold),
+        fontSize: 18.0,
+        fontWeight: bold == null ? null : FontWeight.bold,
+      ),
     );
   }
 
-  Expanded _questionConfirmationContainer() {
+  Expanded _formConfirmationContainer() {
     return Expanded(
       child: Container(
         alignment: Alignment.topLeft,
@@ -67,14 +72,23 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _questionCornfirmationTextStyling('Title:', true),
-                  _questionCornfirmationTextStyling(widget.questionModel.title),
-                  _questionCornfirmationTextStyling('Details:', true),
+                  widget.isAnswer
+                      ? Container()
+                      : _formConfirmationTextStyling('Title:', true),
+                  widget.isAnswer
+                      ? Container()
+                      : _formConfirmationTextStyling(
+                          widget.questionModel.title),
+                  _formConfirmationTextStyling(
+                      widget.isAnswer ? 'Answer:' : 'Details:', true),
                   Container(
                     height: MediaQuery.of(context).size.height * .20,
                     child: SingleChildScrollView(
-                      child: _questionCornfirmationTextStyling(
-                          widget.questionModel.description),
+                      child: _formConfirmationTextStyling(
+                        widget.isAnswer
+                            ? widget.answerModel.description
+                            : widget.questionModel.description,
+                      ),
                     ),
                   ),
                 ],
@@ -82,7 +96,9 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
               Container(
                 height: MediaQuery.of(context).size.height * .15,
                 child: ListView.builder(
-                  itemCount: widget.questionModel.mediaUrls.length,
+                  itemCount: widget.isAnswer
+                      ? widget.answerModel.mediaUrls.length
+                      : widget.questionModel.mediaUrls.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -92,13 +108,17 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => EurekaImageViewer(
-                              imagePath: widget.questionModel.mediaUrls[index],
+                              imagePath: widget.isAnswer
+                                  ? widget.answerModel.mediaUrls[index]
+                                  : widget.questionModel.mediaUrls[index],
                               isUrl: true,
                             ),
                           ),
                         ),
                         child: Image.network(
-                          widget.questionModel.mediaUrls[index],
+                          widget.isAnswer
+                              ? widget.answerModel.mediaUrls[index]
+                              : widget.questionModel.mediaUrls[index],
                         ),
                       ),
                     );
@@ -116,16 +136,17 @@ class _NewQuestionConfirmationState extends State<NewQuestionConfirmation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EurekaAppBar(
-        title: 'New Question',
+        title: widget.isAnswer ? 'Answer' : 'Question',
         appBar: AppBar(),
       ),
-      body: _questionConfirmationBody(),
+      body: _formConfirmationBody(),
       bottomNavigationBar: EurekaRoundedButton(
         buttonText: "Return to Home Page",
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RatingPage(), // Return to Home() when done
+            builder: (context) =>
+                RatingPage(), // Return to Home() when Ratings done
           ),
         ),
       ),

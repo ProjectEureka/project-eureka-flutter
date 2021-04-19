@@ -10,16 +10,17 @@ class QuestionModel {
   final bool visible;
   final String userId;
 
-  QuestionModel(
-      {this.id,
-        this.title,
-        this.questionDate,
-        this.description,
-        this.category,
-        this.mediaUrls,
-        this.status,
-        this.visible,
-        this.userId});
+  QuestionModel({
+    this.id,
+    this.title,
+    this.questionDate,
+    this.description,
+    this.category,
+    this.mediaUrls,
+    this.status,
+    this.visible,
+    this.userId,
+  });
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
@@ -34,4 +35,16 @@ class QuestionModel {
       userId: json['userId'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'questionDate': questionDate,
+        'description': description,
+        'category': category,
+        'mediaUrls': mediaUrls,
+        'status': status,
+        'visible': visible,
+        'userId': userId,
+      };
 }
