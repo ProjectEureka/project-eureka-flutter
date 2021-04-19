@@ -31,7 +31,7 @@ class AllQuestionService {
       }
       // Sort questions by status (Active or closed)
       questions
-          .sort((a, b) => b.closed.toString().compareTo(a.closed.toString()));
+          .sort((b, a) => b.closed.toString().compareTo(a.closed.toString()));
       return questions;
     } else {
       throw Exception('Failed to load questions');

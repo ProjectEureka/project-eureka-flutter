@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
+import 'package:project_eureka_flutter/screens/rating_page.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
 
 import 'home_page.dart';
@@ -27,25 +28,12 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            final response = await CloseQuestionService().closeQuestion(widget.questionId, widget.answerId);
-            print("Status " + response.statusCode.toString() + ". Question closed successfully - " + widget.questionId.toString());
-            showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  content: Text(
-                    'Question was closed',
-                    textAlign: TextAlign.center,
-                  ),
-                  actions: <Widget>[
-                    FlatButton(
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Home()), //archive question
-                        ),
-                        child: Text('Back to Home')),
-                  ],
-                ));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RatingPage(questionId: widget.questionId, answerId: widget.answerId
+                    ,)), //archive question
+            );
           },
           child: Text('Best Answer'),
         ),
