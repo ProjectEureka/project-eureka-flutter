@@ -10,7 +10,7 @@ class AllQuestionService {
     await DotEnv.load();
 
     final response = await http.get(Uri.http(
-        DotEnv.env['HOST_LOCAL'] + ':' + DotEnv.env['PORT_LOCAL'], '/v1/questions'));
+        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/questions'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.

@@ -8,7 +8,7 @@ class CloseQuestionService {
     await DotEnv.load();
 
     return await http.put(
-      Uri.http(DotEnv.env['HOST_LOCAL'] + ':' + DotEnv.env['PORT_LOCAL'],
+      Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
           '/v1/question/$questionId/close'),
       body: answerId,
     );
@@ -19,7 +19,7 @@ class CloseQuestionService {
     await DotEnv.load();
 
     return await http.put(
-      Uri.http(DotEnv.env['HOST_LOCAL'] + ':' + DotEnv.env['PORT_LOCAL'],
+      Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
           '/v1/questions/$questionId/archive'),
     );
   }

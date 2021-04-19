@@ -11,7 +11,7 @@ class ChooseBestAnswer extends StatefulWidget {
   // In development: it will need to pass the list of answers
   final String answerId;
 
-  const ChooseBestAnswer({Key key, this.questionId, this.answerId}) : super(key: key);
+  const ChooseBestAnswer({this.questionId, this.answerId});
 
   @override
   _ChooseBestAnswerState createState() => _ChooseBestAnswerState();
