@@ -38,7 +38,7 @@ class _AccountSettingsDeleteState extends State<AccountSettingsDelete> {
       }
       await DeleteUserService().deleteUser(tempId);
 
-      Navigator.of(context).pushNamed('/signin');
+      Navigator.of(context).pushNamed('/signIn');
     } catch (e) {
       setState(() {
         exception = FirebaseExceptionHandler().getExceptionText(e);
