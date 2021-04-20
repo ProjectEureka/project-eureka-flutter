@@ -4,6 +4,7 @@ import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/answer_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
+import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/rating_page.dart';
 
 class NewFormConfirmation extends StatefulWidget {
@@ -145,8 +146,7 @@ class _NewFormConfirmationState extends State<NewFormConfirmation> {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                RatingPage(), // Return to Home() when Ratings done
+            builder: (context) => Home(), // Return to Home() when Ratings done
           ),
         ),
       ),

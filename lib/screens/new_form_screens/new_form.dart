@@ -14,17 +14,20 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:uuid/uuid.dart';
 import 'package:project_eureka_flutter/services/new_question_service.dart';
+import 'package:project_eureka_flutter/services/new_answer_service.dart';
 
 class NewForm extends StatefulWidget {
   final String categoryName;
   final bool isAnswer;
   final QuestionModel questionModel;
+  final String questionId;
 
   /// constructor to allow objects to be passed from another class
   NewForm({
     this.categoryName = '',
     @required this.isAnswer,
     this.questionModel,
+    this.questionId,
   });
 
   @override
@@ -177,6 +180,7 @@ class _NewFormState extends State<NewForm> {
     String _id,
     DateTime _date,
     List<String> downloadUrls,
+    String questionId,
   ) {
     QuestionModel _question;
     AnswerModel _answer;
@@ -189,11 +193,12 @@ class _NewFormState extends State<NewForm> {
           mediaUrls: downloadUrls,
           answerDate: _date.toIso8601String(),
           description: _body,
-          questionId:
-              "widget.questionModel.id", // remove quotes when the More Question Details service is complete
-          //bestAnswer: false,
+          questionId: widget
+              .questionId, // remove quotes when the More Question Details service is complete
+          bestAnswer: false,
           userId: EmailAuth().getCurrentUser().uid,
         );
+        print(_answer.questionId);
       });
 
       return _answer;
@@ -230,11 +235,13 @@ class _NewFormState extends State<NewForm> {
 
     List<String> downloadUrls = await uploadFiles(_id);
 
-    dynamic _model = _createModel(_id, _date, downloadUrls);
+    dynamic _model = _createModel(_id, _date, downloadUrls, widget.questionId);
+    print(_createModel);
 
     try {
       widget.isAnswer
-          ? null //Add POST answer here
+          ? await NewAnswerService()
+              .postNewAnswer(_model) //Add POST answer here
           : await NewQuestionService()
               .postNewQuestion(_model); // POST question to database
 

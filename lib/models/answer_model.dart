@@ -28,4 +28,14 @@ class AnswerModel {
       userId: json['userId'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'mediaUrls': mediaUrls,
+        'answerDate': answerDate,
+        'description': description,
+        'questionId:': questionId,
+        'bestAnswer:': bestAnswer,
+        'userId': userId,
+      };
 }
