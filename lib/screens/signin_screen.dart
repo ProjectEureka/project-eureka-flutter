@@ -72,7 +72,8 @@ class _SignInState extends State<SignIn> {
     try {
       await _emailAuth.signIn(email, password);
 
-      Navigator.of(context).pushNamed('/home');
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/home', (Route<void> route) => false);
       setState(() {
         showSpinner = false;
       });

@@ -204,9 +204,8 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
         // Using HTTP POST to add new user
         await _profileOnboardingService.addUser(user);
 
-        Navigator.of(context).pushNamed(
-          '/home',
-        );
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/home', (Route<void> route) => false);
       }
     } catch (e) {
       print(e);

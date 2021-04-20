@@ -29,11 +29,8 @@ class Settings extends StatelessWidget {
   }
 
   void signOut(context) {
-    _emailAuth.signOut().then((_) => Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute<Widget>(
-            builder: (BuildContext context) => RootScreen()),
-        (Route<void> route) => false));
+    _emailAuth.signOut().then((_) => Navigator.pushNamedAndRemoveUntil(
+        context, '/root', (Route<void> route) => false));
   }
 
   @override
