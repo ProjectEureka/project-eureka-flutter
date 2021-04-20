@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/rating_model.dart';
-import 'package:project_eureka_flutter/screens/home_screen.dart';
+import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/rating_service.dart';
 
 class Rating extends StatefulWidget {
   final String id;
   final double rating;
+  final String questionId;
+  final String answerId;
 
-  Rating({this.id, this.rating});
+  Rating({this.id, this.rating, this.questionId, this.answerId});
 
   @override
   _RatingState createState() => _RatingState();
@@ -68,6 +70,12 @@ class _RatingState extends State<Rating> {
 
   //Rates the current user for now until the answer page is created
   Future<void> _submit() async {
+    final response = await CloseQuestionService()
+        .closeQuestion(widget.questionId, widget.answerId);
+    print("Status " +
+        response.statusCode.toString() +
+        ". Question closed successfully - " +
+        widget.questionId.toString());
     RatingModel rating =
         new RatingModel(id: EmailAuth().getCurrentUser().uid, rating: _rating);
     try {

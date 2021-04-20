@@ -4,7 +4,7 @@ class AnswerModel {
   final String answerDate;
   final String description;
   final String questionId;
-  //final bool bestAnswer  // this may be used later
+  final bool bestAnswer;
   final String userId;
 
   AnswerModel({
@@ -13,7 +13,7 @@ class AnswerModel {
     this.answerDate,
     this.description,
     this.questionId,
-    //this.bestAnswer
+    this.bestAnswer,
     this.userId,
   });
 
@@ -24,7 +24,7 @@ class AnswerModel {
       answerDate: json['answerDate'],
       description: json['description'],
       questionId: json['questionId'],
-      //bestAnswer: json['bestAnswer'],
+      bestAnswer: json['bestAnswer'],
       userId: json['userId'],
     );
   }

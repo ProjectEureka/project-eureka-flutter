@@ -6,7 +6,7 @@ class QuestionModel {
   final String category;
   // for Lists (both for list of string and list of integers), use List<dynamic>, e
   final List<dynamic> mediaUrls;
-  final bool status;
+  final bool closed;
   final bool visible;
   final String userId;
 
@@ -17,7 +17,7 @@ class QuestionModel {
     this.description,
     this.category,
     this.mediaUrls,
-    this.status,
+    this.closed,
     this.visible,
     this.userId,
   });
@@ -30,7 +30,7 @@ class QuestionModel {
       description: json['description'],
       category: json['category'],
       mediaUrls: json['mediaUrls'],
-      status: json['status'],
+      closed: json['closed'],
       visible: json['visible'],
       userId: json['userId'],
     );
@@ -43,7 +43,7 @@ class QuestionModel {
         'description': description,
         'category': category,
         'mediaUrls': mediaUrls,
-        'status': status,
+        'closed': closed,
         'visible': visible,
         'userId': userId,
       };

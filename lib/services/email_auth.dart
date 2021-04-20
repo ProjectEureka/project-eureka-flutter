@@ -33,8 +33,11 @@ class EmailAuth {
     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
-  Future<void> deleteUser() async {
+  Future<void> deleteUser(String currentPassword) async {
     User user = _auth.currentUser;
+    EmailAuthCredential credentials = EmailAuthProvider.credential(
+        email: user.email, password: currentPassword);
+    await user.reauthenticateWithCredential(credentials);
     await user.delete();
   }
 

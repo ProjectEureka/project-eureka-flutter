@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/user_chats.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
@@ -29,6 +30,9 @@ class _HomeState extends State<Home> {
   String selectedCategory = "All Categories";
   String dropdownValue = 'All Categories';
 
+  ///
+  ///for chat screen testing purposes
+  String fromId = "hJGcQsILP7XQDSvWY2Qx2k3MD0V2";
   // Get data from the database to the list. Questions are shown on home page is always questionsListFiltered,
   // which at this point is a copy of a `data`, as no filters have been applied yet
   @override
@@ -179,7 +183,14 @@ class _HomeState extends State<Home> {
         // Chat button
         FlatButton(
           textColor: Colors.white,
-          onPressed: () {}, // redirect to Chat page
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatScreenConversations(),
+              ),
+            );
+          }, // redirect to Chat page
           child: Icon(Icons.chat_sharp, color: Colors.cyan),
           shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
         ),
@@ -260,7 +271,7 @@ class _HomeState extends State<Home> {
                 }
                 index -= 1;
                 return EurekaListView(
-                  filteredQuestionsList: questionsListFiltered,
+                  questionList: questionsListFiltered,
                   index: index,
                 );
               },
@@ -304,7 +315,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideMenu(),
-      resizeToAvoidBottomPadding:
+      resizeToAvoidBottomInset:
           false, // fixed: "Create New Question" button was moving up while in keyboard mode
       appBar: homeAppBar(),
 

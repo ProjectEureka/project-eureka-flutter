@@ -4,11 +4,11 @@ import 'package:timeago/timeago.dart' as timeago;
 
 /// Function to return List of Questions and category filter. Called from 'body'.
 class EurekaListView extends StatefulWidget {
-  final List<dynamic> filteredQuestionsList;
+  final List<dynamic> questionList;
   final int index;
 
   EurekaListView({
-    @required this.filteredQuestionsList,
+    @required this.questionList,
     @required this.index,
   });
   @override
@@ -43,7 +43,7 @@ class _EurekaListViewState extends State<EurekaListView> {
     return Column(
       children: [
         _eurekaListViewTextStyle(
-          value: widget.filteredQuestionsList[index].category,
+          value: widget.questionList[index].category,
           color: Colors.grey,
         ),
         _sizedBox(),
@@ -53,9 +53,8 @@ class _EurekaListViewState extends State<EurekaListView> {
 
   Column timeAndIsActiveRow(int index) {
     // this is used to format data to return " X days/hours/minutes ago"
-    final dateTime =
-        DateTime.parse(widget.filteredQuestionsList[index].questionDate)
-            .subtract(new Duration(hours: -7));
+    final dateTime = DateTime.parse(widget.questionList[index].questionDate)
+        .subtract(new Duration(hours: -7));
 
     return Column(
       children: [
@@ -77,13 +76,10 @@ class _EurekaListViewState extends State<EurekaListView> {
             ),
             _eurekaListViewTextStyle(
               value:
-                  // status is a boolean
-                  widget.filteredQuestionsList[index].status
-                      ? "Active"
-                      : "Closed",
-              color: widget.filteredQuestionsList[index].status
-                  ? Colors.blue
-                  : Colors.grey,
+                  // 'closed' is a boolean
+                  widget.questionList[index].closed ? "Closed" : "Active",
+              color:
+                  widget.questionList[index].closed ? Colors.grey : Colors.blue,
               fontWeight: FontWeight.bold,
             ),
           ],
@@ -97,7 +93,7 @@ class _EurekaListViewState extends State<EurekaListView> {
     return Column(
       children: [
         _eurekaListViewTextStyle(
-          value: widget.filteredQuestionsList[index].title,
+          value: widget.questionList[index].title,
           color: Colors.black,
           fontSize: 20.0,
         ),
@@ -108,7 +104,7 @@ class _EurekaListViewState extends State<EurekaListView> {
 
   Text descriptionRow(int index) {
     return Text(
-      widget.filteredQuestionsList[index].description,
+      widget.questionList[index].description,
       textAlign: TextAlign.left,
       style: TextStyle(
         fontSize: 15.0,
@@ -127,7 +123,14 @@ class _EurekaListViewState extends State<EurekaListView> {
         FlatButton(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onPressed: () {
-            Navigator.of(context).pushNamed('/moreDetails');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MoreDetails(
+                  questionId: widget.questionList[index].id,
+                ),
+              ),
+            );
           },
           child: Text(
             "More Details",

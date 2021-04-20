@@ -2,14 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
+import 'package:project_eureka_flutter/services/google_auth.dart';
+import 'package:project_eureka_flutter/services/delete_user_service.dart';
+import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
 
-class AccountSettingsDelete extends StatelessWidget {
+class AccountSettingsDelete extends StatefulWidget {
+  @override
+  _AccountSettingsDeleteState createState() => _AccountSettingsDeleteState();
+}
+
+class _AccountSettingsDeleteState extends State<AccountSettingsDelete> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final EmailAuth _emailAuth = new EmailAuth();
 
-  void deleteUserAccount(context) {
-    _emailAuth
-        .deleteUser()
-        .then((_) => Navigator.of(context).pushNamed('/signIn'));
+  String _password;
+
+  String providerId = EmailAuth().getCurrentUser().providerData[0].providerId;
+
+  String exception = "";
+
+  Future<void> deleteUserAccount(context) async {
+    if (providerId == "password") {
+      if (!_formKey.currentState.validate()) {
+        return;
+      }
+      _formKey.currentState.save();
+    }
+    try {
+      String tempId = EmailAuth().getCurrentUser().uid;
+      if (providerId == "password") {
+        await _emailAuth.deleteUser(_password);
+      } else if (providerId == "google.com") {
+        await GoogleAuth().deleteUser();
+      }
+      await DeleteUserService().deleteUser(tempId);
+
+      Navigator.of(context).pushNamed('/signin');
+    } catch (e) {
+      setState(() {
+        exception = FirebaseExceptionHandler().getExceptionText(e);
+      });
+      print('this is e: ' + exception);
+    }
   }
 
   Text _textStyling(String text) {
@@ -64,14 +99,53 @@ class AccountSettingsDelete extends StatelessWidget {
     );
   }
 
-  Future<dynamic> _showDialog(context) {
+  Future<dynamic> _showDialog(context, _exception) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text("Are you sure?"),
-            content: Text(
-                "You will permanently lose your account and this proccess cannot be undone."),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                    "You will permanently lose your account and this proccess cannot be undone."),
+                providerId == "google.com"
+                    ? Container()
+                    : Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Color(0xF6F6F6F6),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey[200]),
+                            ),
+                            labelText: 'Enter Password',
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _password = value.trim();
+                          },
+                        ),
+                      ),
+                Visibility(
+                  /* visible: exception == "" ? false : true,*/
+                  visible: true,
+                  child: Text(
+                    _exception,
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                )
+              ],
+            ),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -84,9 +158,7 @@ class AccountSettingsDelete extends StatelessWidget {
                 ),
               ),
               FlatButton(
-                onPressed: () {
-                  deleteUserAccount(context);
-                },
+                onPressed: () => deleteUserAccount(context),
                 child: Text(
                   "Delete",
                   style: TextStyle(
@@ -103,7 +175,7 @@ class AccountSettingsDelete extends StatelessWidget {
   EurekaRoundedButton _deleteAccountButton(context) {
     return EurekaRoundedButton(
       buttonText: "Delete Account",
-      onPressed: () => _showDialog(context),
+      onPressed: () => _showDialog(context, exception),
       buttonColor: Colors.grey[300],
       textColor: Colors.red,
     );

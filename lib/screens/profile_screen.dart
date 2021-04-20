@@ -184,7 +184,7 @@ class _ProfileState extends State<Profile> {
         itemCount: questionsList.length,
         itemBuilder: (context, index) {
           return EurekaListView(
-            filteredQuestionsList: questionsList,
+            questionList: questionsList,
             index: index,
           );
         },
