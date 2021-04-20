@@ -25,11 +25,13 @@ class AllQuestionService {
 
       List<QuestionModel> questions = new List();
       for (var i = body.length - 1; i >= 0; i--) {
-        questions.add(QuestionModel.fromJson(body[i]));
+        if (body[i]['visible']) {
+          questions.add(QuestionModel.fromJson(body[i]));
+        }
       }
       // Sort questions by status (Active or closed)
       questions
-          .sort((a, b) => b.status.toString().compareTo(a.status.toString()));
+          .sort((b, a) => b.closed.toString().compareTo(a.closed.toString()));
       return questions;
     } else {
       throw Exception('Failed to load questions');

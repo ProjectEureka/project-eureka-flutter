@@ -6,11 +6,13 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 
 import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
+import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
-import 'package:project_eureka_flutter/services/more_detail_serivce.dart';
+import 'package:project_eureka_flutter/services/more_detail_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
@@ -167,6 +169,19 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
+//This is used to create the collection in which the the chat messages between the current user
+// and the question user will be stored, denoted by the groupChatId
+  void addChatToFirebase() {
+    String groupChatId = '$currUserId-${_moreDetailModel.user.id}';
+    _firestore.collection('messages').doc(groupChatId).set({
+      'chatIDUser': currUserId,
+      'chatSender': currUser.firstName,
+      'recipient': _moreDetailModel.user.firstName,
+      'recipientId': _moreDetailModel.user.id,
+      'questionTitle': _moreDetailModel.question.title,
+    });
+  }
+
   EurekaRoundedButton _answerQuestionButton() {
     return EurekaRoundedButton(
       onPressed: () {
@@ -208,27 +223,73 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
-  void addChatToFirebase() {
-    String groupChatId = '$currUserId-${_moreDetailModel.user.id}';
-    _firestore.collection('messages').doc(groupChatId).set({
-      'chatIDUser': currUserId,
-      'chatSender': currUser.firstName,
-      'recipient': _moreDetailModel.user.firstName,
-      'recipientId': _moreDetailModel.user.id,
-      'questionTitle': _moreDetailModel.question.title,
-    });
-  }
-
-  EurekaRoundedButton _questionArchiveButton() {
-    return EurekaRoundedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()), //archive question
-        );
-      },
-      buttonText: "Archive",
-    );
+  Row _questionArchiveButton() {
+    // In development:
+    // 1: must show Archive button if question is not archived
+    // 2: must show Close button if question is not closed yet or not archived yet
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      FlatButton(
+        color: Color(0xFF00ADB5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        onPressed: () async {
+          final response =
+              await CloseQuestionService().archiveQuestion(widget.questionId);
+          print("Status " +
+              response.statusCode.toString() +
+              ". Question archived successfully - " +
+              widget.questionId.toString());
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    content: Text(
+                      'Question was archived',
+                      textAlign: TextAlign.center,
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                          onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Home()), //archive question
+                              ),
+                          child: Text('Back to Home')),
+                    ],
+                  ));
+        },
+        child: Container(
+            child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Archive", style: TextStyle(color: Colors.white)),
+        )),
+      ),
+      SizedBox(width: 50),
+      FlatButton(
+        color: Color(0xFF00ADB5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChooseBestAnswer(
+                      questionId: _moreDetailModel.question.id,
+                      // Demo of choosing best answer
+                      // In development: pass the answers list that will have all answers ID's
+                      answerId: "607ce610930fdd5f952c1ce1",
+                    )), //archive question
+          );
+        },
+        child: Container(
+            child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Close", style: TextStyle(color: Colors.white)),
+        )),
+      ),
+    ]);
   }
 
   Container _questionFieldViewer() {
@@ -291,17 +352,16 @@ class _MoreDetailsState extends State<MoreDetails> {
               ],
             ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
-          //user id checker, if user is not the owner of the question, they have option to answer
-          //if user is owner, they can archive question
+          color: Colors.transparent,
+          elevation: 0,
+          // For demo purposes this is true, however will be changed to != later
           child: _moreDetailModel.user.id != currUserId
-              ? _answerQuestionButton()
-              : _questionArchiveButton(),
-        ),
-      ),
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
+                  //user id checker, if user is not the owner of the question, they have option to answer
+                  //if user is owner, they can archive question
+                  child: _answerQuestionButton())
+              : _questionArchiveButton()),
     );
   }
 }
