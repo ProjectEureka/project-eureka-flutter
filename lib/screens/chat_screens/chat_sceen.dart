@@ -30,6 +30,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
+    print(fromId);
+    print(recipient);
     super.initState();
     getCurrentuser();
     userId = loggedInUser.uid;
