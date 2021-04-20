@@ -4,7 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 
-import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 
 class MoreDetails extends StatefulWidget {
@@ -161,10 +161,7 @@ class _MoreDetailsState extends State<MoreDetails> {
   EurekaRoundedButton _questionArchiveButton() {
     return EurekaRoundedButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()), //archive question
-        );
+        Navigator.of(context).pushNamed('/home'); //archive question
       },
       buttonText: "Archive",
     );

@@ -127,10 +127,7 @@ class _EurekaListViewState extends State<EurekaListView> {
         FlatButton(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MoreDetails()),
-            );
+            Navigator.of(context).pushNamed('/moreDetails');
           },
           child: Text(
             "More Details",

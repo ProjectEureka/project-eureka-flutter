@@ -3,7 +3,7 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 
-class NewQuestionScreen extends StatelessWidget {
+class NewQuestion extends StatelessWidget {
   Padding categoryButtonRow(
     BuildContext context,
     List<Widget> buttons,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_eureka_flutter/screens/root_page.dart';
+import 'package:project_eureka_flutter/screens/root_screen.dart';
+import 'package:project_eureka_flutter/services/route_generator.dart';
 
 void main() => runApp(ProjectEureka());
 
@@ -15,7 +16,9 @@ class ProjectEureka extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowCheckedModeBanner: false,
-      home: RootPage(),
+      home: RootScreen(),
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }

@@ -5,17 +5,17 @@ import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/components/profile_answers_list.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
-import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
+import 'package:project_eureka_flutter/screens/profile_onboarding_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_service.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
-class ProfileScreen extends StatefulWidget {
+class Profile extends StatefulWidget {
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileState extends State<Profile> {
   int _tab = 0;
   List questionsList = [];
   List answersList = [];
@@ -35,10 +35,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ProfileService().getProfileInformation(user.uid).then(
       (payload) {
         setState(() {
-          questionsList = payload[0]; // PE-73 testing: change it to [] to check the case when user haven't posted questions
-          answersList = payload[1]; // PE-73 testing: change it to [] to check the case when user haven't answered to any questions
+          questionsList = payload[
+              0]; // PE-73 testing: change it to [] to check the case when user haven't posted questions
+          answersList = payload[
+              1]; // PE-73 testing: change it to [] to check the case when user haven't answered to any questions
           userInfo = payload[2];
-          categories = userInfo.category; // PE-73 testing: change it to [] to check th case when user haven't chosen a category
+          categories = userInfo
+              .category; // PE-73 testing: change it to [] to check th case when user haven't chosen a category
           loading = false;
         });
       },
@@ -69,7 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: Colors.transparent,
               backgroundImage: loading
                   ? AssetImage('assets/images/profile_default_image.png')
-                  : userInfo.pictureUrl == "" // PE-73 testing: you can change it "true" which means that user haven't uploaded an image
+                  : userInfo.pictureUrl ==
+                          "" // PE-73 testing: you can change it "true" which means that user haven't uploaded an image
                       ? AssetImage('assets/images/profile_default_image.png')
                       : NetworkImage(userInfo.pictureUrl),
             ),
@@ -129,7 +133,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           loading
               ? Text("-.- ⭐", style: TextStyle(fontWeight: FontWeight.bold))
-              : userInfo.averageRating == 0.0 // PE-73 testing: you can change it "true" which means that user hasn't been rated yet
+              : userInfo.averageRating ==
+                      0.0 // PE-73 testing: you can change it "true" which means that user hasn't been rated yet
                   ? Text("Not rated yet ⭐")
                   : Text(
                       userInfo.averageRating.toString() + " ⭐",

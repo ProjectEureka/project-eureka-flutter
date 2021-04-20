@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/rating_model.dart';
-import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/rating_service.dart';
 
-class RatingPage extends StatefulWidget {
+class Rating extends StatefulWidget {
   final String id;
   final double rating;
 
-  RatingPage({this.id, this.rating});
+  Rating({this.id, this.rating});
 
   @override
-  _RatingPageState createState() => _RatingPageState();
+  _RatingState createState() => _RatingState();
 }
 
-class _RatingPageState extends State<RatingPage> {
+class _RatingState extends State<Rating> {
   double _rating;
   int _ratingBarMode = 1;
   IconData _selectedIcon;
@@ -75,11 +75,7 @@ class _RatingPageState extends State<RatingPage> {
     } catch (e) {
       print(e);
     }
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) {
-        return Home();
-      },
-    ));
+    Navigator.of(context).pushNamed('/home');
   }
 
   void checkRating() {

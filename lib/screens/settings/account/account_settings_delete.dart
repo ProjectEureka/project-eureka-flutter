@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
-import 'package:project_eureka_flutter/screens/login_page.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class AccountSettingsDelete extends StatelessWidget {
   final EmailAuth _emailAuth = new EmailAuth();
 
   void deleteUserAccount(context) {
-    _emailAuth.deleteUser().then((_) => Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute<Widget>(
-            builder: (BuildContext context) => LoginPage()),
-        (Route<void> route) => false));
+    _emailAuth
+        .deleteUser()
+        .then((_) => Navigator.of(context).pushNamed('/signIn'));
   }
 
   Text _textStyling(String text) {
