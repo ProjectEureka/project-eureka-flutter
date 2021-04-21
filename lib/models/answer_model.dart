@@ -34,8 +34,8 @@ class AnswerModel {
         'mediaUrls': mediaUrls,
         'answerDate': answerDate,
         'description': description,
-        'questionId:': questionId,
-        'bestAnswer:': bestAnswer,
+        'questionId': questionId,
+        'bestAnswer': bestAnswer,
         'userId': userId,
       };
 }

@@ -180,7 +180,6 @@ class _NewFormState extends State<NewForm> {
     String _id,
     DateTime _date,
     List<String> downloadUrls,
-    String questionId,
   ) {
     QuestionModel _question;
     AnswerModel _answer;
@@ -193,12 +192,10 @@ class _NewFormState extends State<NewForm> {
           mediaUrls: downloadUrls,
           answerDate: _date.toIso8601String(),
           description: _body,
-          questionId: widget
-              .questionId, // remove quotes when the More Question Details service is complete
+          questionId: widget.questionId,
           bestAnswer: false,
           userId: EmailAuth().getCurrentUser().uid,
         );
-        print(_answer.questionId);
       });
 
       return _answer;
@@ -235,7 +232,7 @@ class _NewFormState extends State<NewForm> {
 
     List<String> downloadUrls = await uploadFiles(_id);
 
-    dynamic _model = _createModel(_id, _date, downloadUrls, widget.questionId);
+    dynamic _model = _createModel(_id, _date, downloadUrls);
     print(_createModel);
 
     try {
