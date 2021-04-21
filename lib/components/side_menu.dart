@@ -5,7 +5,6 @@ import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/screens/settings_screen.dart';
-import 'package:project_eureka_flutter/screens/video_call_test_screen.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
@@ -85,13 +84,6 @@ class _SideMenuState extends State<SideMenu> {
             SettingsScreen(),
             Icons.settings,
           ),
-          Divider(color: Colors.grey.shade400, height: 1.0),
-          sideMenuListTile(
-            context,
-            'Video',
-            VideoCommunication(),
-            Icons.info,
-          )
         ],
       ),
 

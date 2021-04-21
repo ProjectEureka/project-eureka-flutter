@@ -17,7 +17,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
 
-import 'chat_screens/chat_sceen.dart';
+import 'chat_screens/chat_screen.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
@@ -208,8 +208,8 @@ class _MoreDetailsState extends State<MoreDetails> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ChatScreen(
-                              _moreDetailModel.user.id,
-                              _moreDetailModel.user.firstName,
+                              fromId: _moreDetailModel.user.id,
+                              recipient: _moreDetailModel.user.firstName,
                             )), // change this to the chat form
                   );
                 },

@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
-
-import 'chat_sceen.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
@@ -114,7 +113,7 @@ class ConversationBubble extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChatScreen(recipientId, recipient)));
+                    builder: (context) => ChatScreen(fromId: recipientId, recipient: recipient)));
           },
           child: Row(
             children: <Widget>[
