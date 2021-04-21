@@ -30,7 +30,7 @@ class Settings extends StatelessWidget {
 
   void signOut(context) {
     _emailAuth.signOut().then((_) => Navigator.pushNamedAndRemoveUntil(
-        context, '/root', (Route<void> route) => false));
+        context, '/', (Route<void> route) => false));
   }
 
   @override
