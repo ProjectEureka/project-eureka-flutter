@@ -19,14 +19,12 @@ import 'package:project_eureka_flutter/services/new_answer_service.dart';
 class NewForm extends StatefulWidget {
   final String categoryName;
   final bool isAnswer;
-  final QuestionModel questionModel;
   final String questionId;
 
   /// constructor to allow objects to be passed from another class
   NewForm({
     this.categoryName = '',
     @required this.isAnswer,
-    this.questionModel,
     this.questionId,
   });
 
