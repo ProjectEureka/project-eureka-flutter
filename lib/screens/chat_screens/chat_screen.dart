@@ -112,6 +112,17 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
     );
+    _firestore
+        .collection('messages')
+        .doc(groupChatId)
+        .collection(groupChatId)
+        .add({
+      'text': "Call ended",
+      'sender': "system",
+      'timestamp': DateTime.now(),
+      'idFrom': userId,
+      'idTo': widget.fromId,
+    });
   }
 
   Future<void> _handleCameraAndMic(Permission permission) async {
