@@ -51,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     // initialize global channel names for two cases:
     // 1: user calls and joins the channel; 2: user clicks answer and joins the created channel
-    channelNameCall = userId + "-" + widget.fromId;
+    channelNameCall = "";
     channelNameAnswer = widget.fromId + "-" + userId;
 
     UserService().getUserById(userId).then((payload) {
@@ -89,19 +89,44 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // create and receive token after starting the call
   Future<void> initGetTokenCall() async {
-    await VideoCallService().getTokenCall(channelNameCall).then(
-      (payload) {
-        setState(() {
-          _tokenCall = payload;
-        });
+    channelNameCall = userId + "-" + widget.fromId;
+    String tokenAnswer = "";
+    await VideoCallService().getTokenAnswer(channelNameAnswer).then(
+          (payload) {
+        tokenAnswer = payload;
       },
     );
+    if (tokenAnswer == "error"){
+      await VideoCallService().getTokenCall(channelNameCall).then(
+            (payload) {
+          setState(() {
+            _tokenCall = payload;
+          });
+        },
+      );
+    }
+    else {
+      channelNameCall = channelNameAnswer;
+      _tokenCall = tokenAnswer;
+    }
   }
 
   Future<void> callUser() async {
     await initGetTokenCall();
     await _handleCameraAndMic(Permission.camera);
     await _handleCameraAndMic(Permission.microphone);
+    if(channelNameCall != channelNameAnswer)
+      _firestore
+          .collection('messages')
+          .doc(groupChatId)
+          .collection(groupChatId)
+          .add({
+        'text': user.firstName + " started the call",
+        'sender': "system - " + userId,
+        'timestamp': DateTime.now(),
+        'idFrom': userId,
+        'idTo': widget.fromId,
+      });
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -112,17 +137,10 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
     );
-    _firestore
-        .collection('messages')
-        .doc(groupChatId)
-        .collection(groupChatId)
-        .add({
-      'text': "Call ended",
-      'sender': "system",
-      'timestamp': DateTime.now(),
-      'idFrom': userId,
-      'idTo': widget.fromId,
-    });
+    // this message will be sent from caller's side after call is finished
+    print("penis");
+    print(channelNameCall);
+    print(channelNameAnswer);
   }
 
   Future<void> _handleCameraAndMic(Permission permission) async {
@@ -137,19 +155,21 @@ class _ChatScreenState extends State<ChatScreen> {
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.photo_camera_front, size: 40.0),
-                onPressed: () {
-                  callUser();
-                  _firestore
-                      .collection('messages')
-                      .doc(groupChatId)
-                      .collection(groupChatId)
-                      .add({
-                    'text': user.firstName + " started the call",
-                    'sender': "system - " + userId,
-                    'timestamp': DateTime.now(),
-                    'idFrom': userId,
-                    'idTo': widget.fromId,
-                  });
+                onPressed: () async {
+                  await callUser();
+                  if(channelNameCall != channelNameAnswer){
+                    _firestore
+                        .collection('messages')
+                        .doc(groupChatId)
+                        .collection(groupChatId)
+                        .add({
+                      'text': "Call ended",
+                      'sender': "system",
+                      'timestamp': DateTime.now(),
+                      'idFrom': userId,
+                      'idTo': widget.fromId,
+                    });
+                  }
                 }),
             SizedBox(width: 30.0)
             //camera button for call will go here
