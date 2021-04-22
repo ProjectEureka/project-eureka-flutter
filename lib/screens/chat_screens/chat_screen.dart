@@ -9,6 +9,7 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/video_communication.dart';
+import 'dart:math';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
@@ -25,7 +26,9 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => new _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
@@ -40,6 +43,8 @@ class _ChatScreenState extends State<ChatScreen> {
   UserModel user = new UserModel(
     firstName: '',
   );
+
+  bool showAnimationButton;
 
   @override
   void initState() {
@@ -59,6 +64,37 @@ class _ChatScreenState extends State<ChatScreen> {
         user = payload;
       });
     });
+    _controller = new AnimationController(
+      vsync: this,
+    );
+    _startAnimation();
+    showAnimationButton = false;
+    _checkAnswerToken();
+  }
+
+  void _checkAnswerToken() async {
+    await VideoCallService().getTokenAnswer(channelNameAnswer).then(
+          (payload) {
+        if(payload != "error"){
+          _showAnimation(true);
+        }
+        else {
+          _showAnimation(false);
+        }
+      },
+    );
+  }
+
+  void _showAnimation(bool state) {
+    setState(() => showAnimationButton = state);
+  }
+
+  void _startAnimation() {
+    _controller.stop();
+    _controller.reset();
+    _controller.repeat(
+      period: Duration(seconds: 1),
+    );
   }
 
   void setGroupId() async {
@@ -92,20 +128,19 @@ class _ChatScreenState extends State<ChatScreen> {
     channelNameCall = userId + "-" + widget.fromId;
     String tokenAnswer = "";
     await VideoCallService().getTokenAnswer(channelNameAnswer).then(
-          (payload) {
+      (payload) {
         tokenAnswer = payload;
       },
     );
-    if (tokenAnswer == "error"){
+    if (tokenAnswer == "error") {
       await VideoCallService().getTokenCall(channelNameCall).then(
-            (payload) {
+        (payload) {
           setState(() {
             _tokenCall = payload;
           });
         },
       );
-    }
-    else {
+    } else {
       channelNameCall = channelNameAnswer;
       _tokenCall = tokenAnswer;
     }
@@ -115,7 +150,7 @@ class _ChatScreenState extends State<ChatScreen> {
     await initGetTokenCall();
     await _handleCameraAndMic(Permission.camera);
     await _handleCameraAndMic(Permission.microphone);
-    if(channelNameCall != channelNameAnswer)
+    if (channelNameCall != channelNameAnswer)
       _firestore
           .collection('messages')
           .doc(groupChatId)
@@ -138,7 +173,6 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
     // this message will be sent from caller's side after call is finished
-    print("penis");
     print(channelNameCall);
     print(channelNameAnswer);
   }
@@ -148,29 +182,49 @@ class _ChatScreenState extends State<ChatScreen> {
     print(status);
   }
 
+
+
   Widget build(BuildContext context) {
+    // check for answer token
+    _checkAnswerToken();
     return Scaffold(
       appBar: EurekaAppBar(
           appBar: AppBar(),
           actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.photo_camera_front, size: 40.0),
-                onPressed: () async {
-                  await callUser();
-                  if(channelNameCall != channelNameAnswer){
-                    _firestore
-                        .collection('messages')
-                        .doc(groupChatId)
-                        .collection(groupChatId)
-                        .add({
-                      'text': "Call ended",
-                      'sender': "system",
-                      'timestamp': DateTime.now(),
-                      'idFrom': userId,
-                      'idTo': widget.fromId,
-                    });
-                  }
-                }),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                if (showAnimationButton)
+                  Container(
+                    alignment: Alignment(0, 0.15),
+                    child: CustomPaint(
+                      painter: new SpritePainter(_controller),
+                      child: new SizedBox(
+                        width: 80.0,
+                        height: 80.0,
+                      ),
+                    ),
+                  ),
+                IconButton(
+                    icon: Icon(Icons.photo_camera_front, size: 40.0),
+                    onPressed: () async {
+                      await callUser();
+                      if (channelNameCall != channelNameAnswer) {
+                        _firestore
+                            .collection('messages')
+                            .doc(groupChatId)
+                            .collection(groupChatId)
+                            .add({
+                          'text': "Call ended",
+                          'sender': "system",
+                          'timestamp': DateTime.now(),
+                          'idFrom': userId,
+                          'idTo': widget.fromId,
+                        });
+                      }
+                    }),
+              ],
+            ),
             SizedBox(width: 30.0)
             //camera button for call will go here
           ],
@@ -179,7 +233,47 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            MessagesStream(groupChatId: groupChatId, fromId: widget.fromId),
+            StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('messages')
+                  .doc(groupChatId)
+                  .collection(groupChatId)
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                //uses async snapshot
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                final messages = snapshot.data.docs;
+                List<MessageBubble> messageBubbles = [];
+                for (var message in messages) {
+                  final messageText = message.data()['text'];
+                  final messageSender = message.data()['sender'];
+                  final messageTimestamp = message.data()['timestamp'];
+                  final messageBubble = MessageBubble(
+                      sender: messageSender,
+                      text: messageText,
+                      isMe: loggedInUser.email == messageSender,
+                      // if sender String contains "system", this message will appear in the center (it is a system message)
+                      isSystem: messageSender.contains("system"),
+                      // if sender String contains caller's ID, show Answer button. Caller won't see answer button
+                      showAnswerButton: messageSender.contains(widget.fromId),
+                      timestamp: messageTimestamp.toDate());
+                  messageBubbles.add(messageBubble);
+                }
+                return Expanded(
+                  child: ListView(
+                    reverse: true,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+                    children: messageBubbles,
+                  ),
+                );
+              },
+            ),
             Container(
               width: double.infinity,
               color: Colors.white,
@@ -237,56 +331,6 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class MessagesStream extends StatelessWidget {
-  final String groupChatId;
-  final String fromId;
-  MessagesStream({this.groupChatId, this.fromId});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestore
-          .collection('messages')
-          .doc(groupChatId)
-          .collection(groupChatId)
-          .orderBy('timestamp', descending: true)
-          .snapshots(),
-      builder: (context, snapshot) {
-        //uses async snapshot
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        final messages = snapshot.data.docs;
-        List<MessageBubble> messageBubbles = [];
-        for (var message in messages) {
-          final messageText = message.data()['text'];
-          final messageSender = message.data()['sender'];
-          final messageTimestamp = message.data()['timestamp'];
-          final messageBubble = MessageBubble(
-              sender: messageSender,
-              text: messageText,
-              isMe: loggedInUser.email == messageSender,
-              // if sender String contains "system", this message will appear in the center (it is a system message)
-              isSystem: messageSender.contains("system"),
-              // if sender String contains caller's ID, show Answer button. Caller won't see answer button
-              showAnswerButton: messageSender.contains(fromId),
-              timestamp: messageTimestamp.toDate());
-          messageBubbles.add(messageBubble);
-        }
-        return Expanded(
-          child: ListView(
-            reverse: true,
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-            children: messageBubbles,
-          ),
-        );
-      },
     );
   }
 }
@@ -440,5 +484,34 @@ class MessageBubble extends StatelessWidget {
               )
           ]),
     );
+  }
+}
+
+class SpritePainter extends CustomPainter {
+  final Animation<double> _animation;
+
+  SpritePainter(this._animation) : super(repaint: _animation);
+
+  void circle(Canvas canvas, Rect rect, double value) {
+    double opacity = (1.0 - (value / 4.0)).clamp(0.0, 1.0);
+    Color color = new Color.fromRGBO(0, 117, 194, opacity);
+    double size = rect.width / 2;
+    double area = size * size;
+    double radius = sqrt(area * value / 4);
+    final Paint paint = new Paint()..color = color;
+    canvas.drawCircle(rect.center, radius, paint);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Rect rect = new Rect.fromLTRB(0.0, 0.0, size.width, size.height);
+    for (int wave = 3; wave >= 0; wave--) {
+      circle(canvas, rect, wave + _animation.value);
+    }
+  }
+
+  @override
+  bool shouldRepaint(SpritePainter oldDelegate) {
+    return true;
   }
 }
