@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:project_eureka_flutter/screens/forgot_password.dart';
-import 'package:project_eureka_flutter/screens/home_page.dart';
-import 'package:project_eureka_flutter/screens/signup_page.dart';
-import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
+import 'package:project_eureka_flutter/screens/profile_onboarding_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
 import 'package:project_eureka_flutter/services/google_auth.dart';
 
-class LoginPage extends StatefulWidget {
+class SignIn extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignInState createState() => _SignInState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignInState extends State<SignIn> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   EmailAuth _emailAuth = new EmailAuth();
@@ -74,13 +72,8 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await _emailAuth.signIn(email, password);
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(),
-        ),
-        (Route<void> route) => false,
-      );
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/home', (Route<void> route) => false);
       setState(() {
         showSpinner = false;
       });
@@ -200,12 +193,7 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(color: Colors.grey),
         ),
         onPressed: () async {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ForgotPassword(),
-            ),
-          );
+          Navigator.of(context).pushNamed('/forgotPassword');
         },
       ),
     );
@@ -261,12 +249,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           onPressed: () async {
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SignupPage(),
-              ),
-            );
+            await Navigator.of(context).pushNamed('/signUp');
           },
         ),
       ],

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
-import 'package:project_eureka_flutter/screens/rating_page.dart';
-import 'package:project_eureka_flutter/services/close_question_service.dart';
-
-import 'home_page.dart';
+import 'package:project_eureka_flutter/screens/rating_screen.dart';
 
 class ChooseBestAnswer extends StatefulWidget {
-
   final String questionId;
   // In development: it will need to pass the list of answers
   final String answerId;
@@ -31,8 +27,11 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => RatingPage(questionId: widget.questionId, answerId: widget.answerId
-                    ,)), //archive question
+                builder: (context) => Rating(
+                  questionId: widget.questionId,
+                  answerId: widget.answerId,
+                ),
+              ), //archive question
             );
           },
           child: Text('Best Answer'),

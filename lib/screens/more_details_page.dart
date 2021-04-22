@@ -6,7 +6,7 @@ import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 
-import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';

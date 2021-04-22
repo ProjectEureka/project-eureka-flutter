@@ -1,18 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:project_eureka_flutter/screens/home_page.dart';
-import 'package:project_eureka_flutter/screens/login_page.dart';
-import 'package:project_eureka_flutter/screens/onboarding.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
+import 'package:project_eureka_flutter/screens/signin_screen.dart';
+import 'package:project_eureka_flutter/screens/onboarding_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/shared_preferences_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RootPage extends StatefulWidget {
+class RootScreen extends StatefulWidget {
   @override
-  _RootPageState createState() => _RootPageState();
+  _RootScreenState createState() => _RootScreenState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootScreenState extends State<RootScreen> {
   SharedPreferences _prefs;
 
   @override
@@ -34,7 +34,7 @@ class _RootPageState extends State<RootPage> {
       if (EmailAuth().getCurrentUser() != null) {
         pushAndRemoveUntil(Home());
       } else {
-        pushAndRemoveUntil(LoginPage());
+        pushAndRemoveUntil(SignIn());
       }
     } else {
       pushAndRemoveUntil(Onboarding());
