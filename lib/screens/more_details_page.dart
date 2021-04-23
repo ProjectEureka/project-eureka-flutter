@@ -74,6 +74,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   MaterialPageRoute(
                     builder: (context) => NewForm(
                       isAnswer: true,
+                      questionId: widget.questionId,
                     ),
                   ), // standard form
                 ),
