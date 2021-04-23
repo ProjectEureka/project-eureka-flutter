@@ -14,10 +14,6 @@ class ChatScreenConversations extends StatefulWidget {
 }
 
 class _ChatScreenConversations extends State<ChatScreenConversations> {
-  final _auth = FirebaseAuth.instance;
-
-  final _firestore = FirebaseFirestore.instance;
-  _ChatScreenConversations();
 
   @override
   void initState() {
@@ -58,20 +54,20 @@ class ConversationsStream extends StatelessWidget {
           final conversationText = userChat.data()['text'];
           final conversationStarter = userChat.data()['chatSender'];
           final conversationUserID = userChat.data()['chatIDUser'];
-          final recipeintID = userChat.data()['recipientId'];
+          final recipientID = userChat.data()['recipientId'];
           final recipientName = userChat.data()['recipient'];
           final questionTitle = userChat.data()['questionTitle'];
           final conversationBubble = ConversationBubble(
               questionTitle: questionTitle,
-              recipient: recipeintID == loggedInUser.uid
+              recipient: recipientID == loggedInUser.uid
                   ? conversationStarter
                   : recipientName,
-              recipientId: recipeintID == loggedInUser.uid
+              recipientId: recipientID == loggedInUser.uid
                   ? conversationUserID
-                  : recipeintID,
+                  : recipientID,
               text: conversationText);
           if (conversationUserID == loggedInUser.uid ||
-              recipeintID == loggedInUser.uid) {
+              recipientID == loggedInUser.uid) {
             conversationBubbles.add(conversationBubble);
           }
         }

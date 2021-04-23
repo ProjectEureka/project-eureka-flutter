@@ -11,12 +11,9 @@ import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/video_communication.dart';
 import 'dart:math';
 
-final _firestore = FirebaseFirestore.instance;
-User loggedInUser = EmailAuth().getCurrentUser();
 
 // Initialize global variable for channel name for the call receiver; accessible for in ChatScreen and MessageBubble classes
 String channelNameAnswer = "";
-bool showAnimationButtonHelper = false;
 
 class ChatScreen extends StatefulWidget {
   final String fromId;
@@ -27,25 +24,28 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => new _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen>
-    with SingleTickerProviderStateMixin {
+class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateMixin {
+
   AnimationController _controller;
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  User loggedInUser = EmailAuth().getCurrentUser();
 
   String messageText;
   String groupChatId;
   String userId;
-  // Initialize channel name on caller's side. No need to make it global
+  // Initialize channel name on caller's side
   String channelNameCall = "";
   // initialize token on the caller's side that will be requested from the backend
   String _tokenCall = "";
-
+  // used to get the user's firstName fir the system message when starting the call
   UserModel user = new UserModel(
     firstName: '',
   );
-
+  // Used for the animated video call button to turn off / turn on animation
   bool showAnimationButton;
+
 
   @override
   void initState() {
@@ -55,9 +55,9 @@ class _ChatScreenState extends State<ChatScreen>
     groupChatId = userId + "-" + widget.fromId;
     setGroupId();
 
-    // initialize global channel names for two cases:
-    // 1: user calls and joins the channel; 2: user clicks answer and joins the created channel
-    channelNameCall = "";
+    // initialize channel names for two cases:
+    // 1: channelNameCall - user calls and joins the channel; (initialized to empty string)
+    // 2: channelNameAnswer - user clicks answer and joins the created channel
     channelNameAnswer = widget.fromId + "-" + userId;
 
     UserService().getUserById(userId).then((payload) {
@@ -82,17 +82,18 @@ class _ChatScreenState extends State<ChatScreen>
     super.dispose();
   }
 
-  // check for answer token every 3 seconds
+  // check if call has been started - every 3 seconds
+  // that will start the animated video call button
   void _checkAnswerToken() async {
     while (true) {
-      if (!mounted) {
+      if (!mounted) { // once left the chat page, break the loop
         break;
       }
       // listen to answerToken every 4 seconds
       await Future.delayed(new Duration(seconds: 4));
       await VideoCallService().getTokenAnswer(channelNameAnswer).then(
         (payload) {
-          if (!mounted) return;
+          if (!mounted) return; // allow last call check to complete and prevent setState
           payload != "error"
               ? setState(() => showAnimationButton = true)
               : setState(() => showAnimationButton = false);
@@ -131,11 +132,14 @@ class _ChatScreenState extends State<ChatScreen>
   Future<void> initGetTokenCall() async {
     channelNameCall = userId + "-" + widget.fromId;
     String tokenAnswer = "";
+    // first check if call has already been started by another user
     await VideoCallService().getTokenAnswer(channelNameAnswer).then(
       (payload) {
         tokenAnswer = payload;
       },
     );
+    // if call wasn't started, start the call
+    // otherwise, join the existing call
     if (tokenAnswer == "error") {
       await VideoCallService().getTokenCall(channelNameCall).then(
         (payload) {
@@ -363,6 +367,7 @@ class MessageBubble extends StatelessWidget {
   final bool showAnswerButton;
   final DateTime timestamp;
 
+  // Answer call from the button tha appears in chat
   Future<String> answerCall() async {
     String tokenAnswer = "";
     await VideoCallService().getTokenAnswer(channelNameAnswer).then(
@@ -440,6 +445,9 @@ class MessageBubble extends StatelessWidget {
                     isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               ),
             ),
+
+            // Answer button when call started by another user.
+            // Button will stay in chat, however won't work if call is not active
             if (showAnswerButton & isSystem & text.contains('started the call'))
               SizedBox.fromSize(
                 size: Size(70, 56), // button width and height
@@ -494,6 +502,7 @@ class MessageBubble extends StatelessWidget {
   }
 }
 
+// Used for animated video call button when receiving the call
 class SpritePainter extends CustomPainter {
   final Animation<double> _animation;
 
