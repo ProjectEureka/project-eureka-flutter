@@ -16,6 +16,7 @@ User loggedInUser = EmailAuth().getCurrentUser();
 
 // Initialize global variable for channel name for the call receiver; accessible for in ChatScreen and MessageBubble classes
 String channelNameAnswer = "";
+bool showAnimationButtonHelper = false;
 
 class ChatScreen extends StatefulWidget {
   final String fromId;
@@ -64,43 +65,46 @@ class _ChatScreenState extends State<ChatScreen>
         user = payload;
       });
     });
+
     _controller = new AnimationController(
       vsync: this,
     );
-    _startAnimation();
+    _controller.repeat(
+      period: Duration(seconds: 1),
+    );
     showAnimationButton = false;
     _checkAnswerToken();
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // check for answer token every 3 seconds
   void _checkAnswerToken() async {
-    await VideoCallService().getTokenAnswer(channelNameAnswer).then(
-          (payload) {
-        if(payload != "error"){
-          _showAnimation(true);
-        }
-        else {
-          _showAnimation(false);
-        }
-      },
-    );
-  }
-
-  void _showAnimation(bool state) {
-    setState(() => showAnimationButton = state);
-  }
-
-  void _startAnimation() {
-    _controller.stop();
-    _controller.reset();
-    _controller.repeat(
-      period: Duration(seconds: 1),
-    );
+    while (true) {
+      if (!mounted) {
+        break;
+      }
+      // listen to answerToken every 4 seconds
+      await Future.delayed(new Duration(seconds: 4));
+      await VideoCallService().getTokenAnswer(channelNameAnswer).then(
+        (payload) {
+          if (!mounted) return;
+          payload != "error"
+              ? setState(() => showAnimationButton = true)
+              : setState(() => showAnimationButton = false);
+        },
+      );
+    }
   }
 
   void setGroupId() async {
     List<String> groupChatIds = [];
-    _firestore.collection('messages').get().then((QuerySnapshot) {
-      QuerySnapshot.docs.forEach((result) {
+    _firestore.collection('messages').get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
         groupChatIds.add(result.id.toString());
       });
 
@@ -150,6 +154,7 @@ class _ChatScreenState extends State<ChatScreen>
     await initGetTokenCall();
     await _handleCameraAndMic(Permission.camera);
     await _handleCameraAndMic(Permission.microphone);
+    // this message will be sent from caller's side after call is finished
     if (channelNameCall != channelNameAnswer)
       _firestore
           .collection('messages')
@@ -172,9 +177,6 @@ class _ChatScreenState extends State<ChatScreen>
         ),
       ),
     );
-    // this message will be sent from caller's side after call is finished
-    print(channelNameCall);
-    print(channelNameAnswer);
   }
 
   Future<void> _handleCameraAndMic(Permission permission) async {
@@ -182,11 +184,7 @@ class _ChatScreenState extends State<ChatScreen>
     print(status);
   }
 
-
-
   Widget build(BuildContext context) {
-    // check for answer token
-    _checkAnswerToken();
     return Scaffold(
       appBar: EurekaAppBar(
           appBar: AppBar(),
@@ -194,17 +192,26 @@ class _ChatScreenState extends State<ChatScreen>
             Stack(
               alignment: Alignment.center,
               children: [
-                if (showAnimationButton)
-                  Container(
-                    alignment: Alignment(0, 0.15),
-                    child: CustomPaint(
-                      painter: new SpritePainter(_controller),
-                      child: new SizedBox(
-                        width: 80.0,
-                        height: 80.0,
+                showAnimationButton
+                    ? Container(
+                        alignment: Alignment(0, 0.15),
+                        child: CustomPaint(
+                          painter: new SpritePainter(_controller),
+                          child: new SizedBox(
+                            width: 80.0,
+                            height: 80.0,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        alignment: Alignment(0, 0.15),
+                        child: CustomPaint(
+                          child: new SizedBox(
+                            width: 80.0,
+                            height: 80.0,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                 IconButton(
                     icon: Icon(Icons.photo_camera_front, size: 40.0),
                     onPressed: () async {
