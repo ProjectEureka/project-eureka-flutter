@@ -4,7 +4,6 @@ import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/screens/chat_screens/user_chats.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
-import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
@@ -291,12 +290,7 @@ class _HomeState extends State<Home> {
       padding: EdgeInsets.symmetric(horizontal: 40.0),
       child: RawMaterialButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NewQuestionScreen(),
-            ),
-          );
+          Navigator.of(context).pushNamed('/newQuestion');
         },
         fillColor: Colors.blueGrey[800],
         splashColor: Colors.grey,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
-import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

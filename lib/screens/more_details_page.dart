@@ -9,6 +9,7 @@ import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
@@ -61,6 +62,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   MaterialPageRoute(
                     builder: (context) => NewForm(
                       isAnswer: true,
+                      questionId: widget.questionId,
                     ),
                   ), // change this to the chat form
                 ),

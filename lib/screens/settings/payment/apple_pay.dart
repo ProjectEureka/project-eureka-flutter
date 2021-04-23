@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
-import 'package:project_eureka_flutter/screens/settings/payment/payment_confirmation.dart';
 
 class ApplePay extends StatelessWidget {
   @override
@@ -13,10 +12,7 @@ class ApplePay extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PaymentConfirmation()),
-            );
+            Navigator.of(context).pushNamed('/paymentConfirmation');
           },
           child: Text('Confirm'),
         ),

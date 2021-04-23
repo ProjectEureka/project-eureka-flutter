@@ -3,7 +3,7 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/more_details_view.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
-import 'package:project_eureka_flutter/screens/rating_page.dart';
+import 'package:project_eureka_flutter/screens/rating_screen.dart';
 
 class ChooseBestAnswer extends StatefulWidget {
   final String questionId;
@@ -104,7 +104,7 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
               : () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RatingPage(
+                      builder: (context) => Rating(
                         questionId: widget.questionId,
                         answerId: widget.answers[bestAnswerIndex].answer.id,
                       ),

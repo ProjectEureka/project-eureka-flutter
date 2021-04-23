@@ -5,17 +5,17 @@ import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/components/profile_answers_list.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
-import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
+import 'package:project_eureka_flutter/screens/profile_onboarding_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_service.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
-class ProfileScreen extends StatefulWidget {
+class Profile extends StatefulWidget {
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileState extends State<Profile> {
   int _tab = 0;
   List questionsList = [];
   List answersList = [];
