@@ -165,6 +165,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   MaterialPageRoute(
                     builder: (context) => NewForm(
                       isAnswer: true,
+                      questionId: widget.questionId,
                     ),
                   ), // standard form
                 ),
@@ -216,10 +217,11 @@ class _MoreDetailsState extends State<MoreDetails> {
                     actions: <Widget>[
                       FlatButton(
                           onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Home()), //archive question
-                          ),
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Home()), //archive question
+                              ),
                           child: Text('Back to Home')),
                     ],
                   ));
@@ -320,7 +322,7 @@ class _MoreDetailsState extends State<MoreDetails> {
           color: Colors.transparent,
           elevation: 0,
           // For demo purposes this is true, however will be changed to != later
-          child: _moreDetailModel.user.id == currUserId
+          child: _moreDetailModel.user.id != currUserId
               ? Padding(
                   padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
                   //user id checker, if user is not the owner of the question, they have option to answer
