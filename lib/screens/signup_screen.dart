@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
-import 'package:project_eureka_flutter/screens/profile_onboarding.dart';
-import 'package:project_eureka_flutter/screens/root_page.dart';
+import 'package:project_eureka_flutter/screens/profile_onboarding_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/firebase_exception_handler.dart';
 
-class SignupPage extends StatefulWidget {
+class SignUp extends StatefulWidget {
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   EmailAuth _emailAuth = new EmailAuth();

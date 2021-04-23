@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
-import 'package:project_eureka_flutter/screens/login_page.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/google_auth.dart';
 import 'package:project_eureka_flutter/services/delete_user_service.dart';
@@ -39,11 +38,8 @@ class _AccountSettingsDeleteState extends State<AccountSettingsDelete> {
       }
       await DeleteUserService().deleteUser(tempId);
 
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute<Widget>(
-              builder: (BuildContext context) => LoginPage()),
-          (Route<void> route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/signIn', (Route<void> route) => false);
     } catch (e) {
       setState(() {
         exception = FirebaseExceptionHandler().getExceptionText(e);

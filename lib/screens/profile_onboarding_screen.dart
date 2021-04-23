@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
-import 'package:project_eureka_flutter/screens/home_page.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_onboarding_service.dart';
@@ -205,13 +204,8 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
         // Using HTTP POST to add new user
         await _profileOnboardingService.addUser(user);
 
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Home(),
-          ),
-          (Route<void> route) => false,
-        );
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/home', (Route<void> route) => false);
       }
     } catch (e) {
       print(e);

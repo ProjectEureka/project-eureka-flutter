@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:project_eureka_flutter/screens/root_page.dart';
 import 'package:project_eureka_flutter/services/shared_preferences_helper.dart';
 
 class Onboarding extends StatefulWidget {
@@ -93,8 +92,7 @@ class _OnboardingState extends State<Onboarding> {
         ),
         onDone: () {
           SharedPreferencesHelper().setInitScreen(1);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => RootPage()));
+          Navigator.of(context).pushNamed('/');
         },
       ),
     );
