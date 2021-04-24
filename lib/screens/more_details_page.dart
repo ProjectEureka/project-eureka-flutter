@@ -30,6 +30,7 @@ class _MoreDetailsState extends State<MoreDetails> {
     user: UserModel(),
     userAnswer: [UserAnswerModel()],
   );
+
   final String currUserId = EmailAuth().getCurrentUser().uid;
 
   @override
@@ -47,6 +48,36 @@ class _MoreDetailsState extends State<MoreDetails> {
     });
   }
 
+  EurekaRoundedButton _messageModalButton() {
+    return EurekaRoundedButton(
+      onPressed: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NewForm(
+            isAnswer: true,
+            questionId: widget.questionId,
+          ),
+        ), // change this to the chat form
+      ),
+      buttonText: 'Message ${_moreDetailModel.user.firstName}',
+    );
+  }
+
+  EurekaRoundedButton _answerFormModalButton() {
+    return EurekaRoundedButton(
+      onPressed: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NewForm(
+            isAnswer: true,
+            questionId: widget.questionId,
+          ),
+        ), // standard form
+      ),
+      buttonText: 'Answer',
+    );
+  }
+
   EurekaRoundedButton _answerQuestionButton() {
     return EurekaRoundedButton(
       onPressed: () {
@@ -55,30 +86,8 @@ class _MoreDetailsState extends State<MoreDetails> {
           builder: (context) => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              EurekaRoundedButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NewForm(
-                      isAnswer: true,
-                      questionId: widget.questionId,
-                    ),
-                  ), // change this to the chat form
-                ),
-                buttonText: 'Message ${_moreDetailModel.user.firstName}',
-              ),
-              EurekaRoundedButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NewForm(
-                      isAnswer: true,
-                      questionId: widget.questionId,
-                    ),
-                  ), // standard form
-                ),
-                buttonText: 'Answer',
-              ),
+              _messageModalButton(),
+              _answerFormModalButton(),
             ],
           ),
         );
@@ -87,23 +96,49 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
-  EurekaRoundedButton _questionSolvedButton() {
+  Visibility _noAnswersResponse() {
+    return Visibility(
+      visible: _moreDetailModel.userAnswer.length == 0,
+      child: Column(
+        children: [
+          SizedBox(height: 20.0),
+          Text(
+            "There are no answers yet, add one below!",
+            style: TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic),
+          ),
+        ],
+      ),
+    );
+  }
+
+  EurekaRoundedButton _questionIsSolvedButton() {
     return EurekaRoundedButton(
       onPressed: () {
-        print("Hello");
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ChooseBestAnswer(
               questionId: _moreDetailModel.question.id,
-              // Demo of choosing best answer
-              // In development: pass the answers list that will have all answers ID's
               answers: _moreDetailModel.userAnswer,
             ),
           ),
         );
       },
-      buttonText: 'Solved?',
+      buttonText: 'Question Solved?',
+    );
+  }
+
+  Column _answersListBuilder() {
+    return Column(
+      children: [
+        for (UserAnswerModel userAnswer in _moreDetailModel.userAnswer)
+          MoreDetailsView(
+            moreDetailModel: _moreDetailModel,
+            isAnswer: true,
+            userAnswerModel: userAnswer,
+            isCurrUser: _moreDetailModel.user.id == currUserId,
+          )
+      ],
     );
   }
 
@@ -154,26 +189,8 @@ class _MoreDetailsState extends State<MoreDetails> {
                     color: Color(0xFF00ADB5),
                   ),
                 ),
-                Visibility(
-                  visible: _moreDetailModel.userAnswer.length == 0,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20.0),
-                      Text(
-                        "There are no answers yet, add one below!",
-                        style: TextStyle(
-                            fontSize: 16.0, fontStyle: FontStyle.italic),
-                      ),
-                    ],
-                  ),
-                ),
-                for (UserAnswerModel userAnswer in _moreDetailModel.userAnswer)
-                  MoreDetailsView(
-                    moreDetailModel: _moreDetailModel,
-                    isAnswer: true,
-                    userAnswerModel: userAnswer,
-                    isCurrUser: _moreDetailModel.user.id == currUserId,
-                  ),
+                _noAnswersResponse(),
+                _answersListBuilder(),
               ],
             ),
           ),
@@ -182,32 +199,41 @@ class _MoreDetailsState extends State<MoreDetails> {
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,
         elevation: 0,
-        // For demo purposes this is true, however will be changed to != later
-        child: _moreDetailModel.question == null ||
-                _moreDetailModel.question == null ||
-                (_moreDetailModel.userAnswer.length == 0
+        child: _moreDetailModel.question == null // wait for questions to load
+                ||
+                (_moreDetailModel.userAnswer.length ==
+                        0 // check if userAnswer contains anything
                     ? false
-                    : _moreDetailModel.userAnswer[0].user == null) ||
-                (_moreDetailModel.userAnswer.length == 0
+                    : _moreDetailModel.userAnswer[0].user ==
+                        null) // waits for user of answer to load if answers exist
+                ||
+                (_moreDetailModel.userAnswer.length ==
+                        0 // check if userAnswer contains anything
                     ? false
-                    : _moreDetailModel.userAnswer[0].answer == null)
+                    : _moreDetailModel.userAnswer[0].answer ==
+                        null) // waits for answers to load if answers exist
             ? Container(
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child:
+                      CircularProgressIndicator(), // if still waiting for above, show loading indicator
                 ),
               )
-            : ((_moreDetailModel.userAnswer.length == 0
-                    ? false
-                    : _moreDetailModel.userAnswer[0].answer.bestAnswer == true)
-                ? EurekaRoundedButton(
-                    buttonText: 'Question Closed',
-                    onPressed: () => Navigator.pop(context),
-                  )
-                : (_moreDetailModel.user.id != currUserId
-                    ? _answerQuestionButton()
-                    : _moreDetailModel.userAnswer.length == 0
-                        ? _answerQuestionButton()
-                        : _questionSolvedButton())),
+            : ( //else show the approriate button
+                (_moreDetailModel.userAnswer.length == 0
+                        ? false
+                        : _moreDetailModel.userAnswer[0].answer.bestAnswer ==
+                            true)
+                    ? EurekaRoundedButton(
+                        buttonText: 'Question Already Solved',
+                        onPressed: () =>
+                            Navigator.pop(context), // if there is a bestAnswer
+                      )
+                    : (_moreDetailModel.user.id !=
+                            currUserId // if currUser is question poster
+                        ? _answerQuestionButton() // false = answer question
+                        : _moreDetailModel.userAnswer.length == 0
+                            ? _answerQuestionButton()
+                            : _questionIsSolvedButton())),
       ),
     );
   }
