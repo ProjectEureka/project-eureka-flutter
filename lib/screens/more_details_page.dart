@@ -9,7 +9,6 @@ import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
-import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
@@ -104,7 +103,7 @@ class _MoreDetailsState extends State<MoreDetails> {
           ),
         );
       },
-      buttonText: 'Solved',
+      buttonText: 'Solved?',
     );
   }
 
@@ -115,100 +114,100 @@ class _MoreDetailsState extends State<MoreDetails> {
         title: 'Question Details',
         appBar: AppBar(),
       ),
-      body: _moreDetailModel.question == null ||
-              _moreDetailModel.question == null ||
-              (_moreDetailModel.userAnswer.length == 0
-                  ? false
-                  : _moreDetailModel.userAnswer[0].user == null) ||
-              (_moreDetailModel.userAnswer.length == 0
-                  ? false
-                  : _moreDetailModel.userAnswer[0].answer == null)
-          ? Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : SingleChildScrollView(
-              child: Container(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height - 269.0,
+      body: SingleChildScrollView(
+        child: Container(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 269.0,
+          ),
+          margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+          padding: EdgeInsets.fromLTRB(3, 0, 3, 0),
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.all(
+              Radius.circular(20.0),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MoreDetailsView(
+                  moreDetailModel: _moreDetailModel,
+                  isAnswer: false,
+                  isCurrUser: _moreDetailModel.user.id == currUserId,
                 ),
-                margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                padding: EdgeInsets.fromLTRB(3, 0, 3, 0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20.0),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
+                  child: Divider(
+                    color: Colors.black,
+                    thickness: 2.0,
+                    height: 0.0,
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                Text(
+                  "${_moreDetailModel.userAnswer.length} Answers",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    color: Color(0xFF00ADB5),
+                  ),
+                ),
+                Visibility(
+                  visible: _moreDetailModel.userAnswer.length == 0,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      MoreDetailsView(
-                        moreDetailModel: _moreDetailModel,
-                        isAnswer: false,
-                        isCurrUser: _moreDetailModel.user.id == currUserId,
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
-                        child: Divider(
-                          color: Colors.black,
-                          thickness: 2.0,
-                          height: 0.0,
-                        ),
-                      ),
+                      SizedBox(height: 20.0),
                       Text(
-                        "Answers",
+                        "There are no answers yet, add one below!",
                         style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                          color: Color(0xFF00ADB5),
-                        ),
+                            fontSize: 16.0, fontStyle: FontStyle.italic),
                       ),
-                      Visibility(
-                        visible: _moreDetailModel.userAnswer.length == 0,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 20.0),
-                            Text(
-                              "There are no answers yet, add one below!",
-                              style: TextStyle(
-                                  fontSize: 16.0, fontStyle: FontStyle.italic),
-                            ),
-                          ],
-                        ),
-                      ),
-                      for (UserAnswerModel userAnswer
-                          in _moreDetailModel.userAnswer)
-                        MoreDetailsView(
-                          moreDetailModel: _moreDetailModel,
-                          isAnswer: true,
-                          userAnswerModel: userAnswer,
-                          isCurrUser: _moreDetailModel.user.id == currUserId,
-                        ),
                     ],
                   ),
                 ),
-              ),
+                for (UserAnswerModel userAnswer in _moreDetailModel.userAnswer)
+                  MoreDetailsView(
+                    moreDetailModel: _moreDetailModel,
+                    isAnswer: true,
+                    userAnswerModel: userAnswer,
+                    isCurrUser: _moreDetailModel.user.id == currUserId,
+                  ),
+              ],
             ),
+          ),
+        ),
+      ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,
         elevation: 0,
         // For demo purposes this is true, however will be changed to != later
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(110, 0, 110, 0),
-          //user id checker, if user is not the owner of the question, they have option to answer
-          //if user is owner, they can archive question
-          child: _moreDetailModel.user.id != currUserId
-              ? _answerQuestionButton()
-              : _moreDetailModel.userAnswer.length == 0
-                  ? _answerQuestionButton()
-                  : _questionSolvedButton(),
-        ),
+        child: _moreDetailModel.question == null ||
+                _moreDetailModel.question == null ||
+                (_moreDetailModel.userAnswer.length == 0
+                    ? false
+                    : _moreDetailModel.userAnswer[0].user == null) ||
+                (_moreDetailModel.userAnswer.length == 0
+                    ? false
+                    : _moreDetailModel.userAnswer[0].answer == null)
+            ? Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : ((_moreDetailModel.userAnswer.length == 0
+                    ? false
+                    : _moreDetailModel.userAnswer[0].answer.bestAnswer == true)
+                ? EurekaRoundedButton(
+                    buttonText: 'Question Closed',
+                    onPressed: () => Navigator.pop(context),
+                  )
+                : (_moreDetailModel.user.id != currUserId
+                    ? _answerQuestionButton()
+                    : _moreDetailModel.userAnswer.length == 0
+                        ? _answerQuestionButton()
+                        : _questionSolvedButton())),
       ),
     );
   }

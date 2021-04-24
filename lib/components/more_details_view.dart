@@ -59,7 +59,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                       ? '${widget.userAnswerModel.user.firstName} ${widget.userAnswerModel.user.lastName}'
                       : '${widget.moreDetailModel.user.firstName} ${widget.moreDetailModel.user.lastName}',
                   style: TextStyle(
-                      fontSize: widget.isAnswer ? 11.0 : 15.0,
+                      fontSize: widget.isAnswer ? 13.0 : 17.0,
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -73,13 +73,13 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                       Text(
                         "Category: ",
                         style: TextStyle(
-                            fontSize: 14.0, fontWeight: FontWeight.bold),
+                            fontSize: 16.0, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                       Text(
                         widget.moreDetailModel.question.category,
                         style: TextStyle(
-                            fontSize: 12.0, fontWeight: FontWeight.w300),
+                            fontSize: 14.0, fontWeight: FontWeight.w300),
                         textAlign: TextAlign.left,
                       ),
                     ],
@@ -89,14 +89,14 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                 Text(
                   widget.isAnswer ? "Answered: " : "Asked: ",
                   style: TextStyle(
-                      fontSize: widget.isAnswer ? 10.5 : 14.0,
+                      fontSize: widget.isAnswer ? 12.5 : 16.0,
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
                 Text(
                   timeago.format(dateTime),
                   style: TextStyle(
-                      fontSize: widget.isAnswer ? 9.5 : 12.0,
+                      fontSize: widget.isAnswer ? 11.5 : 14.0,
                       fontWeight: FontWeight.w300),
                   textAlign: TextAlign.left,
                 ),
@@ -121,7 +121,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                   ? Text(
                       "Best Answer",
                       style: TextStyle(
-                          fontSize: 13.0,
+                          fontSize: 15.0,
                           fontStyle: FontStyle.italic,
                           color: Colors.grey),
                     )
@@ -132,7 +132,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
               : Text(
                   widget.moreDetailModel.question.title,
                   style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 17.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -141,7 +141,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
             widget.isAnswer
                 ? widget.userAnswerModel.answer.description
                 : widget.moreDetailModel.question.description,
-            style: TextStyle(fontSize: 12.0),
+            style: TextStyle(fontSize: 16.0),
           ),
           SizedBox(height: widget.isAnswer ? 5.0 : 15.0),
           widget.isAnswer
@@ -163,7 +163,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
           'Media: ',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: widget.isAnswer ? 13.0 : 14.0,
+            fontSize: widget.isAnswer ? 15.0 : 16.0,
           ),
         ),
         SizedBox(width: 10.0),
@@ -181,7 +181,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                   MaterialPageRoute(
                     builder: (context) => EurekaImageViewer(
                       imagePath: widget.isAnswer
-                          ? i < widget.userAnswerModel.answer.mediaUrls[i]
+                          ? widget.userAnswerModel.answer.mediaUrls[i]
                           : widget.moreDetailModel.question.mediaUrls[i],
                       isUrl: true,
                     ),
@@ -194,7 +194,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                     TextSpan(
                       text: "Image ${1 + i}",
                       style: TextStyle(
-                        fontSize: widget.isAnswer ? 12.0 : 13.0,
+                        fontSize: widget.isAnswer ? 14.0 : 15.0,
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
@@ -242,38 +242,44 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                         )
                       : Container())
                   : (widget.isCurrUser
-                      ? FlatButton(
-                          color: Colors.red,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          onPressed: () async {
-                            await CloseQuestionService().archiveQuestion(
-                                widget.moreDetailModel.question.id);
-
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                content: Text(
-                                  'Question was archived',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
-                                ),
-                                actions: <Widget>[
-                                  FlatButton(
-                                      onPressed: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => Home(),
-                                            ), //archive question
-                                          ),
-                                      child: Text('Back to Home')),
-                                ],
+                      ? (widget.moreDetailModel.question.closed == true
+                          ? Container()
+                          : FlatButton(
+                              color: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
                               ),
-                            );
-                          },
-                          child: Text("Archive"),
-                        )
+                              onPressed: () async {
+                                await CloseQuestionService().archiveQuestion(
+                                    widget.moreDetailModel.question.id);
+
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    content: Text(
+                                      'Question was archived',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                          onPressed: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Home(),
+                                                ), //archive question
+                                              ),
+                                          child: Text('Back to Home')),
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Archive",
+                                style: TextStyle(fontSize: 20.0),
+                              ),
+                            ))
                       : IconButton(
                           color: Color(0xFF00ADB5),
                           icon: Icon(Icons.message_outlined),
@@ -288,7 +294,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                 padding: const EdgeInsets.fromLTRB(14.0, 10.0, 14.0, 10.0),
                 child: Divider(
                   color: Colors.black,
-                  thickness: 2.0,
+                  thickness: 1.0,
                   height: 0.0,
                 ),
               )
