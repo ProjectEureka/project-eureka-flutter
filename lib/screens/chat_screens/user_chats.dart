@@ -50,7 +50,7 @@ class ConversationsStream extends StatelessWidget {
         //uses async snapshot
         if (!snapshot.hasData) {
           return Center(
-            child: CircularProgressIndicator(),
+            child: Text("Start New Chat from a Question"),
           );
         }
         final conversations = snapshot.data.docs;
@@ -61,7 +61,9 @@ class ConversationsStream extends StatelessWidget {
           final conversationUserID = userChat.data()['chatIDUser'];
           final recipeintID = userChat.data()['recipientId'];
           final recipientName = userChat.data()['recipient'];
+          final questionTitle = userChat.data()['questionTitle'];
           final conversationBubble = ConversationBubble(
+              questionTitle: questionTitle,
               recipient: recipeintID == loggedInUser.uid
                   ? conversationStarter
                   : recipientName,
@@ -87,11 +89,16 @@ class ConversationsStream extends StatelessWidget {
 
 class ConversationBubble extends StatelessWidget {
   ConversationBubble(
-      {this.recipient, this.text, this.recipientId, this.photoUrl});
+      {this.recipient,
+      this.text,
+      this.recipientId,
+      this.photoUrl,
+      this.questionTitle});
   final String recipient;
   final String text;
   final String recipientId;
   final String photoUrl;
+  final String questionTitle;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -125,7 +132,7 @@ class ConversationBubble extends StatelessWidget {
                   children: <Widget>[
                     Container(
                       child: Text(
-                          'This Question title is very long.', //Qusetion Title from backend should go here
+                          questionTitle, //Qusetion Title from backend should go here
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Colors.white,

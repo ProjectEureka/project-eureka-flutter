@@ -31,7 +31,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    getCurrentuser();
     userId = loggedInUser.uid;
     groupChatId = '$userId-$fromId';
     setGroupId();
@@ -50,17 +49,6 @@ class _ChatScreenState extends State<ChatScreen> {
         });
       }
     });
-  }
-
-  void getCurrentuser() async {
-    try {
-      final user = await _auth.currentUser;
-      if (user != null) {
-        loggedInUser = user;
-      }
-    } catch (e) {
-      print(e);
-    }
   }
 
   Widget build(BuildContext context) {
@@ -98,7 +86,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           hintText: "Write message...",
                           hintStyle: TextStyle(color: Colors.black54),
                           border: InputBorder.none),
-                      maxLines: null,
+                      maxLines: 3,
+                      minLines: 1,
                     ),
                   ),
                   SizedBox(
@@ -167,10 +156,6 @@ class MessagesStream extends StatelessWidget {
           final messageText = message.data()['text'];
           final messageSender = message.data()['sender'];
           final messageTimestamp = message.data()['timestamp'];
-          //print(loggedInUser.email);
-          print(messageText);
-          print(messageSender);
-          print(messageTimestamp);
           final messageBubble = MessageBubble(
               sender: messageSender,
               text: messageText,

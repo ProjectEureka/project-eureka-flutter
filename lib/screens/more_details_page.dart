@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 
 import 'package:project_eureka_flutter/screens/home_screen.dart';
@@ -12,6 +14,13 @@ import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project_eureka_flutter/services/users_service.dart';
+
+import 'chat_screens/chat_sceen.dart';
+
+final _firestore = FirebaseFirestore.instance;
+User loggedInUser = EmailAuth().getCurrentUser();
 
 class MoreDetails extends StatefulWidget {
   final String questionId;
@@ -28,6 +37,7 @@ class _MoreDetailsState extends State<MoreDetails> {
   MoreDetailModel _moreDetailModel;
 
   final String currUserId = EmailAuth().getCurrentUser().uid;
+  UserModel currUser;
 
   Widget _getMediaLinks() {
     return Column(
@@ -65,6 +75,7 @@ class _MoreDetailsState extends State<MoreDetails> {
   @override
   void initState() {
     initGetQuestionDetails();
+    initGetCurrentUserDetails();
     super.initState();
   }
 
@@ -75,6 +86,13 @@ class _MoreDetailsState extends State<MoreDetails> {
 
     setState(() {
       _moreDetailModel = payload;
+    });
+  }
+
+  Future<void> initGetCurrentUserDetails() async {
+    UserModel payload = await UserService().getUserById(loggedInUser.uid);
+    setState(() {
+      currUser = payload;
     });
   }
 
@@ -151,6 +169,19 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
+//This is used to create the collection in which the the chat messages between the current user
+// and the question user will be stored, denoted by the groupChatId
+  void addChatToFirebase() {
+    String groupChatId = '$currUserId-${_moreDetailModel.user.id}';
+    _firestore.collection('messages').doc(groupChatId).set({
+      'chatIDUser': currUserId,
+      'chatSender': currUser.firstName,
+      'recipient': _moreDetailModel.user.firstName,
+      'recipientId': _moreDetailModel.user.id,
+      'questionTitle': _moreDetailModel.question.title,
+    });
+  }
+
   EurekaRoundedButton _answerQuestionButton() {
     return EurekaRoundedButton(
       onPressed: () {
@@ -172,14 +203,17 @@ class _MoreDetailsState extends State<MoreDetails> {
                 buttonText: 'No Chat',
               ),
               EurekaRoundedButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NewForm(
-                      isAnswer: true,
-                    ),
-                  ), // change this to the chat form
-                ),
+                onPressed: () {
+                  addChatToFirebase();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                              _moreDetailModel.user.id,
+                              _moreDetailModel.user.firstName,
+                            )), // change this to the chat form
+                  );
+                },
                 buttonText: 'Chat',
               ),
             ],
