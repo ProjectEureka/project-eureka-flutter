@@ -104,7 +104,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     final DateTime dateTime = DateTime.parse(widget.isAnswer
             ? widget.userAnswerModel.answer.answerDate
             : widget.moreDetailModel.question.questionDate)
-        .subtract(Duration(hours: 7));
+        .subtract(Duration(hours: -7));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,

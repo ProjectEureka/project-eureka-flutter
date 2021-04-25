@@ -30,6 +30,7 @@ class _EurekaRoundedButtonState extends State<EurekaRoundedButton> {
       padding: EdgeInsets.all(20.0),
       child: FlatButton(
         onPressed: widget.onPressed,
+        disabledColor: Colors.grey[400],
         color:
             widget.buttonColor == null ? Color(0xFF00ADB5) : widget.buttonColor,
         minWidth: MediaQuery.of(context).size.width - 50.0,

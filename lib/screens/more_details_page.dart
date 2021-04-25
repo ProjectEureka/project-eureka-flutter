@@ -223,11 +223,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                         ? false
                         : _moreDetailModel.userAnswer[0].answer.bestAnswer ==
                             true)
-                    ? EurekaRoundedButton(
-                        buttonText: 'Question Already Solved',
-                        onPressed: () =>
-                            Navigator.pop(context), // if there is a bestAnswer
-                      )
+                    ? null
                     : (_moreDetailModel.user.id !=
                             currUserId // if currUser is question poster
                         ? _answerQuestionButton() // false = answer question
