@@ -324,7 +324,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
             child: widget.isAnswer
                 ? messageBubble()
                 : (widget.isCurrUser
-                    ? (widget.moreDetailModel.question.closed == true
+                    ? (widget.moreDetailModel.question.visible == false
                         ? Container()
                         : _archiveButton())
                     : messageIcon()),
