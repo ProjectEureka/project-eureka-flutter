@@ -44,8 +44,13 @@ class ConversationsStream extends StatelessWidget {
       builder: (context, snapshot) {
         //uses async snapshot
         if (!snapshot.hasData) {
-          return Center(
-            child: Text("Start New Chat from a Question"),
+          return Column(
+            children: [
+              Center(
+                heightFactor: 30,
+                child: Text("Start New Chat from a Question"),
+              ),
+            ],
           );
         }
         final conversations = snapshot.data.docs;

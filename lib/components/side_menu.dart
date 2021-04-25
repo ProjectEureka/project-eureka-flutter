@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
-import 'package:project_eureka_flutter/screens/home_page.dart';
+import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/screens/settings_screen.dart';
@@ -67,21 +67,21 @@ class _SideMenuState extends State<SideMenu> {
           sideMenuListTile(
             context,
             'Profile',
-            ProfileScreen(),
+            Profile(),
             Icons.person,
           ),
           Divider(color: Colors.grey.shade400, height: 1.0),
           sideMenuListTile(
             context,
             'Create New Post',
-            NewQuestionScreen(),
+            NewQuestion(),
             Icons.edit,
           ),
           Divider(color: Colors.grey.shade400, height: 1.0),
           sideMenuListTile(
             context,
             'Settings',
-            SettingsScreen(),
+            Settings(),
             Icons.settings,
           ),
         ],
