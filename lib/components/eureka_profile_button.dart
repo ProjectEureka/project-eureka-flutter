@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -89,6 +87,7 @@ class _EurekaProfileButtonState extends State<EurekaProfileButton> {
 
   Column _filledMediaPathsAddImageButtons() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         cameraFormButtons(

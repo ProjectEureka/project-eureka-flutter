@@ -2,12 +2,9 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
-import 'package:project_eureka_flutter/components/eureka_camera_form.dart';
 import 'package:project_eureka_flutter/components/eureka_profile_button.dart';
-import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/screens/home_page.dart';
@@ -18,9 +15,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfileOnboarding extends StatefulWidget {
   final bool isProfile;
+  final UserModel user;
 
   ProfileOnboarding({
     @required this.isProfile,
+    this.user,
   });
 
   @override
@@ -40,7 +39,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
   int _role = 0;
   String _firstName;
   String _lastName;
-  String _city;
   bool editState = false;
 
   EurekaAppBar _profileOnboardingAppBar() {
@@ -178,22 +176,17 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
           ),
           EurekaTextFormField(
             labelText: 'First Name',
+            initialValue: widget.isProfile ? widget.user.firstName : '',
             errValidatorMsg: 'First name is required.',
             regExp: _nameRegExp,
-            onSaved: (value) =>
-                value.isEmpty ? _firstName = value.trim() : _firstName,
+            onSaved: (value) => _firstName = value.trim(),
           ),
           EurekaTextFormField(
             labelText: 'Last Name',
+            initialValue: widget.isProfile ? widget.user.lastName : '',
             errValidatorMsg: 'Last name is required.',
             regExp: _nameRegExp,
             onSaved: (value) => _lastName = value.trim(),
-          ),
-          EurekaTextFormField(
-            labelText: 'City',
-            errValidatorMsg: 'Your city is required.',
-            regExp: _nameRegExp,
-            onSaved: (value) => _city = value.trim(),
           ),
         ],
       ),
@@ -209,8 +202,10 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     User _firebaseUser = EmailAuth().getCurrentUser();
     ProfileOnboardingService _profileOnboardingService =
         new ProfileOnboardingService();
-
-    List<String> mediaUrl = await uploadFiles();
+    List<String> mediaUrl = [];
+    if (mediaPath != '') {
+      mediaUrl = await uploadFiles();
+    }
 
     /// Create the user object to be sent out.
     UserModel user = new UserModel(
@@ -219,9 +214,9 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       lastName: _lastName,
       firebaseUuid: _firebaseUser.uid,
       email: _firebaseUser.email,
-      city: _city,
+      city: '',
       category: [], //we don't have form field for this
-      pictureUrl: mediaUrl[0],
+      pictureUrl: mediaUrl.length == 0 ? '' : mediaUrl[0],
       role: _role,
       ratings: [],
       averageRating: 0.0,
