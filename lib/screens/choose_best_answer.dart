@@ -74,7 +74,7 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
                       decoration: BoxDecoration(
                         color: widget.answers.indexOf(userAnswer) ==
                                 bestAnswerIndex
-                            ? Color(0xFF00ADB5)
+                            ? Color(0x6600ADB5)
                             : Colors.transparent,
                         borderRadius: BorderRadius.all(
                           Radius.circular(20.0),
@@ -105,6 +105,7 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Rating(
+                          userInfo: widget.answers[bestAnswerIndex].user,
                           questionId: widget.questionId,
                           answerId: widget.answers[bestAnswerIndex].answer.id,
                         ),

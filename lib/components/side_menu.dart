@@ -19,6 +19,7 @@ class SideMenu extends StatefulWidget {
 }
 
 class _SideMenuState extends State<SideMenu> {
+  bool loading = true;
   UserModel user = new UserModel(
     firstName: '',
     lastName: '',
@@ -38,6 +39,7 @@ class _SideMenuState extends State<SideMenu> {
     UserService().getUserById(userId).then((payload) {
       setState(() {
         user = payload;
+        loading = false;
       });
     });
   }
@@ -57,9 +59,16 @@ class _SideMenuState extends State<SideMenu> {
             ),
             accountEmail: Text('${user.email}'),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: user.pictureUrl == ''
-                  ? AssetImage('assets/images/profile_default_image.png')
-                  : NetworkImage(user.pictureUrl),
+              backgroundColor: Colors.white,
+              child: CircleAvatar(
+                radius: 50.0,
+                backgroundColor: Colors.transparent,
+                backgroundImage: loading
+                    ? AssetImage('assets/images/profile_default_image.png')
+                    : user.pictureUrl == ""
+                        ? AssetImage('assets/images/profile_default_image.png')
+                        : NetworkImage(user.pictureUrl),
+              ),
             ),
           ),
           sideMenuListTile(context, 'Home', Home(), Icons.home),
@@ -86,7 +95,6 @@ class _SideMenuState extends State<SideMenu> {
           ),
         ],
       ),
-
     );
   }
 }
