@@ -14,6 +14,14 @@ class MoreDetailService {
           'v1/questions/$questionId/details'),
     );
 
-    return MoreDetailModel.fromJson(json.decode(response.body));
+    MoreDetailModel moreDetailModel =
+        MoreDetailModel.fromJson(json.decode(response.body));
+
+    moreDetailModel.userAnswer
+        .sort((a, b) => b.answer.bestAnswer.toString().compareTo(
+              a.answer.bestAnswer.toString(),
+            ));
+
+    return moreDetailModel;
   }
 }
