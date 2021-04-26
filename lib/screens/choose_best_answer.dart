@@ -4,6 +4,7 @@ import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/more_details_view.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/screens/rating_screen.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class ChooseBestAnswer extends StatefulWidget {
   final String questionId;
@@ -94,19 +95,21 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,
         elevation: 0,
-        // For demo purposes this is true, however will be changed to != later
         child: EurekaRoundedButton(
           onPressed: bestAnswerIndex == -1
               ? null
-              : () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Rating(
-                        questionId: widget.questionId,
-                        answerId: widget.answers[bestAnswerIndex].answer.id,
-                      ),
-                    ), //archive question
-                  ),
+              : () => widget.answers[bestAnswerIndex].user.id ==
+                      EmailAuth().getCurrentUser().uid
+                  ? Navigator.of(context).pushNamed('/home')
+                  : Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Rating(
+                          questionId: widget.questionId,
+                          answerId: widget.answers[bestAnswerIndex].answer.id,
+                        ),
+                      ), //archive question
+                    ),
           buttonText: 'Select Best Answer',
         ),
       ),

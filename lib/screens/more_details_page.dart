@@ -111,7 +111,9 @@ class _MoreDetailsState extends State<MoreDetails> {
           builder: (context) => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _messageModalButton(),
+              _moreDetailModel.user.id == currUserId
+                  ? Container()
+                  : _messageModalButton(),
               _answerFormModalButton(),
             ],
           ),
