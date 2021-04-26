@@ -1,18 +1,24 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
+import 'package:project_eureka_flutter/components/eureka_profile_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_onboarding_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfileOnboarding extends StatefulWidget {
   final bool isProfile;
+  final UserModel user;
 
   ProfileOnboarding({
     @required this.isProfile,
+    this.user,
   });
 
   @override
@@ -21,21 +27,18 @@ class ProfileOnboarding extends StatefulWidget {
 
 class _ProfileOnboardingState extends State<ProfileOnboarding> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String mediaPath = '';
+  ImagePicker picker = ImagePicker();
+  bool _isUploading = false;
+  FirebaseStorage storage = FirebaseStorage.instance;
 
   static final RegExp _nameRegExp = RegExp(
       "[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]");
-  static final RegExp _monthRegExp = RegExp('(((0)[0-9])|((1)[0-2]))');
-  static final RegExp _dayRegExp = RegExp('([0-2][0-9]|(3)[0-1])');
-  static final RegExp _yearRegExp = RegExp('(19|20)[0-9][0-9]');
 
   int _role = 0;
   String _firstName;
   String _lastName;
-  String _city;
-  String _birthMonth;
-  String _birthDay;
-  String _birthYear;
-  DateTime _birthDate;
+  bool editState = false;
 
   EurekaAppBar _profileOnboardingAppBar() {
     return EurekaAppBar(
@@ -50,47 +53,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
                 ),
                 onPressed: () => Navigator.pop(context))
             : Container(),
-      ],
-    );
-  }
-
-  Row _birthDateForms() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: EurekaTextFormField(
-            labelText: 'Month (MM)',
-            keyboardType: TextInputType.number,
-            errValidatorMsg: 'Required',
-            regExp: _monthRegExp,
-            onSaved: (value) => _birthMonth = value.trim(),
-          ),
-        ),
-        SizedBox(
-          width: 10.0,
-        ),
-        Expanded(
-          child: EurekaTextFormField(
-            labelText: 'Day (DD)',
-            keyboardType: TextInputType.number,
-            errValidatorMsg: 'Required',
-            regExp: _dayRegExp,
-            onSaved: (value) => _birthDay = value.trim(),
-          ),
-        ),
-        SizedBox(
-          width: 10.0,
-        ),
-        Expanded(
-          child: EurekaTextFormField(
-            labelText: 'Year (YYYY)',
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.done,
-            errValidatorMsg: 'Required',
-            regExp: _yearRegExp,
-            onSaved: (value) => _birthYear = value.trim(),
-          ),
-        ),
       ],
     );
   }
@@ -121,6 +83,46 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     );
   }
 
+  Future<List<String>> uploadFiles() async {
+    List<String> _mediaUrls = [];
+
+    setState(() {
+      _isUploading = true;
+    });
+
+    /// iterates through _mediaPath list and upload one by one.
+
+    File file = File(mediaPath);
+
+    print('this is mediaPath:' + mediaPath.toString());
+
+    /// These next two varibles format the file name, best fit for Firebase.
+    String fileName = mediaPath
+        .substring(mediaPath.lastIndexOf("/"), mediaPath.lastIndexOf("."))
+        .replaceAll("/", "");
+    String uploadName =
+        'images/profile/userId_${EmailAuth().getCurrentUser().uid}/$fileName.jpg';
+
+    try {
+      /// uploads the file
+      TaskSnapshot snapshot = await storage.ref(uploadName).putFile(file);
+
+      /// get the download URL
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        _mediaUrls.add(downloadUrl);
+      });
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      _isUploading = false;
+    });
+
+    return _mediaUrls;
+  }
+
   SingleChildScrollView _scrollingForm() {
     return SingleChildScrollView(
       child: Column(
@@ -141,25 +143,50 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
               });
             },
           ),
+          GestureDetector(
+            onTap: () async {
+              String temp = await showModalBottomSheet(
+                  context: context,
+                  builder: (context) => EurekaProfileButton(picker: picker));
+              setState(() {
+                if (temp == null) {
+                  mediaPath = '';
+                } else {
+                  mediaPath = temp;
+                }
+              });
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.grey[400],
+              radius: 50.0,
+              child: mediaPath == ''
+                  ? Icon(
+                      Icons.add_a_photo,
+                      color: Colors.white,
+                    )
+                  : CircleAvatar(
+                      backgroundImage: FileImage(File(mediaPath)),
+                      radius: 50.0,
+                    ),
+            ),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
           EurekaTextFormField(
             labelText: 'First Name',
+            initialValue: widget.isProfile ? widget.user.firstName : '',
             errValidatorMsg: 'First name is required.',
             regExp: _nameRegExp,
             onSaved: (value) => _firstName = value.trim(),
           ),
           EurekaTextFormField(
             labelText: 'Last Name',
+            initialValue: widget.isProfile ? widget.user.lastName : '',
             errValidatorMsg: 'Last name is required.',
             regExp: _nameRegExp,
             onSaved: (value) => _lastName = value.trim(),
           ),
-          EurekaTextFormField(
-            labelText: 'City',
-            errValidatorMsg: 'Your city is required.',
-            regExp: _nameRegExp,
-            onSaved: (value) => _city = value.trim(),
-          ),
-          _birthDateForms(),
         ],
       ),
     );
@@ -171,11 +198,13 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     }
     _formKey.currentState.save();
 
-    _birthDate = DateTime.parse(
-        '$_birthYear-$_birthMonth-$_birthDay'); // we're not even using this
     User _firebaseUser = EmailAuth().getCurrentUser();
     ProfileOnboardingService _profileOnboardingService =
         new ProfileOnboardingService();
+    List<String> mediaUrl = [];
+    if (mediaPath != '') {
+      mediaUrl = await uploadFiles();
+    }
 
     /// Create the user object to be sent out.
     UserModel user = new UserModel(
@@ -184,9 +213,9 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       lastName: _lastName,
       firebaseUuid: _firebaseUser.uid,
       email: _firebaseUser.email,
-      city: _city,
+      city: '',
       category: [], //we don't have form field for this
-      pictureUrl: '',
+      pictureUrl: mediaUrl.length == 0 ? '' : mediaUrl[0],
       role: _role,
       ratings: [],
       averageRating: 0.0,
