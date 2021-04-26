@@ -39,7 +39,8 @@ class _ProfileAnswersViewState extends State<ProfileAnswersView> {
 
   Column timeAndIsActiveRow(int index) {
     // this is used to format data to return " X days/hours/minutes ago"
-    final dateTime = DateTime.parse(widget.answersList[index].answerDate).subtract(new Duration(minutes: 1));
+    final dateTime = DateTime.parse(widget.answersList[index].answerDate)
+        .subtract(new Duration(hours: -7));
 
     return Column(
       children: [
@@ -60,7 +61,9 @@ class _ProfileAnswersViewState extends State<ProfileAnswersView> {
               ],
             ),
             _eurekaListViewTextStyle(
-              value: index == 1 ? "Best Answer" : "", // for testing purposes it only shows one best answer
+              value: index == 1
+                  ? "Best Answer"
+                  : "", // for testing purposes it only shows one best answer
               color: Colors.blue,
               fontWeight: FontWeight.bold,
             ),
