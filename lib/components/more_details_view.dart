@@ -269,7 +269,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
   }
 
   Widget messageBubble() {
-    return (widget.isCurrUser ? Container() : messageIcon());
+    return (!widget.isCurrUser ? Container() : messageIcon());
   }
 
   Future<void> _archiveOnPress() async {
