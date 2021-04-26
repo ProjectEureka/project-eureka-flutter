@@ -41,6 +41,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
   String _firstName;
   String _lastName;
   String _city;
+  bool editState = false;
 
   EurekaAppBar _profileOnboardingAppBar() {
     return EurekaAppBar(
@@ -167,7 +168,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
                       color: Colors.white,
                     )
                   : CircleAvatar(
-                      backgroundImage: AssetImage(mediaPath),
+                      backgroundImage: FileImage(File(mediaPath)),
                       radius: 50.0,
                     ),
             ),
@@ -179,7 +180,8 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
             labelText: 'First Name',
             errValidatorMsg: 'First name is required.',
             regExp: _nameRegExp,
-            onSaved: (value) => _firstName = value.trim(),
+            onSaved: (value) =>
+                value.isEmpty ? _firstName = value.trim() : _firstName,
           ),
           EurekaTextFormField(
             labelText: 'Last Name',
