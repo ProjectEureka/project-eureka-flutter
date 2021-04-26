@@ -4,7 +4,7 @@ import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/services/video_communication.dart';
-import 'package:project_eureka_flutter/components/call_ended_confirmation.dart';
+import 'package:project_eureka_flutter/screens/call_screens/call_ended_confirmation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
 class CallPage extends StatefulWidget {

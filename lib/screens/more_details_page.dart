@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -12,6 +13,11 @@ import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
+
+final _firestore = FirebaseFirestore.instance;
+User loggedInUser = EmailAuth().getCurrentUser();
 
 class MoreDetails extends StatefulWidget {
   final String questionId;
@@ -32,6 +38,7 @@ class _MoreDetailsState extends State<MoreDetails> {
   );
 
   final String currUserId = EmailAuth().getCurrentUser().uid;
+  //UserModel currUser;
 
   @override
   void initState() {
@@ -50,15 +57,19 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   EurekaRoundedButton _messageModalButton() {
     return EurekaRoundedButton(
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NewForm(
-            isAnswer: true,
-            questionId: widget.questionId,
+      onPressed: () {
+        addChatToFirebase();
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              fromId: _moreDetailModel.user.id,
+              recipient: _moreDetailModel.user.firstName,
+            ),
           ),
-        ), // change this to the chat form
-      ),
+        );
+      },
       buttonText: 'Message ${_moreDetailModel.user.firstName}',
     );
   }
@@ -76,6 +87,20 @@ class _MoreDetailsState extends State<MoreDetails> {
       ),
       buttonText: 'Answer',
     );
+  }
+
+//This is used to create the collection in which the the chat messages between the current user
+// and the question user will be stored, denoted by the groupChatId
+  void addChatToFirebase() {
+    String groupChatId = '$currUserId-${_moreDetailModel.user.id}';
+
+    _firestore.collection('messages').doc(groupChatId).set({
+      'chatIDUser': currUserId,
+      'chatSender': _moreDetailModel.user.firstName,
+      'recipient': _moreDetailModel.user.firstName,
+      'recipientId': _moreDetailModel.user.id,
+      'questionTitle': _moreDetailModel.question.title,
+    });
   }
 
   EurekaRoundedButton _answerQuestionButton() {

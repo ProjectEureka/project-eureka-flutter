@@ -7,7 +7,6 @@ import 'package:project_eureka_flutter/screens/rating_screen.dart';
 
 class ChooseBestAnswer extends StatefulWidget {
   final String questionId;
-  // In development: it will need to pass the list of answers
   final List<UserAnswerModel> answers;
 
   const ChooseBestAnswer({
@@ -81,11 +80,9 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
                         ),
                       ),
                       child: MoreDetailsView(
-                        //moreDetailModel: _moreDetailModel,
                         isAnswer: true,
                         userAnswerModel: userAnswer,
                         isCurrUser: false,
-                        //isCurrUser: _moreDetailModel.user.id == currUserId,
                       ),
                     ),
                   ),

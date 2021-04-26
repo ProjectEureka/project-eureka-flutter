@@ -322,7 +322,12 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
           child: Transform.scale(
             scale: widget.isAnswer ? 1.20 : (widget.isCurrUser ? .75 : 1.30),
             child: widget.isAnswer
-                ? messageBubble()
+                ? (widget.moreDetailModel == null
+                    ? Container()
+                    : widget.moreDetailModel.user.id ==
+                            widget.userAnswerModel.user.id
+                        ? Container()
+                        : messageBubble())
                 : (widget.isCurrUser
                     ? (widget.moreDetailModel.question.visible == false
                         ? Container()
