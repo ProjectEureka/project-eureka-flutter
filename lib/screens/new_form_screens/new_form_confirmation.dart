@@ -145,11 +145,7 @@ class _NewFormConfirmationState extends State<NewFormConfirmation> {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-<<<<<<< HEAD
-            builder: (context) => Home(), // Return to Home() when Ratings done
-=======
             builder: (context) => Home(),
->>>>>>> e3c4422433386046cee5f89fc04d0584d22833a2
           ),
         ),
       ),
