@@ -11,21 +11,22 @@ import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/video_communication.dart';
 import 'dart:math';
 
-
 // Initialize global variable for channel name for the call receiver; accessible for in ChatScreen and MessageBubble classes
 String channelNameAnswer = "";
 
 class ChatScreen extends StatefulWidget {
   final String fromId;
   final String recipient;
-  const ChatScreen({Key key, this.fromId, this.recipient}) : super(key: key);
+  final String questionId;
+  const ChatScreen({Key key, this.fromId, this.recipient, this.questionId})
+      : super(key: key);
 
   @override
   _ChatScreenState createState() => new _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateMixin {
-
+class _ChatScreenState extends State<ChatScreen>
+    with SingleTickerProviderStateMixin {
   AnimationController _controller;
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
@@ -46,13 +47,12 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
   // Used for the animated video call button to turn off / turn on animation
   bool showAnimationButton;
 
-
   @override
   void initState() {
     super.initState();
     getCurrentUser();
     userId = loggedInUser.uid;
-    groupChatId = userId + "-" + widget.fromId;
+    groupChatId = userId + "-" + widget.fromId + "-" + widget.questionId;
     setGroupId();
 
     // initialize channel names for two cases:
@@ -86,14 +86,16 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
   // that will start the animated video call button
   void _checkAnswerToken() async {
     while (true) {
-      if (!mounted) { // once left the chat page, break the loop
+      if (!mounted) {
+        // once left the chat page, break the loop
         break;
       }
       // listen to answerToken every 4 seconds
       await Future.delayed(new Duration(seconds: 4));
       await VideoCallService().getTokenAnswer(channelNameAnswer).then(
         (payload) {
-          if (!mounted) return; // allow last call check to complete and prevent setState
+          if (!mounted)
+            return; // allow last call check to complete and prevent setState
           payload != "error"
               ? setState(() => showAnimationButton = true)
               : setState(() => showAnimationButton = false);
@@ -111,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
 
       if (!groupChatIds.contains(groupChatId)) {
         setState(() {
-          groupChatId = widget.fromId + "-" + userId;
+          groupChatId = widget.fromId + "-" + userId + "-" + widget.questionId;
         });
       }
     });

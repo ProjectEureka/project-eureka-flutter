@@ -14,7 +14,6 @@ class ChatScreenConversations extends StatefulWidget {
 }
 
 class _ChatScreenConversations extends State<ChatScreenConversations> {
-
   @override
   void initState() {
     super.initState();
@@ -62,15 +61,18 @@ class ConversationsStream extends StatelessWidget {
           final recipientID = userChat.data()['recipientId'];
           final recipientName = userChat.data()['recipient'];
           final questionTitle = userChat.data()['questionTitle'];
+          final questionID = userChat.data()['questionId'];
           final conversationBubble = ConversationBubble(
-              questionTitle: questionTitle,
-              recipient: recipientID == loggedInUser.uid
-                  ? conversationStarter
-                  : recipientName,
-              recipientId: recipientID == loggedInUser.uid
-                  ? conversationUserID
-                  : recipientID,
-              text: conversationText);
+            questionTitle: questionTitle,
+            recipient: recipientID == loggedInUser.uid
+                ? conversationStarter
+                : recipientName,
+            recipientId: recipientID == loggedInUser.uid
+                ? conversationUserID
+                : recipientID,
+            text: conversationText,
+            questionId: questionID,
+          );
           if (conversationUserID == loggedInUser.uid ||
               recipientID == loggedInUser.uid) {
             conversationBubbles.add(conversationBubble);
@@ -93,12 +95,14 @@ class ConversationBubble extends StatelessWidget {
       this.text,
       this.recipientId,
       this.photoUrl,
-      this.questionTitle});
+      this.questionTitle,
+      this.questionId});
   final String recipient;
   final String text;
   final String recipientId;
   final String photoUrl;
   final String questionTitle;
+  final String questionId;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -114,7 +118,10 @@ class ConversationBubble extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChatScreen(fromId: recipientId, recipient: recipient)));
+                    builder: (context) => ChatScreen(
+                        fromId: recipientId,
+                        recipient: recipient,
+                        questionId: questionId)));
           },
           child: Row(
             children: <Widget>[

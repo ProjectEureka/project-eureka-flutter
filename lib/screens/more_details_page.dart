@@ -42,13 +42,14 @@ class _MoreDetailsState extends State<MoreDetails> {
     user: UserModel(),
     userAnswer: [UserAnswerModel()],
   );
-
+  UserModel user;
   final String currUserId = EmailAuth().getCurrentUser().uid;
   //UserModel currUser;
 
   @override
   void initState() {
     initGetQuestionDetails();
+    initGetUserDetails();
     super.initState();
   }
 
@@ -58,6 +59,14 @@ class _MoreDetailsState extends State<MoreDetails> {
 
     setState(() {
       _moreDetailModel = payload;
+    });
+  }
+
+  Future<void> initGetUserDetails() async {
+    UserModel payload = await UserService().getUserById(loggedInUser.uid);
+
+    setState(() {
+      user = payload;
     });
   }
 
@@ -72,6 +81,7 @@ class _MoreDetailsState extends State<MoreDetails> {
             builder: (context) => ChatScreen(
               fromId: _moreDetailModel.user.id,
               recipient: _moreDetailModel.user.firstName,
+              questionId: _moreDetailModel.question.id,
             ),
           ),
         );
@@ -98,14 +108,16 @@ class _MoreDetailsState extends State<MoreDetails> {
 //This is used to create the collection in which the the chat messages between the current user
 // and the question user will be stored, denoted by the groupChatId
   void addChatToFirebase() {
-    String groupChatId = '$currUserId-${_moreDetailModel.user.id}';
+    String groupChatId =
+        '$currUserId-${_moreDetailModel.user.id}-${_moreDetailModel.question.id}';
 
     _firestore.collection('messages').doc(groupChatId).set({
       'chatIDUser': currUserId,
-      'chatSender': _moreDetailModel.user.firstName,
+      'chatSender': user.firstName,
       'recipient': _moreDetailModel.user.firstName,
       'recipientId': _moreDetailModel.user.id,
       'questionTitle': _moreDetailModel.question.title,
+      'questionId': _moreDetailModel.question.id,
     });
   }
 
