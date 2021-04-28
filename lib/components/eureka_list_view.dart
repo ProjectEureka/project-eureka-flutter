@@ -164,7 +164,7 @@ class _EurekaListViewState extends State<EurekaListView> {
                   descriptionRow(index),
                   moreDetailsButtonRow(index),
                   Divider(
-                    color: Colors.blue,
+                    color: Color(0xFF00ADB5),
                     thickness: 3.0,
                     height: 0.0,
                   )

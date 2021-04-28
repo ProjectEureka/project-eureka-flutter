@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
-
-import 'chat_sceen.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
@@ -15,10 +14,6 @@ class ChatScreenConversations extends StatefulWidget {
 }
 
 class _ChatScreenConversations extends State<ChatScreenConversations> {
-  final _auth = FirebaseAuth.instance;
-
-  final _firestore = FirebaseFirestore.instance;
-  _ChatScreenConversations();
 
   @override
   void initState() {
@@ -49,8 +44,13 @@ class ConversationsStream extends StatelessWidget {
       builder: (context, snapshot) {
         //uses async snapshot
         if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
+          return Column(
+            children: [
+              Center(
+                heightFactor: 30,
+                child: Text("Start New Chat from a Question"),
+              ),
+            ],
           );
         }
         final conversations = snapshot.data.docs;
@@ -59,18 +59,20 @@ class ConversationsStream extends StatelessWidget {
           final conversationText = userChat.data()['text'];
           final conversationStarter = userChat.data()['chatSender'];
           final conversationUserID = userChat.data()['chatIDUser'];
-          final recipeintID = userChat.data()['recipientId'];
+          final recipientID = userChat.data()['recipientId'];
           final recipientName = userChat.data()['recipient'];
+          final questionTitle = userChat.data()['questionTitle'];
           final conversationBubble = ConversationBubble(
-              recipient: recipeintID == loggedInUser.uid
+              questionTitle: questionTitle,
+              recipient: recipientID == loggedInUser.uid
                   ? conversationStarter
                   : recipientName,
-              recipientId: recipeintID == loggedInUser.uid
+              recipientId: recipientID == loggedInUser.uid
                   ? conversationUserID
-                  : recipeintID,
+                  : recipientID,
               text: conversationText);
           if (conversationUserID == loggedInUser.uid ||
-              recipeintID == loggedInUser.uid) {
+              recipientID == loggedInUser.uid) {
             conversationBubbles.add(conversationBubble);
           }
         }
@@ -87,11 +89,16 @@ class ConversationsStream extends StatelessWidget {
 
 class ConversationBubble extends StatelessWidget {
   ConversationBubble(
-      {this.recipient, this.text, this.recipientId, this.photoUrl});
+      {this.recipient,
+      this.text,
+      this.recipientId,
+      this.photoUrl,
+      this.questionTitle});
   final String recipient;
   final String text;
   final String recipientId;
   final String photoUrl;
+  final String questionTitle;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -107,7 +114,7 @@ class ConversationBubble extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChatScreen(recipientId, recipient)));
+                    builder: (context) => ChatScreen(fromId: recipientId, recipient: recipient)));
           },
           child: Row(
             children: <Widget>[
@@ -125,7 +132,7 @@ class ConversationBubble extends StatelessWidget {
                   children: <Widget>[
                     Container(
                       child: Text(
-                          'This Question title is very long.', //Qusetion Title from backend should go here
+                          questionTitle, //Qusetion Title from backend should go here
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Colors.white,
