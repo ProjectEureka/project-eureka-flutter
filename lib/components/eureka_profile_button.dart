@@ -52,35 +52,38 @@ class _EurekaProfileButtonState extends State<EurekaProfileButton> {
     Navigator.pop(context, mediaPath);
   }
 
-  FlatButton cameraFormButtons({
+  Padding cameraFormButtons({
     @required Function onPressed,
     @required IconData icon,
     @required String text,
   }) {
-    return FlatButton(
-      onPressed: onPressed,
-      child: Padding(
-        padding: const EdgeInsets.all(0.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon),
-            SizedBox(
-              width: 5.0,
-            ),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 12.0,
-                fontWeight: FontWeight.normal,
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: FlatButton(
+        onPressed: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon),
+              SizedBox(
+                width: 5.0,
               ),
-            ),
-          ],
+              Text(
+                text,
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      color: Colors.grey[200],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.grey[200],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
       ),
     );
   }

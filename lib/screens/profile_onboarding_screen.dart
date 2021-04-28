@@ -29,7 +29,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String mediaPath = '';
   ImagePicker picker = ImagePicker();
-  bool _isUploading = false;
   FirebaseStorage storage = FirebaseStorage.instance;
 
   static final RegExp _nameRegExp = RegExp(
@@ -86,12 +85,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
   Future<List<String>> uploadFiles() async {
     List<String> _mediaUrls = [];
 
-    setState(() {
-      _isUploading = true;
-    });
-
-    /// iterates through _mediaPath list and upload one by one.
-
     File file = File(mediaPath);
 
     print('this is mediaPath:' + mediaPath.toString());
@@ -115,10 +108,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     } catch (e) {
       print(e);
     }
-
-    setState(() {
-      _isUploading = false;
-    });
 
     return _mediaUrls;
   }
