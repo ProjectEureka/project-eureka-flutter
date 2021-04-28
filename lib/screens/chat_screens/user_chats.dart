@@ -4,9 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/services/users_service.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
+UserModel user;
 
 class ChatScreenConversations extends StatefulWidget {
   @override
@@ -56,17 +59,12 @@ class ConversationsStream extends StatelessWidget {
         List<ConversationBubble> conversationBubbles = [];
         for (var userChat in conversations) {
           final conversationText = userChat.data()['text'];
-          final conversationStarter = userChat.data()['chatSender'];
           final conversationUserID = userChat.data()['chatIDUser'];
           final recipientID = userChat.data()['recipientId'];
-          final recipientName = userChat.data()['recipient'];
           final questionTitle = userChat.data()['questionTitle'];
           final questionID = userChat.data()['questionId'];
           final conversationBubble = ConversationBubble(
             questionTitle: questionTitle,
-            recipient: recipientID == loggedInUser.uid
-                ? conversationStarter
-                : recipientName,
             recipientId: recipientID == loggedInUser.uid
                 ? conversationUserID
                 : recipientID,
@@ -89,79 +87,92 @@ class ConversationsStream extends StatelessWidget {
   }
 }
 
+Future<UserModel> initGetUserDetails(recipientId) async {
+  UserModel payload = await UserService().getUserById(recipientId);
+  return payload;
+}
+
 class ConversationBubble extends StatelessWidget {
   ConversationBubble(
-      {this.recipient,
+      {
       this.text,
       this.recipientId,
       this.photoUrl,
       this.questionTitle,
       this.questionId});
-  final String recipient;
   final String text;
   final String recipientId;
   final String photoUrl;
   final String questionTitle;
   final String questionId;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-            color: Colors.cyan,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.all(Radius.circular(25.0))),
-        child: FlatButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChatScreen(
-                        fromId: recipientId,
-                        recipient: recipient,
-                        questionId: questionId)));
-          },
-          child: Row(
-            children: <Widget>[
-              Material(
-                child: Icon(
-                  Icons.account_circle,
-                  size: 50.0,
-                  color: Colors.grey,
+    return FutureBuilder<UserModel>(
+        future: initGetUserDetails(recipientId),
+        builder: (context, AsyncSnapshot<UserModel> snapshot) {
+          if (snapshot.hasData) {
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                    color: Colors.cyan,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                child: FlatButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatScreen(
+                                fromId: recipientId,
+                                recipient: snapshot.data.firstName + " " + snapshot.data.lastName,
+                                questionId: questionId)));
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      Material(
+                        child: Icon(
+                          Icons.account_circle,
+                          size: 50.0,
+                          color: Colors.grey,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                        clipBehavior: Clip.hardEdge,
+                      ),
+                      Flexible(
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                  questionTitle, //Qusetion Title from backend should go here
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                              alignment: Alignment.centerRight,
+                              margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+                            ),
+                            Container(
+                              child: Text(snapshot.data.firstName + " " + snapshot.data.lastName,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                clipBehavior: Clip.hardEdge,
               ),
-              Flexible(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      child: Text(
-                          questionTitle, //Qusetion Title from backend should go here
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                      alignment: Alignment.centerRight,
-                      margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
-                    ),
-                    Container(
-                      child: Text(recipient,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
   }
 }
