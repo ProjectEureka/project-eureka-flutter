@@ -108,6 +108,7 @@ class _ProfileState extends State<Profile> {
           MaterialPageRoute(
             builder: (context) => ProfileOnboarding(
               isProfile: true,
+              user: userInfo,
             ),
           ),
         );
