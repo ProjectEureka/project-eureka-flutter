@@ -24,10 +24,11 @@ class _RatingState extends State<Rating> {
   double _rating;
   int _ratingBarMode = 1;
   IconData _selectedIcon;
-  bool loading = true;
+  bool ratingNotChosenError;
 
   @override
   void initState() {
+    ratingNotChosenError = false;
     super.initState();
   }
 
@@ -71,14 +72,19 @@ class _RatingState extends State<Rating> {
                               widget.userInfo.lastName,
                           24.0),
                       _ratingBar(_ratingBarMode),
+                      ratingNotChosenError ? Text("Please choose rating", style: TextStyle(color: Colors.red)) : Text("")
                     ],
                   ),
                   SizedBox(
-                    height: 20.0,
+                    height: 15.0,
                   ),
                   EurekaRoundedButton(
                     buttonText: 'Done!',
-                    onPressed: () => _submit(),
+                    onPressed: () => _rating == null
+                        ? setState(() {
+                            ratingNotChosenError = true;
+                          })
+                        : _submit(),
                   ),
                 ],
               ),
@@ -160,7 +166,7 @@ class _RatingState extends State<Rating> {
   Widget _ratingBar(int mode) {
     return RatingBar.builder(
       glow: false,
-      initialRating: 5,
+      initialRating: 0,
       minRating: 1,
       direction: Axis.horizontal,
       allowHalfRating: true,
@@ -169,7 +175,7 @@ class _RatingState extends State<Rating> {
       itemSize: 50.0,
       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
       itemBuilder: (context, _) => Icon(
-        _selectedIcon ?? Icons.star,
+        _selectedIcon ?? Icons.stars,
         color: Colors.amber,
       ),
       onRatingUpdate: (rating) {
