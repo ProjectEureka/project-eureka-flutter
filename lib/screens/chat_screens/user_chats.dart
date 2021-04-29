@@ -9,7 +9,6 @@ import 'package:project_eureka_flutter/services/users_service.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
-UserModel user;
 
 class ChatScreenConversations extends StatefulWidget {
   @override
@@ -68,7 +67,6 @@ class ConversationsStream extends StatelessWidget {
             recipientId: recipientID == loggedInUser.uid
                 ? conversationUserID
                 : recipientID,
-            text: conversationText,
             questionId: questionID,
           );
           if (conversationUserID == loggedInUser.uid ||
@@ -95,14 +93,10 @@ Future<UserModel> initGetUserDetails(recipientId) async {
 class ConversationBubble extends StatelessWidget {
   ConversationBubble(
       {
-      this.text,
       this.recipientId,
-      this.photoUrl,
       this.questionTitle,
       this.questionId});
-  final String text;
   final String recipientId;
-  final String photoUrl;
   final String questionTitle;
   final String questionId;
 
@@ -113,9 +107,9 @@ class ConversationBubble extends StatelessWidget {
         builder: (context, AsyncSnapshot<UserModel> snapshot) {
           if (snapshot.hasData) {
             return Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(5.0),
               child: Container(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 decoration: BoxDecoration(
                     color: Colors.cyan,
                     shape: BoxShape.rectangle,
@@ -132,21 +126,19 @@ class ConversationBubble extends StatelessWidget {
                   },
                   child: Row(
                     children: <Widget>[
-                      Material(
-                        child: Icon(
-                          Icons.account_circle,
-                          size: 50.0,
-                          color: Colors.grey,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        clipBehavior: Clip.hardEdge,
-                      ),
+                      CircleAvatar(
+                          radius: 30.0,
+                        backgroundColor: Colors.white,
+                          backgroundImage: snapshot.data.pictureUrl == ''
+                              ? AssetImage('assets/images/profile_default_image.png')
+                              : NetworkImage(snapshot.data.pictureUrl),
+                          ),
                       Flexible(
                         child: Column(
                           children: <Widget>[
                             Container(
                               child: Text(
-                                  questionTitle, //Qusetion Title from backend should go here
+                                  questionTitle, //Quetion Title from backend should go here
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white,
