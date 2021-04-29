@@ -23,11 +23,11 @@ class _OnboardingState extends State<Onboarding> {
       PageViewModel(
         image: Image.asset(
           'assets/images/categories.png',
-          fit: BoxFit.fitWidth,
+          height: 200,
         ),
         title: "Multiple Categories",
         body:
-            'EureQa allows users to get quick answers to questions of different categories: \n\nAcademic, Lifestyle, Household and Technology.',
+            'EureQa allows users to get quick answers to questions of different categories.\n\nAcademic, Lifestyle, Household and Technology',
         decoration: getPageDecoration(),
       ),
       PageViewModel(
@@ -43,20 +43,9 @@ class _OnboardingState extends State<Onboarding> {
       PageViewModel(
         title: 'Privacy Matters',
         body:
-            "All communication happens in the app, there's no ndeed to worry about giving out your personal information to strangers.",
+            "All communication happens in the app, so there's no ndeed to worry about giving out your personal information to strangers.",
         image: Image.asset(
           'assets/images/privacy.png',
-          fit: BoxFit.fitWidth,
-        ),
-        decoration: getPageDecoration(),
-      ),
-      PageViewModel(
-        title: 'Incentives',
-        body:
-            'EureQa gives you an option of posting questions with an incentive.\n'
-            'Need an answer ASAP? \n\nTry adding incentives to your question. Paid questions get answered a lot faster.',
-        image: Image.asset(
-          'assets/images/incentives.png',
           fit: BoxFit.fitWidth,
         ),
         decoration: getPageDecoration(),
@@ -68,7 +57,7 @@ class _OnboardingState extends State<Onboarding> {
         ),
         title: 'Get Started',
         body:
-            'Asking and answering questions has never been so easy and rewarding. \n You are ready to join!',
+            'Asking and answering questions has never been so fast and easy. Join us!',
         decoration: getPageDecoration(),
       ),
     ];
@@ -80,7 +69,7 @@ class _OnboardingState extends State<Onboarding> {
           fontWeight: FontWeight.bold,
         ),
         bodyTextStyle: TextStyle(
-          fontSize: 19,
+          fontSize: 18,
         ),
         descriptionPadding: EdgeInsets.all(16).copyWith(bottom: 0),
         imagePadding: EdgeInsets.all(24),
