@@ -28,6 +28,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 15.0, 0.0),
       child: CircleAvatar(
         radius: widget.isAnswer ? 20.0 : 40.0,
+        backgroundColor: Colors.transparent,
         backgroundImage: (widget.isAnswer
                 ? widget.userAnswerModel.user.pictureUrl == ''
                 : widget.moreDetailModel.user.pictureUrl == '')
@@ -341,21 +342,24 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _moreDetailsHeader(),
-        _moreDetailsBody(),
-        widget.isAnswer
-            ? Padding(
-                padding: const EdgeInsets.fromLTRB(14.0, 10.0, 14.0, 10.0),
-                child: Divider(
-                  color: Colors.black,
-                  thickness: 1.0,
-                  height: 0.0,
-                ),
-              )
-            : Container(),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 10.0, right: 8.0),
+      child: Column(
+        children: [
+          _moreDetailsHeader(),
+          _moreDetailsBody(),
+          widget.isAnswer
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(14.0, 10.0, 14.0, 10.0),
+                  child: Divider(
+                    color: Colors.black,
+                    thickness: 1.0,
+                    height: 0.0,
+                  ),
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 }

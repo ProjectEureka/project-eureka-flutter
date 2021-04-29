@@ -35,13 +35,10 @@ class _ProfileState extends State<Profile> {
     ProfileService().getProfileInformation(user.uid).then(
       (payload) {
         setState(() {
-          questionsList = payload[
-              0]; // PE-73 testing: change it to [] to check the case when user haven't posted questions
-          answersList = payload[
-              1]; // PE-73 testing: change it to [] to check the case when user haven't answered to any questions
+          questionsList = payload[0];
+          answersList = payload[1];
           userInfo = payload[2];
-          categories = userInfo
-              .category; // PE-73 testing: change it to [] to check th case when user haven't chosen a category
+          categories = userInfo.category;
           loading = false;
         });
       },
@@ -72,8 +69,7 @@ class _ProfileState extends State<Profile> {
               backgroundColor: Colors.transparent,
               backgroundImage: loading
                   ? AssetImage('assets/images/profile_default_image.png')
-                  : userInfo.pictureUrl ==
-                          "" // PE-73 testing: you can change it "true" which means that user haven't uploaded an image
+                  : userInfo.pictureUrl == ""
                       ? AssetImage('assets/images/profile_default_image.png')
                       : NetworkImage(userInfo.pictureUrl),
             ),
@@ -134,8 +130,7 @@ class _ProfileState extends State<Profile> {
           ),
           loading
               ? Text("-.- ⭐", style: TextStyle(fontWeight: FontWeight.bold))
-              : userInfo.averageRating ==
-                      0.0 // PE-73 testing: you can change it "true" which means that user hasn't been rated yet
+              : userInfo.averageRating == 0.0
                   ? Text("Not rated yet ⭐")
                   : Text(
                       userInfo.averageRating.toString() + " ⭐",

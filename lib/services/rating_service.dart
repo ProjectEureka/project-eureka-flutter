@@ -7,8 +7,7 @@ import 'package:http/http.dart' as http;
 class RatingService {
   Future<http.Response> updateRating(RatingModel rating) async {
     await DotEnv.load();
-
-    return await http.put(
+    final response = await http.put(
       Uri.http(
         DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
         '/v1/users/${rating.id}/rating',
@@ -20,5 +19,7 @@ class RatingService {
         rating.toJson(),
       ),
     );
+    print("User was rated successfully - " + response.statusCode.toString());
+    return response;
   }
 }
