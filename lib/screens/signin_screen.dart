@@ -190,7 +190,7 @@ class _SignInState extends State<SignIn> {
       child: TextButton(
         child: Text(
           "Forgot password?",
-          style: TextStyle(color: Colors.grey),
+          style: TextStyle(color: Colors.black54),
         ),
         onPressed: () async {
           Navigator.of(context).pushNamed('/forgotPassword');
@@ -285,47 +285,63 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Stack(
-          children: <Widget>[
-            SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: 25,
-                vertical: 120,
-              ),
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    'Sign In',
-                    style: TextStyle(
-                      fontSize: 40.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 40.0),
-                  _loginTextForm(context),
-                  Visibility(
-                    visible: exception == "" ? false : true,
-                    child: Text(
-                      exception,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.1, 0.5, 0.7, 0.9],
+            colors: [
+              Colors.teal[300],
+              Colors.teal[200],
+              Colors.teal[100],
+              Colors.teal[50],
+            ],
+          ),
+        ),
+        child: ModalProgressHUD(
+          inAsyncCall: showSpinner,
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 25,
+                  vertical: 120,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Sign In',
                       style: TextStyle(
-                        color: Colors.red,
+                        fontSize: 40.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  _forgotPasswordButton(context),
-                  SizedBox(height: 30.0),
-                  _loginButton(context),
-                  _signUpButton(context),
-                  SizedBox(height: 20.0),
-                  _orLoginWith(),
-                  SizedBox(height: 10.0),
-                  _googleSignInButton(context),
-                ],
+                    SizedBox(height: 40.0),
+                    _loginTextForm(context),
+                    Visibility(
+                      visible: exception == "" ? false : true,
+                      child: Text(
+                        exception,
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    _forgotPasswordButton(context),
+                    SizedBox(height: 30.0),
+                    _loginButton(context),
+                    _signUpButton(context),
+                    SizedBox(height: 20.0),
+                    _orLoginWith(),
+                    SizedBox(height: 10.0),
+                    _googleSignInButton(context),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
