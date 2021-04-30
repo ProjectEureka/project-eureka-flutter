@@ -160,7 +160,7 @@ class ConversationBubble extends StatelessWidget {
                           ],
                         ),
                       )
-                    ],
+                    ],:
                   ),
                 ),
               ),
