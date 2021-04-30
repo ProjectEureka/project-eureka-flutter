@@ -91,11 +91,7 @@ Future<UserModel> initGetUserDetails(recipientId) async {
 }
 
 class ConversationBubble extends StatelessWidget {
-  ConversationBubble(
-      {
-      this.recipientId,
-      this.questionTitle,
-      this.questionId});
+  ConversationBubble({this.recipientId, this.questionTitle, this.questionId});
   final String recipientId;
   final String questionTitle;
   final String questionId;
@@ -121,38 +117,45 @@ class ConversationBubble extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => ChatScreen(
                                 fromId: recipientId,
-                                recipient: snapshot.data.firstName + " " + snapshot.data.lastName,
+                                recipient: snapshot.data.firstName +
+                                    " " +
+                                    snapshot.data.lastName,
                                 questionId: questionId)));
                   },
                   child: Row(
                     children: <Widget>[
                       CircleAvatar(
-                          radius: 30.0,
+                        radius: 30.0,
                         backgroundColor: Colors.white,
-                          backgroundImage: snapshot.data.pictureUrl == ''
-                              ? AssetImage('assets/images/profile_default_image.png')
-                              : NetworkImage(snapshot.data.pictureUrl),
-                          ),
+                        backgroundImage: snapshot.data.pictureUrl == ''
+                            ? AssetImage(
+                                'assets/images/profile_default_image.png')
+                            : NetworkImage(snapshot.data.pictureUrl),
+                      ),
                       Flexible(
                         child: Column(
                           children: <Widget>[
+                            Container(
+                              child: Text(
+                                  snapshot.data.firstName +
+                                      " " +
+                                      snapshot.data.lastName,
+                                  style: TextStyle(
+                                      color: Color(0xFF25291C),
+                                      fontWeight: FontWeight.bold)),
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+                            ),
                             Container(
                               child: Text(
                                   questionTitle, //Quetion Title from backend should go here
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontWeight: FontWeight.bold)),
-                              alignment: Alignment.centerRight,
-                              margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
-                            ),
-                            Container(
-                              child: Text(snapshot.data.firstName + " " + snapshot.data.lastName,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold)),
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 18)),
                               alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
+                              margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
                             ),
                           ],
                         ),
