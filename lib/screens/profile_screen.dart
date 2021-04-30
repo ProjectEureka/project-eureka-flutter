@@ -204,33 +204,6 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _categoryBuilder(int index) {
-    return Column(
-      children: [
-        ListTile(
-          leading: Image.asset(
-              'assets/images/${categories[index].toLowerCase()}.png'),
-          title: Text(
-            '${categories[index]}',
-          ),
-        ),
-        Divider(color: Colors.grey.shade400, height: 1.0)
-      ],
-    );
-  }
-
-  Column _interestList() {
-    return _toggleSwtichListBuilder(
-      categories.length,
-      ListView.builder(
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          return _categoryBuilder(index);
-        },
-      ),
-    );
-  }
-
   Column _listVisibility() {
     return Column(
       children: [
@@ -246,12 +219,6 @@ class _ProfileState extends State<Profile> {
               ? _noResults(" have not answered to any questions yet")
               : _answersList(),
         ),
-        Visibility(
-          visible: _tab == 2 ? true : false,
-          child: categories.length == 0
-              ? _noResults(" does not have categories of interest")
-              : _interestList(),
-        )
       ],
     );
   }
@@ -264,7 +231,7 @@ class _ProfileState extends State<Profile> {
         children: [
           _headerStack(),
           EurekaToggleSwitch(
-            labels: ['Questions', 'Answers', 'Interests'],
+            labels: ['Questions', 'Answers'],
             initialLabelIndex: _tab,
             setState: (index) {
               setState(() {
