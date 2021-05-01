@@ -15,6 +15,7 @@ import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
+import 'package:project_eureka_flutter/services/users_service.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser = EmailAuth().getCurrentUser();
