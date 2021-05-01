@@ -114,6 +114,10 @@ class _MoreDetailsState extends State<MoreDetails> {
       'questionTitle': _moreDetailModel.question.title,
       'questionId': _moreDetailModel.question.id,
       'timestamp': DateTime.now(),
+      'lastMessageSender': currUserId,
+      'unseen': true,
+      'groupChatId': groupChatId,
+      //this was include to change the unseen field to false once the message has been seen.
     });
   }
 

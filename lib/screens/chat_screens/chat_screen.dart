@@ -370,7 +370,11 @@ class _ChatScreenState extends State<ChatScreen>
                       _firestore
                           .collection('messages')
                           .doc(groupChatId)
-                          .update({'timestamp': DateTime.now()});
+                          .update({
+                        'timestamp': DateTime.now(),
+                        'unseen': true,
+                        'lastMessageSender': loggedInUser.uid
+                      });
                     },
                     child: Text(
                       'Send',
