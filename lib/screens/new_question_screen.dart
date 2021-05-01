@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
@@ -30,7 +31,13 @@ class NewQuestion extends StatelessWidget {
             SizedBox(
               height: 12.0,
             ),
-            Text(categoryName),
+            Text(
+              categoryName,
+              textScaleFactor: 1.5,
+              style: TextStyle(
+                color: Color(0xFF00ADB5),
+              ),
+            ),
           ],
         ),
         onPressed: () {
@@ -52,13 +59,17 @@ class NewQuestion extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding:
+              const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Choose Category",
-                style: TextStyle(fontSize: 28.0),
+                "Select Category",
+                style: TextStyle(
+                    fontSize: 28.0,
+                    color: Color(0xFF38464E),
+                    fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ],
