@@ -174,10 +174,11 @@ class _ChatScreenState extends State<ChatScreen>
         'idFrom': userId,
         'idTo': widget.fromId,
       });
-      _firestore
-          .collection('messages')
-          .doc(groupChatId)
-          .update({'timestamp': DateTime.now()});
+      _firestore.collection('messages').doc(groupChatId).update({
+        'timestamp': DateTime.now(),
+        'unseen': true,
+        'lastMessageSender': loggedInUser.uid
+      });
     }
     await Navigator.push(
       context,
@@ -243,7 +244,11 @@ class _ChatScreenState extends State<ChatScreen>
                       _firestore
                           .collection('messages')
                           .doc(groupChatId)
-                          .update({'timestamp': DateTime.now()});
+                          .update({
+                        'timestamp': DateTime.now(),
+                        'unseen': true,
+                        'lastMessageSender': loggedInUser.uid
+                      });
                     }
                   }),
             ],

@@ -76,6 +76,7 @@ class ConversationsStream extends StatelessWidget {
             questionId: questionID,
             unseen: unseen,
             groupId: groupChatID,
+            lastMessageSender: lastMessageSender,
           );
           if (conversationUserID == loggedInUser.uid ||
               recipientID == loggedInUser.uid) {
@@ -149,6 +150,16 @@ class ConversationBubble extends StatelessWidget {
                   },
                   child: Row(
                     children: <Widget>[
+                      // Align(
+                      //   alignment: Alignment.topRight,
+                      //   child: Icon(
+                      //     Icons.fiber_manual_record_rounded,
+                      //     color: (unseen &&
+                      //             (lastMessageSender != loggedInUser.uid))
+                      //         ? Colors.lightGreen
+                      //         : Colors.cyan,
+                      //   ),
+                      // ),
                       CircleAvatar(
                         radius: 30.0,
                         backgroundColor: Colors.white,
@@ -177,8 +188,17 @@ class ConversationBubble extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 16)),
+                                      fontStyle: (unseen &&
+                                              (lastMessageSender !=
+                                                  loggedInUser.uid))
+                                          ? FontStyle.italic
+                                          : FontStyle.normal,
+                                      fontSize: 16,
+                                      fontWeight: (unseen &&
+                                              (lastMessageSender !=
+                                                  loggedInUser.uid))
+                                          ? FontWeight.bold
+                                          : FontWeight.normal)),
                               alignment: Alignment.centerLeft,
                               margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
                             ),
@@ -190,7 +210,7 @@ class ConversationBubble extends StatelessWidget {
                         child: Icon(
                           Icons.fiber_manual_record_rounded,
                           color: (unseen &&
-                                  (lastMessageSender == loggedInUser.uid))
+                                  (lastMessageSender != loggedInUser.uid))
                               ? Colors.white
                               : Colors.cyan,
                         ),
