@@ -41,7 +41,10 @@ class ConversationsStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('messages').snapshots(),
+      stream: _firestore
+          .collection('messages')
+          .orderBy('timestamp', descending: true)
+          .snapshots(),
       builder: (context, snapshot) {
         //uses async snapshot
         if (!snapshot.hasData) {
@@ -141,13 +144,13 @@ class ConversationBubble extends StatelessWidget {
                                       snapshot.data.lastName,
                                   style: TextStyle(
                                       color: Color(0xFF25291C),
-                                      fontWeight: FontWeight.bold, fontSize: 16)),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16)),
                               alignment: Alignment.centerLeft,
                               margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
                             ),
                             Container(
-                              child: Text(
-                                  questionTitle,
+                              child: Text(questionTitle,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white,

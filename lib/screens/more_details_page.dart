@@ -118,6 +118,7 @@ class _MoreDetailsState extends State<MoreDetails> {
       'recipientId': _moreDetailModel.user.id,
       'questionTitle': _moreDetailModel.question.title,
       'questionId': _moreDetailModel.question.id,
+      'timestamp': DateTime.now(),
     });
   }
 

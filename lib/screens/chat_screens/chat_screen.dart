@@ -162,7 +162,7 @@ class _ChatScreenState extends State<ChatScreen>
     await _handleCameraAndMic(Permission.camera);
     await _handleCameraAndMic(Permission.microphone);
     // this message will be sent from caller's side after call is finished
-    if (channelNameCall != channelNameAnswer)
+    if (channelNameCall != channelNameAnswer) {
       _firestore
           .collection('messages')
           .doc(groupChatId)
@@ -174,6 +174,11 @@ class _ChatScreenState extends State<ChatScreen>
         'idFrom': userId,
         'idTo': widget.fromId,
       });
+      _firestore
+          .collection('messages')
+          .doc(groupChatId)
+          .update({'timestamp': DateTime.now()});
+    }
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -194,80 +199,84 @@ class _ChatScreenState extends State<ChatScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EurekaAppBar(
-          appBar: AppBar(),
-          actions: <Widget>[
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                showAnimationButton
-                    ? Container(
-                        alignment: Alignment(0, 0.15),
-                        child: CustomPaint(
-                          painter: new SpritePainter(_controller),
-                          child: new SizedBox(
-                            width: 80.0,
-                            height: 80.0,
-                          ),
-                        ),
-                      )
-                    : Container(
-                        alignment: Alignment(0, 0.15),
-                        child: CustomPaint(
-                          child: new SizedBox(
-                            width: 80.0,
-                            height: 80.0,
-                          ),
+        appBar: AppBar(),
+        actions: <Widget>[
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              showAnimationButton
+                  ? Container(
+                      alignment: Alignment(0, 0.15),
+                      child: CustomPaint(
+                        painter: new SpritePainter(_controller),
+                        child: new SizedBox(
+                          width: 80.0,
+                          height: 80.0,
                         ),
                       ),
-                IconButton(
-                    icon: Icon(Icons.photo_camera_front, size: 40.0),
-                    onPressed: () async {
-                      await callUser();
-                      if (channelNameCall != channelNameAnswer) {
-                        _firestore
-                            .collection('messages')
-                            .doc(groupChatId)
-                            .collection(groupChatId)
-                            .add({
-                          'text': "Call ended",
-                          'sender': "system",
-                          'timestamp': DateTime.now(),
-                          'idFrom': userId,
-                          'idTo': widget.fromId,
-                        });
-                      }
-                    }),
-              ],
-            ),
-            SizedBox(width: 30.0)
-            //camera button for call will go here
-          ],
-          title:
-          Column(
-            children: [
-              SizedBox(height: 50.0),
-              Text(
-                widget.recipient,
-              ),
-              FlatButton(
-                color: Colors.blueGrey.withOpacity(0.5),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MoreDetails(
-                        questionId: widget.questionId,
+                    )
+                  : Container(
+                      alignment: Alignment(0, 0.15),
+                      child: CustomPaint(
+                        child: new SizedBox(
+                          width: 80.0,
+                          height: 80.0,
+                        ),
                       ),
                     ),
-                  );
-                },
-                child: Text(
-                  'Question Details',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              IconButton(
+                  icon: Icon(Icons.photo_camera_front, size: 40.0),
+                  onPressed: () async {
+                    await callUser();
+                    if (channelNameCall != channelNameAnswer) {
+                      _firestore
+                          .collection('messages')
+                          .doc(groupChatId)
+                          .collection(groupChatId)
+                          .add({
+                        'text': "Call ended",
+                        'sender': "system",
+                        'timestamp': DateTime.now(),
+                        'idFrom': userId,
+                        'idTo': widget.fromId,
+                      });
+                      _firestore
+                          .collection('messages')
+                          .doc(groupChatId)
+                          .update({'timestamp': DateTime.now()});
+                    }
+                  }),
             ],
-          ),),
+          ),
+          SizedBox(width: 30.0)
+          //camera button for call will go here
+        ],
+        title: Column(
+          children: [
+            SizedBox(height: 50.0),
+            Text(
+              widget.recipient,
+            ),
+            FlatButton(
+              color: Colors.blueGrey.withOpacity(0.5),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoreDetails(
+                      questionId: widget.questionId,
+                    ),
+                  ),
+                );
+              },
+              child: Text(
+                'Question Details',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -358,6 +367,10 @@ class _ChatScreenState extends State<ChatScreen>
                         'idFrom': userId,
                         'idTo': widget.fromId,
                       });
+                      _firestore
+                          .collection('messages')
+                          .doc(groupChatId)
+                          .update({'timestamp': DateTime.now()});
                     },
                     child: Text(
                       'Send',
