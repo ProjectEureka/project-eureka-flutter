@@ -24,7 +24,7 @@ class _ChatScreenConversations extends State<ChatScreenConversations> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: EurekaAppBar(
-          title: 'Chat',
+          title: 'My Chats',
           appBar: AppBar(),
         ),
         body: SafeArea(
@@ -57,7 +57,6 @@ class ConversationsStream extends StatelessWidget {
         final conversations = snapshot.data.docs;
         List<ConversationBubble> conversationBubbles = [];
         for (var userChat in conversations) {
-          final conversationText = userChat.data()['text'];
           final conversationUserID = userChat.data()['chatIDUser'];
           final recipientID = userChat.data()['recipientId'];
           final questionTitle = userChat.data()['questionTitle'];
@@ -76,7 +75,7 @@ class ConversationsStream extends StatelessWidget {
         }
         return Expanded(
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
             children: conversationBubbles,
           ),
         );
@@ -142,25 +141,25 @@ class ConversationBubble extends StatelessWidget {
                                       snapshot.data.lastName,
                                   style: TextStyle(
                                       color: Color(0xFF25291C),
-                                      fontWeight: FontWeight.bold)),
+                                      fontWeight: FontWeight.bold, fontSize: 16)),
                               alignment: Alignment.centerLeft,
                               margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
                             ),
                             Container(
                               child: Text(
-                                  questionTitle, //Quetion Title from backend should go here
+                                  questionTitle,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontStyle: FontStyle.italic,
-                                      fontSize: 18)),
+                                      fontSize: 16)),
                               alignment: Alignment.centerLeft,
                               margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 10.0),
                             ),
                           ],
                         ),
                       )
-                    ],:
+                    ],
                   ),
                 ),
               ),

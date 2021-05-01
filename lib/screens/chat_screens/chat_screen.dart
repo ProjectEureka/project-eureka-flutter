@@ -9,6 +9,7 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/video_communication.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 import 'dart:math';
 
 // Initialize global variable for channel name for the call receiver; accessible for in ChatScreen and MessageBubble classes
@@ -241,7 +242,32 @@ class _ChatScreenState extends State<ChatScreen>
             SizedBox(width: 30.0)
             //camera button for call will go here
           ],
-          title: widget.recipient),
+          title:
+          Column(
+            children: [
+              SizedBox(height: 50.0),
+              Text(
+                widget.recipient,
+              ),
+              FlatButton(
+                color: Colors.blueGrey.withOpacity(0.5),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MoreDetails(
+                        questionId: widget.questionId,
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Question Details',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
