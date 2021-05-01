@@ -9,8 +9,8 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/video_communication.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 import 'dart:math';
-
 
 // Initialize global variable for channel name for the call receiver; accessible for in ChatScreen and MessageBubble classes
 String channelNameAnswer = "";
@@ -18,14 +18,16 @@ String channelNameAnswer = "";
 class ChatScreen extends StatefulWidget {
   final String fromId;
   final String recipient;
-  const ChatScreen({Key key, this.fromId, this.recipient}) : super(key: key);
+  final String questionId;
+  const ChatScreen({Key key, this.fromId, this.recipient, this.questionId})
+      : super(key: key);
 
   @override
   _ChatScreenState createState() => new _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateMixin {
-
+class _ChatScreenState extends State<ChatScreen>
+    with SingleTickerProviderStateMixin {
   AnimationController _controller;
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
@@ -46,13 +48,12 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
   // Used for the animated video call button to turn off / turn on animation
   bool showAnimationButton;
 
-
   @override
   void initState() {
     super.initState();
     getCurrentUser();
     userId = loggedInUser.uid;
-    groupChatId = userId + "-" + widget.fromId;
+    groupChatId = userId + "-" + widget.fromId + "-" + widget.questionId;
     setGroupId();
 
     // initialize channel names for two cases:
@@ -86,14 +87,16 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
   // that will start the animated video call button
   void _checkAnswerToken() async {
     while (true) {
-      if (!mounted) { // once left the chat page, break the loop
+      if (!mounted) {
+        // once left the chat page, break the loop
         break;
       }
       // listen to answerToken every 4 seconds
       await Future.delayed(new Duration(seconds: 4));
       await VideoCallService().getTokenAnswer(channelNameAnswer).then(
         (payload) {
-          if (!mounted) return; // allow last call check to complete and prevent setState
+          if (!mounted)
+            return; // allow last call check to complete and prevent setState
           payload != "error"
               ? setState(() => showAnimationButton = true)
               : setState(() => showAnimationButton = false);
@@ -111,7 +114,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
 
       if (!groupChatIds.contains(groupChatId)) {
         setState(() {
-          groupChatId = widget.fromId + "-" + userId;
+          groupChatId = widget.fromId + "-" + userId + "-" + widget.questionId;
         });
       }
     });
@@ -159,7 +162,7 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
     await _handleCameraAndMic(Permission.camera);
     await _handleCameraAndMic(Permission.microphone);
     // this message will be sent from caller's side after call is finished
-    if (channelNameCall != channelNameAnswer)
+    if (channelNameCall != channelNameAnswer) {
       _firestore
           .collection('messages')
           .doc(groupChatId)
@@ -171,6 +174,11 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
         'idFrom': userId,
         'idTo': widget.fromId,
       });
+      _firestore
+          .collection('messages')
+          .doc(groupChatId)
+          .update({'timestamp': DateTime.now()});
+    }
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -191,55 +199,84 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EurekaAppBar(
-          appBar: AppBar(),
-          actions: <Widget>[
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                showAnimationButton
-                    ? Container(
-                        alignment: Alignment(0, 0.15),
-                        child: CustomPaint(
-                          painter: new SpritePainter(_controller),
-                          child: new SizedBox(
-                            width: 80.0,
-                            height: 80.0,
-                          ),
-                        ),
-                      )
-                    : Container(
-                        alignment: Alignment(0, 0.15),
-                        child: CustomPaint(
-                          child: new SizedBox(
-                            width: 80.0,
-                            height: 80.0,
-                          ),
+        appBar: AppBar(),
+        actions: <Widget>[
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              showAnimationButton
+                  ? Container(
+                      alignment: Alignment(0, 0.15),
+                      child: CustomPaint(
+                        painter: new SpritePainter(_controller),
+                        child: new SizedBox(
+                          width: 80.0,
+                          height: 80.0,
                         ),
                       ),
-                IconButton(
-                    icon: Icon(Icons.photo_camera_front, size: 40.0),
-                    onPressed: () async {
-                      await callUser();
-                      if (channelNameCall != channelNameAnswer) {
-                        _firestore
-                            .collection('messages')
-                            .doc(groupChatId)
-                            .collection(groupChatId)
-                            .add({
-                          'text': "Call ended",
-                          'sender': "system",
-                          'timestamp': DateTime.now(),
-                          'idFrom': userId,
-                          'idTo': widget.fromId,
-                        });
-                      }
-                    }),
-              ],
+                    )
+                  : Container(
+                      alignment: Alignment(0, 0.15),
+                      child: CustomPaint(
+                        child: new SizedBox(
+                          width: 80.0,
+                          height: 80.0,
+                        ),
+                      ),
+                    ),
+              IconButton(
+                  icon: Icon(Icons.photo_camera_front, size: 40.0),
+                  onPressed: () async {
+                    await callUser();
+                    if (channelNameCall != channelNameAnswer) {
+                      _firestore
+                          .collection('messages')
+                          .doc(groupChatId)
+                          .collection(groupChatId)
+                          .add({
+                        'text': "Call ended",
+                        'sender': "system",
+                        'timestamp': DateTime.now(),
+                        'idFrom': userId,
+                        'idTo': widget.fromId,
+                      });
+                      _firestore
+                          .collection('messages')
+                          .doc(groupChatId)
+                          .update({'timestamp': DateTime.now()});
+                    }
+                  }),
+            ],
+          ),
+          SizedBox(width: 30.0)
+          //camera button for call will go here
+        ],
+        title: Column(
+          children: [
+            SizedBox(height: 50.0),
+            Text(
+              widget.recipient,
             ),
-            SizedBox(width: 30.0)
-            //camera button for call will go here
+            FlatButton(
+              color: Colors.blueGrey.withOpacity(0.5),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoreDetails(
+                      questionId: widget.questionId,
+                    ),
+                  ),
+                );
+              },
+              child: Text(
+                'Question Details',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ],
-          title: widget.recipient),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -330,6 +367,10 @@ class _ChatScreenState extends State<ChatScreen> with SingleTickerProviderStateM
                         'idFrom': userId,
                         'idTo': widget.fromId,
                       });
+                      _firestore
+                          .collection('messages')
+                          .doc(groupChatId)
+                          .update({'timestamp': DateTime.now()});
                     },
                     child: Text(
                       'Send',
