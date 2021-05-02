@@ -116,22 +116,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-            child: Text(
-              'Do you prefer to help people with their questions or ask questions?',
-              textAlign: TextAlign.center,
-            ),
-          ),
-          EurekaToggleSwitch(
-            labels: ['None', 'Student', 'Teacher'],
-            initialLabelIndex: _role,
-            setState: (index) {
-              setState(() {
-                _role = index;
-              });
-            },
-          ),
           GestureDetector(
             onTap: () async {
               String temp = await showModalBottomSheet(

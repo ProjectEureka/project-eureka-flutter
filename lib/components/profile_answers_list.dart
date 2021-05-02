@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ProfileAnswersView extends StatefulWidget {
@@ -95,7 +96,14 @@ class _ProfileAnswersViewState extends State<ProfileAnswersView> {
         FlatButton(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onPressed: () {
-            // Question page redirection here
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MoreDetails(
+                  questionId: widget.answersList[index].questionId,
+                ),
+              ),
+            );
           },
           child: Text(
             "Question Details",

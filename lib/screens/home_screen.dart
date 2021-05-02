@@ -148,13 +148,15 @@ class _HomeState extends State<Home> {
   EurekaAppBar homeAppBar() {
     return EurekaAppBar(
       title: !isSearching
-          ? Text('Eureka!')
+          ? Text('EureQa')
           : TextField(
               onChanged: (value) {
                 // Call function to apply search filter
                 filterQuestionsSearch(value);
               },
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                color: Colors.white,
+              ),
               decoration: InputDecoration(
                 icon: Icon(
                   Icons.search,
@@ -191,7 +193,7 @@ class _HomeState extends State<Home> {
               ),
             );
           }, // redirect to Chat page
-          child: Icon(Icons.chat_sharp, color: Colors.cyan),
+          child: Icon(Icons.chat_sharp, color: Color(0xFF00ADB5)),
           shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
         ),
       ],
@@ -288,20 +290,24 @@ class _HomeState extends State<Home> {
   Container _createNewQuestionButton() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 40.0),
-      child: RawMaterialButton(
+      child: FlatButton(
         onPressed: () {
           Navigator.of(context).pushNamed('/newQuestion');
         },
-        fillColor: Colors.blueGrey[800],
-        splashColor: Colors.grey,
+        color: Color(0xFF00ADB5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
         child: Padding(
           padding: EdgeInsets.all(10.0),
-          child: SizedBox(
-            width: 200.0,
+          child: Container(
             child: Text(
               "Create New Question",
               maxLines: 1,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 19.0,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
