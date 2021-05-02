@@ -66,8 +66,8 @@ class _NewFormState extends State<NewForm> {
               : 'Please explain in detail your question...',
           keyboardType: TextInputType.multiline,
           textInputAction: TextInputAction.done,
-          maxLines:
-              widget.isAnswer ? 15 : 10, // make body form bigger when answer
+          maxLines: widget.isAnswer ? 15 : 10,
+          // make body form bigger when answer
           errValidatorMsg: widget.isAnswer
               ? 'Answer body is required.'
               : 'Question body is required.',
@@ -188,8 +188,8 @@ class _NewFormState extends State<NewForm> {
         _question = QuestionModel(
           id: _id,
           title: _title,
-          questionDate:
-              _date.toIso8601String(), // format date to add `T` character
+          questionDate: _date.toIso8601String(),
+          // format date to add `T` character
           description: _body,
           mediaUrls: downloadUrls,
           category: widget.categoryName,

@@ -10,6 +10,7 @@ class ProfileAnswersView extends StatefulWidget {
     @required this.answersList,
     @required this.index,
   });
+
   @override
   _ProfileAnswersViewState createState() => _ProfileAnswersViewState();
 }

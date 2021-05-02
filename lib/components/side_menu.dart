@@ -10,6 +10,7 @@ import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class SideMenu extends StatefulWidget {
   final String title;
+
   SideMenu({
     this.title,
   });

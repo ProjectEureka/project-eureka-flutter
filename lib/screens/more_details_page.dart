@@ -39,6 +39,7 @@ class _MoreDetailsState extends State<MoreDetails> {
   );
   UserModel user;
   final String currUserId = EmailAuth().getCurrentUser().uid;
+
   //UserModel currUser;
 
   @override

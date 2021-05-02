@@ -18,6 +18,7 @@ class MoreDetailsView extends StatefulWidget {
     this.userAnswerModel,
     @required this.isCurrUser,
   });
+
   @override
   _MoreDetailsViewState createState() => _MoreDetailsViewState();
 }
@@ -82,9 +83,8 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     return Row(
       children: [
         Text(
-          widget.isAnswer
-              ? "Answered: "
-              : "Asked: ", // This widget will build depending on if the component is for answers or question
+          widget.isAnswer ? "Answered: " : "Asked: ",
+          // This widget will build depending on if the component is for answers or question
           style: TextStyle(
               fontSize: widget.isAnswer ? 12.5 : 16.0,
               fontWeight: FontWeight.bold),

@@ -94,6 +94,7 @@ Future<UserModel> initGetUserDetails(recipientId) async {
 
 class ConversationBubble extends StatelessWidget {
   ConversationBubble({this.recipientId, this.questionTitle, this.questionId});
+
   final String recipientId;
   final String questionTitle;
   final String questionId;

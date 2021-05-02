@@ -11,6 +11,7 @@ class EurekaListView extends StatefulWidget {
     @required this.questionList,
     @required this.index,
   });
+
   @override
   _EurekaListViewState createState() => _EurekaListViewState();
 }

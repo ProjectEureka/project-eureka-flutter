@@ -20,6 +20,7 @@ class ChatScreen extends StatefulWidget {
   final String fromId;
   final String recipient;
   final String questionId;
+
   const ChatScreen({Key key, this.fromId, this.recipient, this.questionId})
       : super(key: key);
 
@@ -38,14 +39,18 @@ class _ChatScreenState extends State<ChatScreen>
   String messageText;
   String groupChatId;
   String userId;
+
   // Initialize channel name on caller's side
   String channelNameCall = "";
+
   // initialize token on the caller's side that will be requested from the backend
   String _tokenCall = "";
+
   // used to get the user's firstName fir the system message when starting the call
   UserModel user = UserModel(
     firstName: '',
   );
+
   // Used for the animated video call button to turn off / turn on animation
   bool showAnimationButton;
 
@@ -402,6 +407,7 @@ class MessageBubble extends StatelessWidget {
       this.isSystem,
       this.timestamp,
       this.showAnswerButton});
+
   final String sender;
   final String text;
   final bool isMe;

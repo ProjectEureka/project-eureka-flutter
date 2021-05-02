@@ -187,7 +187,8 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       firebaseUuid: _firebaseUser.uid,
       email: _firebaseUser.email,
       city: '',
-      category: [], //we don't have form field for this
+      category: [],
+      //we don't have form field for this
       pictureUrl: mediaUrl.length == 0 ? '' : mediaUrl[0],
       role: _role,
       ratings: [],
