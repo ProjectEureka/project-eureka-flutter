@@ -246,6 +246,7 @@ class _SignInState extends State<SignIn> {
             "Sign up",
             style: TextStyle(
               color: Color(0xFF00ADB5),
+              fontWeight: FontWeight.bold,
             ),
           ),
           onPressed: () async {

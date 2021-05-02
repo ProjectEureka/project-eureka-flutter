@@ -200,6 +200,7 @@ class _SignUpState extends State<SignUp> {
             "Sign In",
             style: TextStyle(
               color: Color(0xFF00ADB5),
+              fontWeight: FontWeight.bold,
             ),
           ),
           onPressed: () {
@@ -246,7 +247,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   _form(context),
                   _backToSignIn(context),
-                  SizedBox(height: 190.0),
+                  SizedBox(height: 180.0),
                   _signUpbutton(),
                 ],
               ),
