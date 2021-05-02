@@ -13,6 +13,7 @@ import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
 import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
+import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -133,6 +134,23 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
+  EurekaRoundedButton _closeQuestionButton() {
+    return EurekaRoundedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChooseBestAnswer(
+              questionId: widget.questionId,
+              answers: _moreDetailModel.userAnswer,
+            ),
+          ),
+        );
+      },
+      buttonText: "Question Solved?",
+    );
+  }
+
   Visibility _noAnswersResponse() {
     return Visibility(
       visible: _moreDetailModel.userAnswer.length == 0,
@@ -249,7 +267,8 @@ class _MoreDetailsState extends State<MoreDetails> {
                     : (_moreDetailModel.user.id !=
                             currUserId // if currUser is question poster
                         ? _answerQuestionButton() // false = answer question
-                        : null)),
+                        : ((_moreDetailModel.question.closed != true) & (_moreDetailModel.userAnswer.length != 0))
+                          ? _closeQuestionButton() : null )),
       ),
     );
   }

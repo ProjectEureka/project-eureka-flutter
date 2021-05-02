@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
-import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
@@ -303,18 +302,6 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     );
   }
 
-  void _closeQuestion() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChooseBestAnswer(
-          questionId: widget.moreDetailModel.question.id,
-          answers: widget.moreDetailModel.userAnswer,
-        ),
-      ),
-    );
-  }
-
   void _answerQuestion() {
     Navigator.push(
       context,
@@ -336,10 +323,6 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
               _answerQuestion();
             }
             break;
-            case 'Close': {
-              _closeQuestion();
-            }
-            break;
             case 'Archive': {
               _archiveQuestion();
             }
@@ -352,11 +335,6 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
         const PopupMenuItem<String>(
           value: 'Answer',
           child: Text('Answer'),
-        ),
-        if((widget.moreDetailModel.question.closed != true) & (widget.moreDetailModel.userAnswer.length != 0))
-        const PopupMenuItem<String>(
-          value: 'Close',
-          child: Text('Close'),
         ),
         if(widget.moreDetailModel.question.visible != false)
         const PopupMenuItem<String>(
