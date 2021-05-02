@@ -209,7 +209,8 @@ class ConversationBubble extends StatelessWidget {
                         child: Icon(
                           Icons.fiber_manual_record_rounded,
                           color: (unseen &&
-                                  (lastMessageSender != loggedInUser.uid))
+                                  (lastMessageSender != loggedInUser.uid) &&
+                                  !enteredChat)
                               ? Colors.white
                               : Colors.cyan,
                         ),
