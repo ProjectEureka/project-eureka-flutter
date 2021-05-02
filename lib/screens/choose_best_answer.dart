@@ -4,7 +4,9 @@ import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/more_details_view.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/screens/rating_screen.dart';
+import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 
 class ChooseBestAnswer extends StatefulWidget {
   final String questionId;
@@ -26,6 +28,15 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
     setState(() {
       bestAnswerIndex = i;
     });
+  }
+
+  Future<void> _closeQuestion(String answerId) async {
+    final response =
+        await CloseQuestionService().closeQuestion(widget.questionId, answerId);
+    print("Status " +
+        response.statusCode.toString() +
+        ". Question closed successfully - " +
+        widget.questionId.toString());
   }
 
   @override
@@ -100,7 +111,19 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
               ? null
               : () => widget.answers[bestAnswerIndex].user.id ==
                       EmailAuth().getCurrentUser().uid
-                  ? Navigator.of(context).pushNamed('/home')
+                  ? {
+                       _closeQuestion(widget.answers[bestAnswerIndex].answer.id),
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (Route<void> route) => false),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MoreDetails(
+                            questionId: widget.questionId,
+                          ),
+                        ),
+                      ),
+                    }
                   : Navigator.push(
                       context,
                       MaterialPageRoute(
