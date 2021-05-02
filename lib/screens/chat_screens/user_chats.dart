@@ -108,7 +108,6 @@ class ConversationBubble extends StatelessWidget {
     this.unseen,
     this.groupId,
     this.lastMessageSender,
-    this.enteredChat,
   });
   final String recipientId;
   final String questionTitle;
@@ -116,7 +115,6 @@ class ConversationBubble extends StatelessWidget {
   final bool unseen;
   final String groupId;
   final String lastMessageSender;
-  final bool enteredChat;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +152,6 @@ class ConversationBubble extends StatelessWidget {
                                       snapshot.data.lastName,
                                   questionId: questionId,
                                   lastMessageSender: lastMessageSender,
-                                  enteredChat: enteredChat,
                                 )));
                   },
                   child: Row(

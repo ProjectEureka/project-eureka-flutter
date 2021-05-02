@@ -20,15 +20,14 @@ class ChatScreen extends StatefulWidget {
   final String recipient;
   final String questionId;
   final String lastMessageSender;
-  final bool enteredChat;
-  const ChatScreen(
-      {Key key,
-      this.fromId,
-      this.recipient,
-      this.questionId,
-      this.lastMessageSender,
-      this.enteredChat})
-      : super(key: key);
+
+  const ChatScreen({
+    Key key,
+    this.fromId,
+    this.recipient,
+    this.questionId,
+    this.lastMessageSender,
+  }) : super(key: key);
 
   @override
   _ChatScreenState createState() => new _ChatScreenState();
@@ -63,7 +62,7 @@ class _ChatScreenState extends State<ChatScreen>
     userId = loggedInUser.uid;
     groupChatId = userId + "-" + widget.fromId + "-" + widget.questionId;
     setGroupId();
-    setEnteredChat();
+
     // initialize channel names for two cases:
     // 1: channelNameCall - user calls and joins the channel; (initialized to empty string)
     // 2: channelNameAnswer - user clicks answer and joins the created channel
@@ -114,18 +113,6 @@ class _ChatScreenState extends State<ChatScreen>
         },
       );
     }
-  }
-
-  void setEnteredChat() async {
-    _firestore.collection('messages').doc(groupChatId).update({
-      'enteredChat': true,
-    });
-  }
-
-  void setLeftChat() async {
-    _firestore.collection('messages').doc(groupChatId).update({
-      'enteredChat': false,
-    });
   }
 
   void setGroupId() async {
