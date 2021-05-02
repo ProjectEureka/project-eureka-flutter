@@ -54,12 +54,8 @@ class _RatingState extends State<Rating> {
                     child: FlatButton(
                         onPressed: () async => {
                               await _closeQuestion(),
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Home(),
-                                  ),
-                                  (Route<void> route) => false),
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  '/home', (Route<void> route) => false),
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -127,14 +123,8 @@ class _RatingState extends State<Rating> {
     } catch (e) {
       print(e);
     }
-
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home(),
-        ),
-        (Route<void> route) => false);
-
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/home', (Route<void> route) => false);
     Navigator.push(
       context,
       MaterialPageRoute(
