@@ -88,11 +88,9 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void dispose() {
     _controller.dispose();
-    _firestore
-        .collection('messages')
-        .doc(groupChatId)
-        .update({
-      userId: false,});
+    _firestore.collection('messages').doc(groupChatId).update({
+      userId: false,
+    });
     super.dispose();
   }
 
@@ -404,7 +402,7 @@ class _ChatScreenState extends State<ChatScreen>
                           .doc(groupChatId)
                           .get()
                           .then((snapshot) {
-                        if(snapshot.data()[widget.fromId] == false) {
+                        if (snapshot.data()[widget.fromId] == false) {
                           _firestore
                               .collection('messages')
                               .doc(groupChatId)
@@ -413,8 +411,7 @@ class _ChatScreenState extends State<ChatScreen>
                             'unseen': true,
                             'lastMessageSender': loggedInUser.uid
                           });
-                        }
-                        else {
+                        } else {
                           _firestore
                               .collection('messages')
                               .doc(groupChatId)
