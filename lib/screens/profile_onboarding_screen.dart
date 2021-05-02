@@ -6,8 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_profile_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
-import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_onboarding_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -138,6 +138,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
                       color: Colors.white,
                     )
                   : CircleAvatar(
+                      backgroundColor: Colors.transparent,
                       backgroundImage: FileImage(File(mediaPath)),
                       radius: 50.0,
                     ),
@@ -188,7 +189,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       email: _firebaseUser.email,
       city: '',
       category: [], //we don't have form field for this
-      pictureUrl: mediaUrl.length == 0 ? '' : mediaUrl[0],
+      pictureUrl: mediaUrl.length == 0 ? widget.user.pictureUrl : mediaUrl[0],
       role: _role,
       ratings: [],
       averageRating: 0.0,
@@ -201,7 +202,12 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
         // This currently doesn't work until we can get the current user_id
         await _profileOnboardingService.updateUser(_firebaseUser.uid, user);
 
-        Navigator.pop(context);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Profile(),
+            ),
+            (Route<void> route) => false);
       } else {
         // Using HTTP POST to add new user
         await _profileOnboardingService.addUser(user);
