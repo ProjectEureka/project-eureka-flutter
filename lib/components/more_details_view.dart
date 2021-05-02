@@ -276,6 +276,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     return (!widget.isCurrUser ? Container() : messageIcon());
   }
 
+  /* DROP DOWN MENU - BEGIN */
   Future<void> _archiveQuestion() async {
     await CloseQuestionService()
         .archiveQuestion(widget.moreDetailModel.question.id);
@@ -314,21 +315,25 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     );
   }
 
+  void _answerQuestion() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewForm(
+          isAnswer: true,
+          questionId: widget.moreDetailModel.question.id,
+        ),
+      ), // standard form
+    );
+  }
+
   PopupMenuButton _questionMenu(bool isArchived, bool isClosed) {
     return PopupMenuButton<String>(
       onSelected: (String result) {
         setState(() {
           switch(result) {
             case 'Answer': {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NewForm(
-                    isAnswer: true,
-                    questionId: widget.moreDetailModel.question.id,
-                  ),
-                ), // standard form
-              );
+              _answerQuestion();
             }
             break;
             case 'Close': {
@@ -361,6 +366,8 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
       ],
     );
   }
+
+  /* DROP DOWN MENU - END */
 
   @override
   Widget build(BuildContext context) {
