@@ -120,18 +120,26 @@ class _MoreDetailsState extends State<MoreDetails> {
   EurekaRoundedButton _answerQuestionButton() {
     return EurekaRoundedButton(
       onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _moreDetailModel.user.id == currUserId
-                  ? Container()
-                  : _messageModalButton(),
-              _answerFormModalButton(),
-            ],
-          ),
-        );
+        _moreDetailModel.user.id == currUserId
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewForm(
+                    isAnswer: true,
+                    questionId: widget.questionId,
+                  ),
+                ), // standard form
+              )
+            : showModalBottomSheet(
+                context: context,
+                builder: (context) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _messageModalButton(),
+                    _answerFormModalButton(),
+                  ],
+                ),
+              );
       },
       buttonText: "Answer",
     );
