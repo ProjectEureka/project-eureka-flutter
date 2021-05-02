@@ -79,6 +79,7 @@ class ConversationsStream extends StatelessWidget {
             unseen: unseen,
             groupId: groupChatID,
             lastMessageSender: lastMessageSender,
+            enteredChat: enteredChat,
           );
           if (conversationUserID == loggedInUser.uid ||
               recipientID == loggedInUser.uid) {
@@ -98,7 +99,6 @@ class ConversationsStream extends StatelessWidget {
 
 Future<UserModel> initGetUserDetails(recipientId) async {
   UserModel payload = await UserService().getUserById(recipientId);
-  print(payload);
   return payload;
 }
 
@@ -110,6 +110,7 @@ class ConversationBubble extends StatelessWidget {
     this.unseen,
     this.groupId,
     this.lastMessageSender,
+    this.enteredChat,
   });
   final String recipientId;
   final String questionTitle;
@@ -117,6 +118,7 @@ class ConversationBubble extends StatelessWidget {
   final bool unseen;
   final String groupId;
   final String lastMessageSender;
+  final bool enteredChat;
 
 
   @override
@@ -135,8 +137,6 @@ class ConversationBubble extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(25.0))),
                 child: FlatButton(
                   onPressed: () {
-                    print(recipientId);
-                    print(loggedInUser.uid);
                     if(unseen && lastMessageSender != loggedInUser.uid) {
                       _firestore
                           .collection('messages')
@@ -151,24 +151,17 @@ class ConversationBubble extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatScreen(
-                                fromId: recipientId,
-                                recipient: snapshot.data.firstName +
-                                    " " +
-                                    snapshot.data.lastName,
-                                questionId: questionId)));
+                                  fromId: recipientId,
+                                  recipient: snapshot.data.firstName +
+                                      " " +
+                                      snapshot.data.lastName,
+                                  questionId: questionId,
+                                  lastMessageSender: lastMessageSender,
+                                  enteredChat: enteredChat,
+                                )));
                   },
                   child: Row(
                     children: <Widget>[
-                      // Align(
-                      //   alignment: Alignment.topRight,
-                      //   child: Icon(
-                      //     Icons.fiber_manual_record_rounded,
-                      //     color: (unseen &&
-                      //             (lastMessageSender != loggedInUser.uid))
-                      //         ? Colors.lightGreen
-                      //         : Colors.cyan,
-                      //   ),
-                      // ),
                       CircleAvatar(
                         radius: 30.0,
                         backgroundColor: Colors.white,
@@ -205,7 +198,8 @@ class ConversationBubble extends StatelessWidget {
                                       fontSize: 16,
                                       fontWeight: (unseen &&
                                               (lastMessageSender !=
-                                                  loggedInUser.uid))
+                                                  loggedInUser.uid) &&
+                                              !enteredChat)
                                           ? FontWeight.bold
                                           : FontWeight.normal)),
                               alignment: Alignment.centerLeft,
@@ -219,7 +213,8 @@ class ConversationBubble extends StatelessWidget {
                         child: Icon(
                           Icons.fiber_manual_record_rounded,
                           color: (unseen &&
-                                  (lastMessageSender != loggedInUser.uid))
+                                  (lastMessageSender != loggedInUser.uid) &&
+                                  !enteredChat)
                               ? Colors.white
                               : Colors.cyan,
                         ),

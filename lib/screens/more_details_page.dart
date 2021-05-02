@@ -77,6 +77,7 @@ class _MoreDetailsState extends State<MoreDetails> {
               fromId: _moreDetailModel.user.id,
               recipient: _moreDetailModel.user.firstName,
               questionId: _moreDetailModel.question.id,
+              enteredChat: true,
             ),
           ),
         );
