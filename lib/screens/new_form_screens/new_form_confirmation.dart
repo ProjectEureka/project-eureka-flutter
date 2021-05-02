@@ -4,7 +4,6 @@ import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/answer_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
-import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/more_details_page.dart';
 
 class NewFormConfirmation extends StatefulWidget {
@@ -150,7 +149,8 @@ class _NewFormConfirmationState extends State<NewFormConfirmation> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MoreDetails(
-                      questionId: widget.questionModel.id,
+                      questionId:
+                      widget.isAnswer ? widget.answerModel.questionId : widget.questionModel.id,
                     ),
                   ),
                 ),

@@ -8,6 +8,7 @@ class EurekaRoundedButton extends StatefulWidget {
   final String buttonText;
   final Color buttonColor;
   final Color textColor;
+  final bool isTwoButtons;
 
   /// Users will need to pass in values for the onPressed interation and
   /// what the text for this button will be.
@@ -15,7 +16,8 @@ class EurekaRoundedButton extends StatefulWidget {
       {@required this.onPressed,
       @required this.buttonText,
       this.buttonColor,
-      this.textColor});
+      this.textColor,
+      this.isTwoButtons});
 
   @override
   _EurekaRoundedButtonState createState() => _EurekaRoundedButtonState();
@@ -27,7 +29,7 @@ class _EurekaRoundedButtonState extends State<EurekaRoundedButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: widget.isTwoButtons == null ? EdgeInsets.all(20.0) : EdgeInsets.all(9.0),
       child: FlatButton(
         onPressed: widget.onPressed,
         disabledColor: Colors.grey[400],
