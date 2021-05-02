@@ -84,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen>
         .collection('messages')
         .doc(groupChatId)
         .update({
-      userId: true,});
+      userId: false,});
     super.dispose();
   }
 
@@ -377,13 +377,12 @@ class _ChatScreenState extends State<ChatScreen>
                         'idFrom': userId,
                         'idTo': widget.fromId,
                       });
-
                       _firestore
                           .collection('messages')
                           .doc(groupChatId)
                           .get()
                           .then((snapshot) {
-                        if(snapshot.data()[widget.fromId] == false)
+                        if(snapshot.data()[widget.fromId] == false) {
                           _firestore
                               .collection('messages')
                               .doc(groupChatId)
@@ -392,6 +391,17 @@ class _ChatScreenState extends State<ChatScreen>
                             'unseen': true,
                             'lastMessageSender': loggedInUser.uid
                           });
+                        }
+                        else {
+                          _firestore
+                              .collection('messages')
+                              .doc(groupChatId)
+                              .update({
+                            'timestamp': DateTime.now(),
+                            'unseen': false,
+                            'lastMessageSender': loggedInUser.uid
+                          });
+                        }
                       });
                     },
                     child: Text(
