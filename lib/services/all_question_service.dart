@@ -22,17 +22,19 @@ class AllQuestionService {
 
       final body = json.decode(response.body);
       print("All questions were loaded");
+      List<QuestionModel> questionsActive = new List();
+      List<QuestionModel> questionsClosed = new List();
 
-      List<QuestionModel> questions = new List();
-      for (var i = body.length - 1; i >= 0; i--) {
-        if (body[i]['visible']) {
-          questions.add(QuestionModel.fromJson(body[i]));
+      body.reversed.forEach((question) {
+        if (question['visible']) {
+          question['closed']
+              ? questionsClosed.add(QuestionModel.fromJson(question))
+              : questionsActive.add(QuestionModel.fromJson(question));
         }
-      }
-      // Sort questions by status (Active or closed)
-      questions
-          .sort((b, a) => b.closed.toString().compareTo(a.closed.toString()));
-      return questions;
+      });
+
+      return new List<QuestionModel>.from(questionsActive)
+        ..addAll(questionsClosed);
     } else {
       throw Exception('Failed to load questions');
     }

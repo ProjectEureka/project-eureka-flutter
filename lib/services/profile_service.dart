@@ -44,12 +44,12 @@ class ProfileService {
       // profileInfo will be a dynamic List containing user's info, questions list, answers list
       List<dynamic> profileInfo = new List();
 
-      for (var i = body['questions'].length - 1; i >= 0; i--) {
-        questions.add(QuestionModel.fromJson(body['questions'][i]));
-      }
-      for (var i = body['answers'].length - 1; i >= 0; i--) {
-        answers.add(AnswerModel.fromJson(body['answers'][i]));
-      }
+      body['questions'].reversed.forEach((question) {
+        questions.add(QuestionModel.fromJson(question));
+      });
+      body['answers'].reversed.forEach((answer) {
+        answers.add(AnswerModel.fromJson(answer));
+      });
 
       profileInfo.add(questions); // index 0
       profileInfo.add(answers); // index 1
