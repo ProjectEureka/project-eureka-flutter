@@ -77,6 +77,7 @@ class _MoreDetailsState extends State<MoreDetails> {
               fromId: _moreDetailModel.user.id,
               recipient: _moreDetailModel.user.firstName,
               questionId: _moreDetailModel.question.id,
+              enteredChat: true,
             ),
           ),
         );
@@ -117,6 +118,7 @@ class _MoreDetailsState extends State<MoreDetails> {
       'lastMessageSender': currUserId,
       'unseen': true,
       'groupChatId': groupChatId,
+      'enteredChat': true,
       //this was include to change the unseen field to false once the message has been seen.
     });
   }

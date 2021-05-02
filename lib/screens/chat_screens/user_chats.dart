@@ -67,6 +67,7 @@ class ConversationsStream extends StatelessWidget {
           final unseen = userChat.data()['unseen'];
           final groupChatID = userChat.data()['groupChatId'];
           final lastMessageSender = userChat.data()['lastMessageSender'];
+          final enteredChat = userChat.data()['enteredChat'];
           //if the user has not seen this message, then this will be true
           final conversationBubble = ConversationBubble(
             questionTitle: questionTitle,
@@ -77,6 +78,7 @@ class ConversationsStream extends StatelessWidget {
             unseen: unseen,
             groupId: groupChatID,
             lastMessageSender: lastMessageSender,
+            enteredChat: enteredChat,
           );
           if (conversationUserID == loggedInUser.uid ||
               recipientID == loggedInUser.uid) {
@@ -96,6 +98,7 @@ class ConversationsStream extends StatelessWidget {
 
 Future<UserModel> initGetUserDetails(recipientId) async {
   UserModel payload = await UserService().getUserById(recipientId);
+
   return payload;
 }
 
@@ -107,6 +110,7 @@ class ConversationBubble extends StatelessWidget {
     this.unseen,
     this.groupId,
     this.lastMessageSender,
+    this.enteredChat,
   });
   final String recipientId;
   final String questionTitle;
@@ -114,6 +118,7 @@ class ConversationBubble extends StatelessWidget {
   final bool unseen;
   final String groupId;
   final String lastMessageSender;
+  final bool enteredChat;
 
   @override
   Widget build(BuildContext context) {
@@ -131,35 +136,28 @@ class ConversationBubble extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(25.0))),
                 child: FlatButton(
                   onPressed: () {
-                    print(recipientId);
-                    print(loggedInUser.uid);
-                    _firestore
-                        .collection('messages')
-                        .doc(groupId)
-                        .update({'unseen': false});
+                    if (unseen && loggedInUser.uid != lastMessageSender) {
+                      _firestore
+                          .collection('messages')
+                          .doc(groupId)
+                          .update({'unseen': false});
+                    }
 
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatScreen(
-                                fromId: recipientId,
-                                recipient: snapshot.data.firstName +
-                                    " " +
-                                    snapshot.data.lastName,
-                                questionId: questionId)));
+                                  fromId: recipientId,
+                                  recipient: snapshot.data.firstName +
+                                      " " +
+                                      snapshot.data.lastName,
+                                  questionId: questionId,
+                                  lastMessageSender: lastMessageSender,
+                                  enteredChat: enteredChat,
+                                )));
                   },
                   child: Row(
                     children: <Widget>[
-                      // Align(
-                      //   alignment: Alignment.topRight,
-                      //   child: Icon(
-                      //     Icons.fiber_manual_record_rounded,
-                      //     color: (unseen &&
-                      //             (lastMessageSender != loggedInUser.uid))
-                      //         ? Colors.lightGreen
-                      //         : Colors.cyan,
-                      //   ),
-                      // ),
                       CircleAvatar(
                         radius: 30.0,
                         backgroundColor: Colors.white,
@@ -196,7 +194,8 @@ class ConversationBubble extends StatelessWidget {
                                       fontSize: 16,
                                       fontWeight: (unseen &&
                                               (lastMessageSender !=
-                                                  loggedInUser.uid))
+                                                  loggedInUser.uid) &&
+                                              !enteredChat)
                                           ? FontWeight.bold
                                           : FontWeight.normal)),
                               alignment: Alignment.centerLeft,
