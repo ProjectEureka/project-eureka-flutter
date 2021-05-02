@@ -10,8 +10,7 @@ class MoreDetailService {
     await DotEnv.load();
 
     final http.Response response = await http.get(
-      Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
-          'v1/questions/$questionId/details'),
+      Uri.https(DotEnv.env['HOST'], 'v1/questions/$questionId/details'),
     );
 
     MoreDetailModel moreDetailModel =

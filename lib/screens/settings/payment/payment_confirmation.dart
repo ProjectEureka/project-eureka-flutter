@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class PaymentConfirmation extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     var count = 0;
@@ -18,7 +17,8 @@ class PaymentConfirmation extends StatelessWidget {
       ),
       actions: <Widget>[
         FlatButton(
-            onPressed: () => Navigator.popUntil(context, (route) { // pop the last 2 routes to get back to payment settings
+            onPressed: () => Navigator.popUntil(context, (route) {
+                  // pop the last 2 routes to get back to payment settings
                   return count++ == 2;
                 }),
             child: Text('Close')),

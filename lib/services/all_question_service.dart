@@ -9,8 +9,8 @@ class AllQuestionService {
   Future<List<QuestionModel>> getQuestions() async {
     await DotEnv.load();
 
-    final response = await http.get(Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/questions'));
+    final response =
+        await http.get(Uri.https(DotEnv.env['HOST'], '/v1/questions'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
@@ -22,8 +22,8 @@ class AllQuestionService {
 
       final body = json.decode(response.body);
       print("All questions were loaded");
-      List<QuestionModel> questionsActive = new List();
-      List<QuestionModel> questionsClosed = new List();
+      List<QuestionModel> questionsActive = [];
+      List<QuestionModel> questionsClosed = [];
 
       body.reversed.forEach((question) {
         if (question['visible']) {
@@ -33,8 +33,7 @@ class AllQuestionService {
         }
       });
 
-      return new List<QuestionModel>.from(questionsActive)
-        ..addAll(questionsClosed);
+      return List<QuestionModel>.from(questionsActive)..addAll(questionsClosed);
     } else {
       throw Exception('Failed to load questions');
     }

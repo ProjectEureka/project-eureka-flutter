@@ -15,7 +15,8 @@ class CallPage extends StatefulWidget {
   final String action;
 
   // ChannelName is a combination of user id's (caller's + target's)
-  const CallPage({Key key, this.token, this.channelName, this.action}) : super(key: key);
+  const CallPage({Key key, this.token, this.channelName, this.action})
+      : super(key: key);
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -175,16 +176,18 @@ class _CallPageState extends State<CallPage> {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if(userJoined == false)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if(widget.action == "call")
-                Text("Calling...", style: TextStyle(fontSize: 35.0, color: Colors.white)),
-              if(widget.action == "answer")
-                Text("Connecting...", style: TextStyle(fontSize: 35.0, color: Colors.white)),
-            ],
-          ),
+          if (userJoined == false)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (widget.action == "call")
+                  Text("Calling...",
+                      style: TextStyle(fontSize: 35.0, color: Colors.white)),
+                if (widget.action == "answer")
+                  Text("Connecting...",
+                      style: TextStyle(fontSize: 35.0, color: Colors.white)),
+              ],
+            ),
           RawMaterialButton(
             onPressed: _onSwitchCamera,
             child: Icon(
@@ -244,7 +247,6 @@ class _CallPageState extends State<CallPage> {
     );
   }
 
-
   void _onCallEnd(BuildContext context) {
     //callEnded = true;
 
@@ -281,7 +283,7 @@ class _CallPageState extends State<CallPage> {
   Widget build(BuildContext context) {
     int count = 0;
     // if user clicks back button, alert if user wants to leave or stay in the call
-    return new WillPopScope(
+    return WillPopScope(
         onWillPop: () async {
           showDialog(
               context: context,
@@ -299,8 +301,9 @@ class _CallPageState extends State<CallPage> {
                                 VideoCallService()
                                     .hungUpCaller(widget.channelName),
                                 Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => CallEnded()),
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CallEnded()),
                                 ),
                               ],
                           child: Text('Leave')),

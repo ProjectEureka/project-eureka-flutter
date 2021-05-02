@@ -72,7 +72,10 @@ class _RatingState extends State<Rating> {
                               widget.userInfo.lastName,
                           24.0),
                       _ratingBar(_ratingBarMode),
-                      ratingNotChosenError ? Text("Please choose rating", style: TextStyle(color: Colors.red)) : Text("")
+                      ratingNotChosenError
+                          ? Text("Please choose rating",
+                              style: TextStyle(color: Colors.red))
+                          : Text("")
                     ],
                   ),
                   SizedBox(
@@ -105,8 +108,7 @@ class _RatingState extends State<Rating> {
   //Rates the current user for now until the answer page is created
   Future<void> _submit() async {
     await _closeQuestion();
-    RatingModel rating =
-        new RatingModel(id: widget.userInfo.id, rating: _rating);
+    RatingModel rating = RatingModel(id: widget.userInfo.id, rating: _rating);
     try {
       await RatingService().updateRating(rating);
     } catch (e) {

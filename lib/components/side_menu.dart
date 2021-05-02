@@ -10,6 +10,7 @@ import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class SideMenu extends StatefulWidget {
   final String title;
+
   SideMenu({
     this.title,
   });
@@ -20,7 +21,7 @@ class SideMenu extends StatefulWidget {
 
 class _SideMenuState extends State<SideMenu> {
   bool loading = true;
-  UserModel user = new UserModel(
+  UserModel user = UserModel(
     firstName: '',
     lastName: '',
     email: '',

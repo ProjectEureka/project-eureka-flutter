@@ -173,21 +173,22 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
 
     User _firebaseUser = EmailAuth().getCurrentUser();
     ProfileOnboardingService _profileOnboardingService =
-        new ProfileOnboardingService();
+        ProfileOnboardingService();
     List<String> mediaUrl = [];
     if (mediaPath != '') {
       mediaUrl = await uploadFiles();
     }
 
     /// Create the user object to be sent out.
-    UserModel user = new UserModel(
+    UserModel user = UserModel(
       id: _firebaseUser.uid,
       firstName: _firstName,
       lastName: _lastName,
       firebaseUuid: _firebaseUser.uid,
       email: _firebaseUser.email,
       city: '',
-      category: [], //we don't have form field for this
+      category: [],
+      //we don't have form field for this
       pictureUrl: mediaUrl.length == 0 ? '' : mediaUrl[0],
       role: _role,
       ratings: [],

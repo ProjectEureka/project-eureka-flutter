@@ -9,8 +9,8 @@ class UserService {
   Future<UserModel> getUserById(String uid) async {
     await DotEnv.load();
 
-    final response = await http.get(Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/users/' + uid));
+    final response =
+        await http.get(Uri.https(DotEnv.env['HOST'], '/v1/users/' + uid));
 
     if (response.statusCode == 200) {
       final body = json.decode(response.body);

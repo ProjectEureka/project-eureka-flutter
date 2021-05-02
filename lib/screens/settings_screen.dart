@@ -9,7 +9,7 @@ import 'package:project_eureka_flutter/screens/settings/settings_payment.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class Settings extends StatelessWidget {
-  final EmailAuth _emailAuth = new EmailAuth();
+  final EmailAuth _emailAuth = EmailAuth();
 
   final String title = 'Settings';
 

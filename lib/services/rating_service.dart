@@ -8,8 +8,8 @@ class RatingService {
   Future<http.Response> updateRating(RatingModel rating) async {
     await DotEnv.load();
     final response = await http.put(
-      Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
+      Uri.https(
+        DotEnv.env['HOST'],
         '/v1/users/${rating.id}/rating',
       ),
       headers: <String, String>{

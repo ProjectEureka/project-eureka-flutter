@@ -12,6 +12,7 @@ class EurekaToggleSwitch extends StatefulWidget {
     @required this.initialLabelIndex,
     @required this.setState,
   });
+
   @override
   _EurekaToggleSwitchState createState() => _EurekaToggleSwitchState();
 }
