@@ -5,6 +5,7 @@ import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/answer_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/screens/home_screen.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 
 class NewFormConfirmation extends StatefulWidget {
   final bool isAnswer; // true: this for is for Answers
@@ -141,14 +142,19 @@ class _NewFormConfirmationState extends State<NewFormConfirmation> {
       ),
       body: _formConfirmationBody(),
       bottomNavigationBar: EurekaRoundedButton(
-        buttonText: "Return to Home Page",
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Home(),
-          ),
-        ),
-      ),
+          buttonText: "Go to Question",
+          onPressed: () => {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/home', (Route<void> route) => false),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoreDetails(
+                      questionId: widget.questionModel.id,
+                    ),
+                  ),
+                ),
+              }),
     );
   }
 }
