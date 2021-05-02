@@ -118,7 +118,8 @@ class _MoreDetailsState extends State<MoreDetails> {
       'lastMessageSender': currUserId,
       'unseen': true,
       'groupChatId': groupChatId,
-      'enteredChat': true,
+      currUserId: false,
+      _moreDetailModel.user.id: false,
       //this was include to change the unseen field to false once the message has been seen.
     });
   }

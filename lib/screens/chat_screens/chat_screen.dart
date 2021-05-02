@@ -88,8 +88,11 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void dispose() {
     _controller.dispose();
-    setLeftChat();
-    print('run');
+    _firestore
+        .collection('messages')
+        .doc(groupChatId)
+        .update({
+      userId: false,});
     super.dispose();
   }
 
@@ -382,7 +385,7 @@ class _ChatScreenState extends State<ChatScreen>
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0)),
                     color: Colors.cyan,
-                    onPressed: () {
+                    onPressed: () async {
                       messageTextController.clear();
                       var currentTimeAndDate = DateTime.now();
                       _firestore
@@ -399,10 +402,28 @@ class _ChatScreenState extends State<ChatScreen>
                       _firestore
                           .collection('messages')
                           .doc(groupChatId)
-                          .update({
-                        'timestamp': DateTime.now(),
-                        'unseen': true,
-                        'lastMessageSender': loggedInUser.uid
+                          .get()
+                          .then((snapshot) {
+                        if(snapshot.data()[widget.fromId] == false) {
+                          _firestore
+                              .collection('messages')
+                              .doc(groupChatId)
+                              .update({
+                            'timestamp': DateTime.now(),
+                            'unseen': true,
+                            'lastMessageSender': loggedInUser.uid
+                          });
+                        }
+                        else {
+                          _firestore
+                              .collection('messages')
+                              .doc(groupChatId)
+                              .update({
+                            'timestamp': DateTime.now(),
+                            'unseen': false,
+                            'lastMessageSender': loggedInUser.uid
+                          });
+                        }
                       });
                     },
                     child: Text(
