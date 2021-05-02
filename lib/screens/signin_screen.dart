@@ -15,10 +15,10 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  EmailAuth _emailAuth = new EmailAuth();
-  GoogleAuth _googleAuth = new GoogleAuth();
+  EmailAuth _emailAuth = EmailAuth();
+  GoogleAuth _googleAuth = GoogleAuth();
   FirebaseExceptionHandler _firebaseExceptionHandler =
-      new FirebaseExceptionHandler();
+      FirebaseExceptionHandler();
 
   String email;
   String password;

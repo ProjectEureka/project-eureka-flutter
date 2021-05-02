@@ -9,8 +9,8 @@ class ProfileOnboardingService {
     await DotEnv.load();
 
     return http.post(
-      Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
+      Uri.https(
+        DotEnv.env['HOST'],
         '/v1/users',
       ),
       headers: <String, String>{
@@ -26,8 +26,8 @@ class ProfileOnboardingService {
     await DotEnv.load();
 
     return http.put(
-      Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
+      Uri.https(
+        DotEnv.env['HOST'],
         '/v1/users/$userId',
       ),
       headers: <String, String>{

@@ -9,8 +9,8 @@ class NewQuestionService {
     await DotEnv.load();
 
     final response = await http.post(
-      Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
+      Uri.https(
+        DotEnv.env['HOST'],
         '/v1/questions/',
       ),
       headers: <String, String>{

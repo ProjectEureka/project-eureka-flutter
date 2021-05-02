@@ -27,5 +27,5 @@ class EurekaAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Size get preferredSize => new Size.fromHeight(toolbarHeight);
+  Size get preferredSize => Size.fromHeight(toolbarHeight);
 }

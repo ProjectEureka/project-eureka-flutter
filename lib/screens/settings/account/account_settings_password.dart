@@ -16,8 +16,8 @@ class _AccountSettingsPasswordState extends State<AccountSettingsPassword> {
   final RegExp _passwordValid =
       RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
 
-  FirebaseExceptionHandler _exceptionHandler = new FirebaseExceptionHandler();
-  EmailAuth _emailAuth = new EmailAuth();
+  FirebaseExceptionHandler _exceptionHandler = FirebaseExceptionHandler();
+  EmailAuth _emailAuth = EmailAuth();
 
   String currentPassword;
   String newPassword;

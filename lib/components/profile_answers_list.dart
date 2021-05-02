@@ -41,7 +41,7 @@ class _ProfileAnswersViewState extends State<ProfileAnswersView> {
   Column timeAndIsActiveRow(int index) {
     // this is used to format data to return " X days/hours/minutes ago"
     final dateTime = DateTime.parse(widget.answersList[index].answerDate)
-        .subtract(new Duration(hours: -7));
+        .subtract(Duration(hours: -7));
 
     return Column(
       children: [

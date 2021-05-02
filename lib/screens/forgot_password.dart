@@ -12,9 +12,9 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotpasswordState extends State<ForgotPassword> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  EmailAuth _emailAuth = new EmailAuth();
+  EmailAuth _emailAuth = EmailAuth();
   FirebaseExceptionHandler _firebaseExceptionHandler =
-      new FirebaseExceptionHandler();
+      FirebaseExceptionHandler();
 
   String _email;
   String _exception = "";

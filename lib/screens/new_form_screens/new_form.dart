@@ -169,7 +169,7 @@ class _NewFormState extends State<NewForm> {
     if (widget.isAnswer) {
       /// builds answers model
       setState(() {
-        _answer = new AnswerModel(
+        _answer = AnswerModel(
           id: _id,
           mediaUrls: downloadUrls,
           answerDate: _date.toIso8601String(),
@@ -185,7 +185,7 @@ class _NewFormState extends State<NewForm> {
       /// builds question model
       /// Create new Object to be sent to backend.
       setState(() {
-        _question = new QuestionModel(
+        _question = QuestionModel(
           id: _id,
           title: _title,
           questionDate:

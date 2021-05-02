@@ -7,7 +7,7 @@ class DeleteUserService {
   Future<http.Response> deleteUser(String id) async {
     await DotEnv.load();
     return await http.put(
-      Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/user/delete/$id'),
+      Uri.https(DotEnv.env['HOST'], '/v1/user/delete/$id'),
       headers: <String, String>{
         'Content-type': 'application/json; charset=UTF-8',
       },

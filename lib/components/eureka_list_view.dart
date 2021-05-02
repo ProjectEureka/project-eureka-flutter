@@ -54,7 +54,7 @@ class _EurekaListViewState extends State<EurekaListView> {
   Column timeAndIsActiveRow(int index) {
     // this is used to format data to return " X days/hours/minutes ago"
     final dateTime = DateTime.parse(widget.questionList[index].questionDate)
-        .subtract(new Duration(hours: -7));
+        .subtract(Duration(hours: -7));
 
     return Column(
       children: [

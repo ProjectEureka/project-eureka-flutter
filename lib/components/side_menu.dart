@@ -20,7 +20,7 @@ class SideMenu extends StatefulWidget {
 
 class _SideMenuState extends State<SideMenu> {
   bool loading = true;
-  UserModel user = new UserModel(
+  UserModel user = UserModel(
     firstName: '',
     lastName: '',
     email: '',

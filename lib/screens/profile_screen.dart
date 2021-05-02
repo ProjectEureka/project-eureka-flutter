@@ -19,7 +19,7 @@ class _ProfileState extends State<Profile> {
   int _tab = 0;
   List questionsList = [];
   List answersList = [];
-  UserModel userInfo = new UserModel();
+  UserModel userInfo = UserModel();
   List categories = [];
   bool loading = true;
 
