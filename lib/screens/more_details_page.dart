@@ -9,7 +9,6 @@ import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
-import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
@@ -149,23 +148,6 @@ class _MoreDetailsState extends State<MoreDetails> {
     );
   }
 
-  EurekaRoundedButton _questionIsSolvedButton() {
-    return EurekaRoundedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChooseBestAnswer(
-              questionId: _moreDetailModel.question.id,
-              answers: _moreDetailModel.userAnswer,
-            ),
-          ),
-        );
-      },
-      buttonText: 'Question Solved?',
-    );
-  }
-
   Column _answersListBuilder() {
     return Column(
       children: [
@@ -267,9 +249,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                     : (_moreDetailModel.user.id !=
                             currUserId // if currUser is question poster
                         ? _answerQuestionButton() // false = answer question
-                        : _moreDetailModel.userAnswer.length == 0
-                            ? _answerQuestionButton()
-                            : _questionIsSolvedButton())),
+                        : null)),
       ),
     );
   }

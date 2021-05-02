@@ -77,9 +77,16 @@ class _EurekaListViewState extends State<EurekaListView> {
             _eurekaListViewTextStyle(
               value:
                   // 'closed' is a boolean
-                  widget.questionList[index].closed ? "Closed" : "Active",
-              color:
-                  widget.questionList[index].closed ? Colors.grey : Colors.blue,
+                  !widget.questionList[index].visible
+                      ? "Archived"
+                      : widget.questionList[index].closed
+                          ? "Closed"
+                          : "Active",
+              color: !widget.questionList[index].visible
+                  ? Colors.grey
+                  : widget.questionList[index].closed
+                      ? Colors.grey
+                      : Colors.blue,
               fontWeight: FontWeight.bold,
             ),
           ],
