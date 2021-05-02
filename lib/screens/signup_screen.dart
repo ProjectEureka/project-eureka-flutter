@@ -200,6 +200,7 @@ class _SignUpState extends State<SignUp> {
             "Sign In",
             style: TextStyle(
               color: Color(0xFF00ADB5),
+              fontWeight: FontWeight.bold,
             ),
           ),
           onPressed: () {
@@ -213,30 +214,50 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 25,
-              vertical: 120,
-            ),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                _form(context),
-                _backToSignIn(context),
+        extendBody: true,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.1, 0.5, 0.7, 0.9],
+              colors: [
+                Colors.teal[300],
+                Colors.teal[200],
+                Colors.teal[100],
+                Colors.teal[50],
               ],
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: _signUpbutton(),
-    );
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 25,
+                  vertical: 120,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        fontSize: 40.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    _form(context),
+                    _backToSignIn(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.transparent,
+          elevation: 0,
+          child: _signUpbutton(),
+        ));
   }
 }
