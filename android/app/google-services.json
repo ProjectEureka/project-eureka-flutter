@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:345803967238:android:814b0c686b2206a7d8ac87",
         "android_client_info": {
-          "package_name": "com.example.project_eureka_flutter"
+          "package_name": "com.eureqa.project_eureka_flutter"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "345803967238-pu417p3rj09eku6f1d4okmvn9lifv6io.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.project_eureka_flutter",
+            "package_name": "com.eureqa.project_eureka_flutter",
             "certificate_hash": "c774b294b2253d1816b940fee9db7eb8d68fb96d"
           }
         },

@@ -1,4 +1,4 @@
-package com.example.project_eureka_flutter
+package com.eureqa.project_eureka_flutter
 
 import io.flutter.embedding.android.FlutterActivity
 
