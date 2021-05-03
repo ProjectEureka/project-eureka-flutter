@@ -112,6 +112,11 @@ class _MoreDetailsState extends State<MoreDetails> {
       'questionTitle': _moreDetailModel.question.title,
       'questionId': _moreDetailModel.question.id,
       'timestamp': DateTime.now(),
+      'lastMessageSender': currUserId,
+      'unseen': true,
+      'groupChatId': groupChatId,
+      currUserId: false,
+      _moreDetailModel.user.id: false,
     });
   }
 

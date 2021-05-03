@@ -20,7 +20,7 @@ class MoreDetailsView extends StatefulWidget {
       @required this.isAnswer,
       this.userAnswerModel,
       @required this.isCurrUser,
-      @required this.firestore});
+      this.firestore});
   @override
   _MoreDetailsViewState createState() => _MoreDetailsViewState();
 }
@@ -287,6 +287,11 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
       'questionTitle': widget.moreDetailModel.question.title,
       'questionId': widget.isAnswer ? obj.answer.id : obj.question.id,
       'timestamp': DateTime.now(),
+      'lastMessageSender': EmailAuth().getCurrentUser().uid,
+      'unseen': true,
+      'groupChatId': EmailAuth().getCurrentUser().uid,
+      EmailAuth().getCurrentUser().uid: false,
+      widget.moreDetailModel.user.id: false,
     });
     Navigator.push(
       context,

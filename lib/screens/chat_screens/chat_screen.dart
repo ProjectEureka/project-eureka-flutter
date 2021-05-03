@@ -19,8 +19,15 @@ class ChatScreen extends StatefulWidget {
   final String fromId;
   final String recipient;
   final String questionId;
-  const ChatScreen({Key key, this.fromId, this.recipient, this.questionId})
-      : super(key: key);
+  final String lastMessageSender;
+
+  const ChatScreen({
+    Key key,
+    this.fromId,
+    this.recipient,
+    this.questionId,
+    this.lastMessageSender,
+  }) : super(key: key);
 
   @override
   _ChatScreenState createState() => new _ChatScreenState();
@@ -80,6 +87,9 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void dispose() {
     _controller.dispose();
+    _firestore.collection('messages').doc(groupChatId).update({
+      userId: false,
+    });
     super.dispose();
   }
 
@@ -174,10 +184,11 @@ class _ChatScreenState extends State<ChatScreen>
         'idFrom': userId,
         'idTo': widget.fromId,
       });
-      _firestore
-          .collection('messages')
-          .doc(groupChatId)
-          .update({'timestamp': DateTime.now()});
+      _firestore.collection('messages').doc(groupChatId).update({
+        'timestamp': DateTime.now(),
+        'unseen': true,
+        'lastMessageSender': loggedInUser.uid
+      });
     }
     await Navigator.push(
       context,
@@ -243,7 +254,11 @@ class _ChatScreenState extends State<ChatScreen>
                       _firestore
                           .collection('messages')
                           .doc(groupChatId)
-                          .update({'timestamp': DateTime.now()});
+                          .update({
+                        'timestamp': DateTime.now(),
+                        'unseen': true,
+                        'lastMessageSender': loggedInUser.uid
+                      });
                     }
                   }),
             ],
@@ -310,8 +325,10 @@ class _ChatScreenState extends State<ChatScreen>
                       // if sender String contains caller's ID, show Answer button. Caller won't see answer button
                       showAnswerButton: messageSender.contains(widget.fromId),
                       timestamp: messageTimestamp.toDate());
+
                   messageBubbles.add(messageBubble);
                 }
+
                 return Expanded(
                   child: ListView(
                     reverse: true,
@@ -353,7 +370,7 @@ class _ChatScreenState extends State<ChatScreen>
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0)),
                     color: Colors.cyan,
-                    onPressed: () {
+                    onPressed: () async {
                       messageTextController.clear();
                       var currentTimeAndDate = DateTime.now();
                       _firestore
@@ -370,7 +387,28 @@ class _ChatScreenState extends State<ChatScreen>
                       _firestore
                           .collection('messages')
                           .doc(groupChatId)
-                          .update({'timestamp': DateTime.now()});
+                          .get()
+                          .then((snapshot) {
+                        if (snapshot.data()[widget.fromId] == false) {
+                          _firestore
+                              .collection('messages')
+                              .doc(groupChatId)
+                              .update({
+                            'timestamp': DateTime.now(),
+                            'unseen': true,
+                            'lastMessageSender': loggedInUser.uid
+                          });
+                        } else {
+                          _firestore
+                              .collection('messages')
+                              .doc(groupChatId)
+                              .update({
+                            'timestamp': DateTime.now(),
+                            'unseen': false,
+                            'lastMessageSender': loggedInUser.uid
+                          });
+                        }
+                      });
                     },
                     child: Text(
                       'Send',
