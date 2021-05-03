@@ -59,6 +59,8 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/images/EureQaIcon.png"
+  adaptive_icon_background: "#00ADB5"
+  adaptive_icon_foreground: "assets/images/EureQaIcon.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
