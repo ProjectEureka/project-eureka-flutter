@@ -151,7 +151,6 @@ class ConversationBubble extends StatelessWidget {
                                       " " +
                                       snapshot.data.lastName,
                                   questionId: questionId,
-                                  lastMessageSender: lastMessageSender,
                                 )));
                   },
                   child: Row(

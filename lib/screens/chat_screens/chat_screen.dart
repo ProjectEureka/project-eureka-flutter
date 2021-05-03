@@ -19,14 +19,12 @@ class ChatScreen extends StatefulWidget {
   final String fromId;
   final String recipient;
   final String questionId;
-  final String lastMessageSender;
 
   const ChatScreen({
     Key key,
     this.fromId,
     this.recipient,
     this.questionId,
-    this.lastMessageSender,
   }) : super(key: key);
 
   @override

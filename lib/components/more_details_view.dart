@@ -299,7 +299,6 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
           fromId: obj.user.id,
           recipient: obj.user.firstName,
           questionId: widget.moreDetailModel.question.id,
-          lastMessageSender: EmailAuth().getCurrentUser().uid,
         ),
       ),
     );
