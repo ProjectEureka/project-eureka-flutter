@@ -276,9 +276,10 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
   }
 
   void addChatToFirebase(dynamic obj) {
-    String groupChatId =
-        '${EmailAuth().getCurrentUser().uid}-${obj.user.id}-${widget.moreDetailModel.question.id}';
-
+    String groupChatId = widget.isAnswer
+        ? '${widget.moreDetailModel.user.id}-${obj.user.id}-${widget.moreDetailModel.question.id}'
+        : '${EmailAuth().getCurrentUser().uid}-${obj.user.id}-${widget.moreDetailModel.question.id}';
+    print(obj.user.id);
     widget.firestore.collection('messages').doc(groupChatId).set({
       'chatIDUser': EmailAuth().getCurrentUser().uid,
       'recipientId': obj.user.id,
@@ -295,9 +296,10 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
       context,
       MaterialPageRoute(
         builder: (context) => ChatScreen(
-          fromId: EmailAuth().getCurrentUser().uid,
+          fromId: obj.user.id,
           recipient: obj.user.firstName,
           questionId: widget.moreDetailModel.question.id,
+          lastMessageSender: EmailAuth().getCurrentUser().uid,
         ),
       ),
     );
