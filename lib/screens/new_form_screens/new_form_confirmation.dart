@@ -151,6 +151,7 @@ class _NewFormConfirmationState extends State<NewFormConfirmation> {
                     builder: (context) => MoreDetails(
                       questionId:
                       widget.isAnswer ? widget.answerModel.questionId : widget.questionModel.id,
+                      isCreatedOrAnswered: true,
                     ),
                   ),
                 ),

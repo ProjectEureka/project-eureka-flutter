@@ -5,6 +5,7 @@ import 'package:flutter/painting.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/more_details_view.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
@@ -19,9 +20,11 @@ final _firestore = FirebaseFirestore.instance;
 
 class MoreDetails extends StatefulWidget {
   final String questionId;
+  final bool isCreatedOrAnswered;
 
   MoreDetails({
     this.questionId,
+    this.isCreatedOrAnswered
   });
 
   @override
@@ -189,9 +192,16 @@ class _MoreDetailsState extends State<MoreDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideMenu(),
       appBar: EurekaAppBar(
         title: 'Question Details',
         appBar: AppBar(),
+         actions: widget.isCreatedOrAnswered == null ? [IconButton(
+              icon: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.pop(context)), SizedBox(width: 15)] : null
       ),
       body: SingleChildScrollView(
         child: Container(

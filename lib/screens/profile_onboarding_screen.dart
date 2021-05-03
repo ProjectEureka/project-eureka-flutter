@@ -43,16 +43,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     return EurekaAppBar(
       title: widget.isProfile ? 'Edit Your Profile' : 'Create Your Profile',
       appBar: AppBar(),
-      actions: [
-        widget.isProfile
-            ? IconButton(
-                icon: Icon(
-                  Icons.cancel,
-                  color: Color(0xFF00ADB5),
-                ),
-                onPressed: () => Navigator.pop(context))
-            : Container(),
-      ],
     );
   }
 

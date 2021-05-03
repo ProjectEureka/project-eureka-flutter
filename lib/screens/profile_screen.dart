@@ -158,6 +158,12 @@ class _ProfileState extends State<Profile> {
         EurekaAppBar(
           title: 'Profile',
           appBar: AppBar(),
+          actions: widget.isMoreDetailsPage == null ? null : [IconButton(
+              icon: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.pop(context)), SizedBox(width: 15)],
         ),
         _profileNameAndIcon(),
         _editButtonAndRating(),
@@ -233,7 +239,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: widget.isMoreDetailsPage == null ? SideMenu() : null,
+      drawer: SideMenu(),
       body: Column(
         children: [
           _headerStack(),
