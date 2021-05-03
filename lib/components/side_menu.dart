@@ -26,6 +26,7 @@ class _SideMenuState extends State<SideMenu> {
     email: '',
     pictureUrl: '',
   );
+  String userId = EmailAuth().getCurrentUser().uid;
 
   @override
   void initState() {
@@ -34,7 +35,6 @@ class _SideMenuState extends State<SideMenu> {
   }
 
   void initGetCurrentUser() {
-    String userId = EmailAuth().getCurrentUser().uid;
 
     UserService().getUserById(userId).then((payload) {
       setState(() {
@@ -76,7 +76,7 @@ class _SideMenuState extends State<SideMenu> {
           sideMenuListTile(
             context,
             'Profile',
-            Profile(),
+            Profile(userId: userId),
             Icons.person,
           ),
           Divider(color: Colors.grey.shade400, height: 1.0),

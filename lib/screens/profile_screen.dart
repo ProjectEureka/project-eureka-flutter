@@ -11,6 +11,12 @@ import 'package:project_eureka_flutter/services/profile_service.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class Profile extends StatefulWidget {
+
+  final isMoreDetailsPage;
+  final userId;
+
+  Profile({this.userId, this.isMoreDetailsPage});
+
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -23,7 +29,7 @@ class _ProfileState extends State<Profile> {
   List categories = [];
   bool loading = true;
 
-  final User user = EmailAuth().getCurrentUser();
+  final User currentUser = EmailAuth().getCurrentUser();
 
   @override
   void initState() {
@@ -32,7 +38,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void initGetProfileData() {
-    ProfileService().getProfileInformation(user.uid).then(
+    ProfileService().getProfileInformation(widget.isMoreDetailsPage == null ? currentUser.uid : widget.userId).then(
       (payload) {
         setState(() {
           questionsList = payload[0];
@@ -124,6 +130,7 @@ class _ProfileState extends State<Profile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          if (widget.userId == currentUser.uid)
           _editProfileButton(),
           SizedBox(
             height: 15.0,
@@ -151,6 +158,12 @@ class _ProfileState extends State<Profile> {
         EurekaAppBar(
           title: 'Profile',
           appBar: AppBar(),
+          actions: widget.isMoreDetailsPage == null ? null : [IconButton(
+              icon: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.pop(context)), SizedBox(width: 15)],
         ),
         _profileNameAndIcon(),
         _editButtonAndRating(),

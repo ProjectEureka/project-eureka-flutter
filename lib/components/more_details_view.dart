@@ -4,6 +4,7 @@ import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
+import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -27,24 +28,29 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
   Padding profileIcon() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 15.0, 0.0),
-      child: CircleAvatar(
-        radius: widget.isAnswer ? 20.0 : 40.0,
-        backgroundColor: Colors.transparent,
-        backgroundImage: (widget.isAnswer
-                ? widget.userAnswerModel.user.pictureUrl == ''
-                : widget.moreDetailModel.user.pictureUrl == '')
-            ? AssetImage('assets/images/profile_default_image.png')
-            : NetworkImage(
-                widget.isAnswer
-                    ? widget.userAnswerModel.user.pictureUrl
-                    : widget.moreDetailModel.user.pictureUrl,
-              ),
+      child: GestureDetector(
+        onTap: () async { Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Profile(isMoreDetailsPage: true, userId: widget.isAnswer ? widget.userAnswerModel.user.id : widget.moreDetailModel.user.id,))); },
+        child: CircleAvatar(
+          radius: widget.isAnswer ? 20.0 : 40.0,
+          backgroundColor: Colors.transparent,
+          backgroundImage: (widget.isAnswer
+                  ? widget.userAnswerModel.user.pictureUrl == ''
+                  : widget.moreDetailModel.user.pictureUrl == '')
+              ? AssetImage('assets/images/profile_default_image.png')
+              : NetworkImage(
+                  widget.isAnswer
+                      ? widget.userAnswerModel.user.pictureUrl
+                      : widget.moreDetailModel.user.pictureUrl,
+                ),
+        ),
       ),
     );
   }
 
   Row _profileName() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           widget.isAnswer
@@ -55,6 +61,13 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
               fontWeight: FontWeight.bold),
           textAlign: TextAlign.left,
         ),
+
+        if (widget.isAnswer)
+          widget.userAnswerModel.user.averageRating == 0.0
+              ? Text("  Not rated yet ⭐")
+              : Text("  " +
+            widget.userAnswerModel.user.averageRating.toString() + " ⭐",
+          ),
       ],
     );
   }
@@ -118,6 +131,12 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
           children: [
             SizedBox(height: 15.0),
             _profileName(),
+            if (!widget.isAnswer)
+              widget.moreDetailModel.user.averageRating == 0.0
+                  ? Text("Not rated yet ⭐")
+                  : Text(
+                widget.moreDetailModel.user.averageRating.toString() + " ⭐",
+              ),
             SizedBox(height: widget.isAnswer ? 0.0 : 10.0),
             _questionCategory(),
             _timeAgo(dateTime),
