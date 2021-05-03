@@ -269,7 +269,6 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
       color: Color(0xFF00ADB5),
       icon: Icon(Icons.message_outlined),
       onPressed: () {
-        print(widget.userAnswerModel.answer);
         addChatToFirebase(
             widget.isAnswer ? widget.userAnswerModel : widget.moreDetailModel);
       },
@@ -288,9 +287,9 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
       'timestamp': DateTime.now(),
       'lastMessageSender': EmailAuth().getCurrentUser().uid,
       'unseen': true,
-      'groupChatId': EmailAuth().getCurrentUser().uid,
+      'groupChatId': groupChatId,
       EmailAuth().getCurrentUser().uid: false,
-      widget.moreDetailModel.user.id: false,
+      obj.user.id.toString(): false,
     });
     Navigator.push(
       context,
