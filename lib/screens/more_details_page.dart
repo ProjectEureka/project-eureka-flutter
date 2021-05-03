@@ -108,8 +108,6 @@ class _MoreDetailsState extends State<MoreDetails> {
 
     _firestore.collection('messages').doc(groupChatId).set({
       'chatIDUser': currUserId,
-      'chatSender': user.firstName,
-      'recipient': _moreDetailModel.user.firstName,
       'recipientId': _moreDetailModel.user.id,
       'questionTitle': _moreDetailModel.question.title,
       'questionId': _moreDetailModel.question.id,
@@ -178,6 +176,7 @@ class _MoreDetailsState extends State<MoreDetails> {
             isAnswer: true,
             userAnswerModel: userAnswer,
             isCurrUser: _moreDetailModel.user.id == currUserId,
+            firestore: _firestore,
           )
       ],
     );
@@ -212,6 +211,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   moreDetailModel: _moreDetailModel,
                   isAnswer: false,
                   isCurrUser: _moreDetailModel.user.id == currUserId,
+                  firestore: _firestore,
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),

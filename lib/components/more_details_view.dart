@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
 import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class MoreDetailsView extends StatefulWidget {
@@ -11,13 +13,14 @@ class MoreDetailsView extends StatefulWidget {
   final bool isAnswer;
   final UserAnswerModel userAnswerModel;
   final bool isCurrUser;
+  final firestore;
 
-  MoreDetailsView({
-    this.moreDetailModel,
-    @required this.isAnswer,
-    this.userAnswerModel,
-    @required this.isCurrUser,
-  });
+  MoreDetailsView(
+      {this.moreDetailModel,
+      @required this.isAnswer,
+      this.userAnswerModel,
+      @required this.isCurrUser,
+      @required this.firestore});
   @override
   _MoreDetailsViewState createState() => _MoreDetailsViewState();
 }
@@ -265,7 +268,35 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     return IconButton(
       color: Color(0xFF00ADB5),
       icon: Icon(Icons.message_outlined),
-      onPressed: () => null,
+      onPressed: () {
+        print(widget.userAnswerModel.answer);
+        addChatToFirebase(
+            widget.isAnswer ? widget.userAnswerModel : widget.moreDetailModel);
+      },
+    );
+  }
+
+  void addChatToFirebase(dynamic obj) {
+    String groupChatId = widget.isAnswer
+        ? '${EmailAuth().getCurrentUser().uid}-${obj.user.id}-${obj.answer.id}'
+        : '${EmailAuth().getCurrentUser().uid}-${obj.user.id}-${obj.question.id}';
+
+    widget.firestore.collection('messages').doc(groupChatId).set({
+      'chatIDUser': EmailAuth().getCurrentUser().uid,
+      'recipientId': obj.user.id,
+      'questionTitle': widget.moreDetailModel.question.title,
+      'questionId': widget.isAnswer ? obj.answer.id : obj.question.id,
+      'timestamp': DateTime.now(),
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          fromId: EmailAuth().getCurrentUser().uid,
+          recipient: obj.user.firstName,
+          questionId: widget.isAnswer ? obj.answer.id : obj.question.id,
+        ),
+      ),
     );
   }
 
