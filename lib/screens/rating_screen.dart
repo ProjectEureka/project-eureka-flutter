@@ -4,10 +4,8 @@ import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/rating_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
-import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/rating_service.dart';
-
-import 'home_screen.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 
 class Rating extends StatefulWidget {
   final UserModel userInfo;
@@ -55,7 +53,16 @@ class _RatingState extends State<Rating> {
                     child: FlatButton(
                         onPressed: () async => {
                               await _closeQuestion(),
-                              Navigator.of(context).pushNamed('/home')
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  '/home', (Route<void> route) => false),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MoreDetails(
+                                    questionId: widget.questionId,
+                                  ),
+                                ),
+                              )
                             },
                         child: Text('Skip', style: TextStyle(fontSize: 18))),
                   ),
@@ -72,7 +79,10 @@ class _RatingState extends State<Rating> {
                               widget.userInfo.lastName,
                           24.0),
                       _ratingBar(_ratingBarMode),
-                      ratingNotChosenError ? Text("Please choose rating", style: TextStyle(color: Colors.red)) : Text("")
+                      ratingNotChosenError
+                          ? Text("Please choose rating",
+                              style: TextStyle(color: Colors.red))
+                          : Text("")
                     ],
                   ),
                   SizedBox(
@@ -112,7 +122,16 @@ class _RatingState extends State<Rating> {
     } catch (e) {
       print(e);
     }
-    Navigator.of(context).pushNamed('/home');
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/home', (Route<void> route) => false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MoreDetails(
+          questionId: widget.questionId,
+        ),
+      ),
+    );
   }
 
   void checkRating() {
