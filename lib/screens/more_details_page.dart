@@ -9,16 +9,13 @@ import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
-import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
-import 'package:project_eureka_flutter/services/users_service.dart';
+import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 
 final _firestore = FirebaseFirestore.instance;
-User loggedInUser = EmailAuth().getCurrentUser();
 
 class MoreDetails extends StatefulWidget {
   final String questionId;
@@ -37,32 +34,24 @@ class _MoreDetailsState extends State<MoreDetails> {
     user: UserModel(),
     userAnswer: [UserAnswerModel()],
   );
-  UserModel user;
-  final String currUserId = EmailAuth().getCurrentUser().uid;
-  //UserModel currUser;
+  String currUserId;
+  bool loading;
 
   @override
   void initState() {
+    loading = true;
     initGetQuestionDetails();
-    initGetUserDetails();
+    currUserId = EmailAuth().getCurrentUser().uid;
     super.initState();
   }
 
-  Future<void> initGetQuestionDetails() async {
-    MoreDetailModel payload =
-        await MoreDetailService().getMoreDetail(widget.questionId);
-
-    setState(() {
-      _moreDetailModel = payload;
-    });
-  }
-
-  Future<void> initGetUserDetails() async {
-    UserModel payload = await UserService().getUserById(loggedInUser.uid);
-
-    setState(() {
-      user = payload;
-    });
+  void initGetQuestionDetails() async {
+    await MoreDetailService().getMoreDetail(widget.questionId).then((payload) {
+          setState(() {
+            _moreDetailModel = payload;
+            loading = false;
+          });
+        });
   }
 
   EurekaRoundedButton _messageModalButton() {
@@ -82,6 +71,7 @@ class _MoreDetailsState extends State<MoreDetails> {
         );
       },
       buttonText: 'Message ${_moreDetailModel.user.firstName}',
+      isTwoButtons: true,
     );
   }
 
@@ -96,7 +86,8 @@ class _MoreDetailsState extends State<MoreDetails> {
           ),
         ), // standard form
       ),
-      buttonText: 'Answer',
+      buttonText: 'Answer ',
+      isTwoButtons: true,
     );
   }
 
@@ -108,8 +99,6 @@ class _MoreDetailsState extends State<MoreDetails> {
 
     _firestore.collection('messages').doc(groupChatId).set({
       'chatIDUser': currUserId,
-      'chatSender': user.firstName,
-      'recipient': _moreDetailModel.user.firstName,
       'recipientId': _moreDetailModel.user.id,
       'questionTitle': _moreDetailModel.question.title,
       'questionId': _moreDetailModel.question.id,
@@ -126,20 +115,45 @@ class _MoreDetailsState extends State<MoreDetails> {
   EurekaRoundedButton _answerQuestionButton() {
     return EurekaRoundedButton(
       onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _moreDetailModel.user.id == currUserId
-                  ? Container()
-                  : _messageModalButton(),
-              _answerFormModalButton(),
-            ],
+        _moreDetailModel.user.id == currUserId
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewForm(
+                    isAnswer: true,
+                    questionId: widget.questionId,
+                  ),
+                ), // standard form
+              )
+            : showModalBottomSheet(
+                context: context,
+                builder: (context) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _messageModalButton(),
+                    _answerFormModalButton(),
+                  ],
+                ),
+              );
+      },
+      buttonText: "Answer",
+    );
+  }
+
+  EurekaRoundedButton _closeQuestionButton() {
+    return EurekaRoundedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChooseBestAnswer(
+              questionId: widget.questionId,
+              answers: _moreDetailModel.userAnswer,
+            ),
           ),
         );
       },
-      buttonText: "Answer",
+      buttonText: "Question Solved?",
     );
   }
 
@@ -155,23 +169,6 @@ class _MoreDetailsState extends State<MoreDetails> {
           ),
         ],
       ),
-    );
-  }
-
-  EurekaRoundedButton _questionIsSolvedButton() {
-    return EurekaRoundedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChooseBestAnswer(
-              questionId: _moreDetailModel.question.id,
-              answers: _moreDetailModel.userAnswer,
-            ),
-          ),
-        );
-      },
-      buttonText: 'Question Solved?',
     );
   }
 
@@ -214,6 +211,7 @@ class _MoreDetailsState extends State<MoreDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if(!loading)
                 MoreDetailsView(
                   moreDetailModel: _moreDetailModel,
                   isAnswer: false,
@@ -237,6 +235,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   ),
                 ),
                 _noAnswersResponse(),
+                if(!loading)
                 _answersListBuilder(),
               ],
             ),
@@ -274,9 +273,8 @@ class _MoreDetailsState extends State<MoreDetails> {
                     : (_moreDetailModel.user.id !=
                             currUserId // if currUser is question poster
                         ? _answerQuestionButton() // false = answer question
-                        : _moreDetailModel.userAnswer.length == 0
-                            ? _answerQuestionButton()
-                            : _questionIsSolvedButton())),
+                        : ((_moreDetailModel.question.closed != true) & (_moreDetailModel.userAnswer.length != 0))
+                          ? _closeQuestionButton() : null )),
       ),
     );
   }
