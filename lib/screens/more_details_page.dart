@@ -59,7 +59,7 @@ class _MoreDetailsState extends State<MoreDetails> {
       onPressed: () {
         addChatToFirebase();
 
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => ChatScreen(
