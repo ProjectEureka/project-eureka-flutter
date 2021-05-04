@@ -6,14 +6,12 @@ import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
 
-
 class ChatScreenConversations extends StatefulWidget {
   @override
   _ChatScreenConversations createState() => _ChatScreenConversations();
 }
 
 class _ChatScreenConversations extends State<ChatScreenConversations> {
-
   FirebaseFirestore _firebase;
   @override
   void initState() {
@@ -39,7 +37,9 @@ class _ChatScreenConversations extends State<ChatScreenConversations> {
 
 class ConversationsStream extends StatelessWidget {
   final firestore;
-  ConversationsStream({this.firestore,});
+  ConversationsStream({
+    this.firestore,
+  });
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -71,7 +71,7 @@ class ConversationsStream extends StatelessWidget {
               unseen: unseen,
               groupId: groupChatID,
               lastMessageSender: lastMessageSender,
-                firestore: firestore,
+              firestore: firestore,
             );
             if (conversationUserID == EmailAuth().getCurrentUser().uid ||
                 recipientID == EmailAuth().getCurrentUser().uid) {
@@ -82,16 +82,22 @@ class ConversationsStream extends StatelessWidget {
           if (conversationBubbles.isEmpty) {
             return Column(
               children: [
-                Center(
-                  heightFactor: 20,
+                SizedBox(height: 30),
+                Container(
                   child: Text(
-                    "No Chats Found",
+                    "No Chats Found\nStart New Chat from Questions Page",
                     style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
                   ),
+                ),
+                Container(
+                  child:
+                      Image.asset('assets/images/EureQaLogo.png', width: 300),
                 ),
               ],
             );
           }
+
           return Expanded(
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
@@ -113,15 +119,14 @@ Future<UserModel> initGetUserDetails(recipientId) async {
 }
 
 class ConversationBubble extends StatelessWidget {
-  ConversationBubble({
-    this.recipientId,
-    this.questionTitle,
-    this.questionId,
-    this.unseen,
-    this.groupId,
-    this.lastMessageSender,
-    this.firestore
-  });
+  ConversationBubble(
+      {this.recipientId,
+      this.questionTitle,
+      this.questionId,
+      this.unseen,
+      this.groupId,
+      this.lastMessageSender,
+      this.firestore});
 
   final String recipientId;
   final String questionTitle;
@@ -147,7 +152,8 @@ class ConversationBubble extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(25.0))),
                 child: FlatButton(
                   onPressed: () {
-                    if (unseen && lastMessageSender != EmailAuth().getCurrentUser().uid) {
+                    if (unseen &&
+                        lastMessageSender != EmailAuth().getCurrentUser().uid) {
                       firestore
                           .collection('messages')
                           .doc(groupId)
@@ -199,13 +205,17 @@ class ConversationBubble extends StatelessWidget {
                                       color: Colors.white,
                                       fontStyle: (unseen &&
                                               (lastMessageSender !=
-                                                  EmailAuth().getCurrentUser().uid))
+                                                  EmailAuth()
+                                                      .getCurrentUser()
+                                                      .uid))
                                           ? FontStyle.italic
                                           : FontStyle.normal,
                                       fontSize: 16,
                                       fontWeight: (unseen &&
                                               (lastMessageSender !=
-                                                  EmailAuth().getCurrentUser().uid))
+                                                  EmailAuth()
+                                                      .getCurrentUser()
+                                                      .uid))
                                           ? FontWeight.bold
                                           : FontWeight.normal)),
                               alignment: Alignment.centerLeft,
@@ -219,7 +229,8 @@ class ConversationBubble extends StatelessWidget {
                         child: Icon(
                           Icons.fiber_manual_record_rounded,
                           color: (unseen &&
-                                  (lastMessageSender != EmailAuth().getCurrentUser().uid))
+                                  (lastMessageSender !=
+                                      EmailAuth().getCurrentUser().uid))
                               ? Colors.white
                               : Colors.cyan,
                         ),
