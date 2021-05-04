@@ -97,7 +97,7 @@ class ConversationsStream extends StatelessWidget {
           );
         } else {
           // if connection with firebase is failing
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
       },
     );
