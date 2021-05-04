@@ -180,7 +180,11 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       city: '',
       category: [],
       //we don't have form field for this
-      pictureUrl: mediaUrl.length == 0 ? widget.user.pictureUrl : mediaUrl[0],
+      pictureUrl: mediaUrl.length == 0
+          ? widget.isProfile
+              ? widget.user.pictureUrl
+              : ''
+          : mediaUrl[0],
       role: _role,
       ratings: [],
       averageRating: 0.0,
