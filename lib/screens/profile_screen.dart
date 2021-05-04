@@ -144,9 +144,9 @@ class _ProfileState extends State<Profile> {
             height: 7.0,
           ),
           loading
-              ? Text("Best Answers: -", style: TextStyle(fontWeight: FontWeight.bold))
+              ? Text("Best Answers: - ", style: TextStyle(fontWeight: FontWeight.bold))
               : Text("Best Answers: " +
-              bestAnswersCount.toString(),
+              bestAnswersCount.toString() + " ",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(
