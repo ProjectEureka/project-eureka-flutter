@@ -57,7 +57,8 @@ class _ForgotpasswordState extends State<ForgotPassword> {
                   borderSide: BorderSide(color: Colors.grey[200]),
                 ),
                 prefixIcon: Icon(Icons.email),
-                labelText: 'Email',
+                hintText: 'Email',
+                border: const OutlineInputBorder(),
               ),
               onSaved: (value) {
                 setState(() {

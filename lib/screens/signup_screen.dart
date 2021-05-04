@@ -72,7 +72,8 @@ class _SignUpState extends State<SignUp> {
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: 'Email',
+                hintText: 'Email',
+                border: const OutlineInputBorder(),
                 filled: true,
                 fillColor: Color(0xF6F6F6F6),
                 enabledBorder: OutlineInputBorder(
@@ -103,7 +104,8 @@ class _SignUpState extends State<SignUp> {
             TextFormField(
               obscureText: _isHiddenPassword,
               decoration: InputDecoration(
-                labelText: 'Password',
+                hintText: 'Password',
+                border: const OutlineInputBorder(),
                 filled: true,
                 fillColor: Color(0xF6F6F6F6),
                 enabledBorder: OutlineInputBorder(
@@ -139,7 +141,8 @@ class _SignUpState extends State<SignUp> {
             TextFormField(
               obscureText: _isHiddenPassword,
               decoration: InputDecoration(
-                labelText: 'Confirm Password',
+                hintText: 'Confirm Password',
+                border: const OutlineInputBorder(),
                 filled: true,
                 fillColor: Color(0xF6F6F6F6),
                 enabledBorder: OutlineInputBorder(
@@ -214,6 +217,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomPadding: false,
         extendBody: true,
         body: Container(
           decoration: BoxDecoration(
