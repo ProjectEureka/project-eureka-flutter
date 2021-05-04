@@ -89,8 +89,9 @@ class _ProfileState extends State<Profile> {
                       TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
           loading
               ? Text("")
-              : Text(
-                  userInfo.email,
+              : Text(((widget.userId == currentUser.uid) | (widget.userId == null))
+                  ? currentUser.email
+                  : '',
                   style: TextStyle(
                     fontSize: 15.0,
                   ),
@@ -155,7 +156,7 @@ class _ProfileState extends State<Profile> {
       children: [
         /// forces the stack to be a min height of 300.0
         Container(
-          height: 300.0,
+          height: ((widget.userId == currentUser.uid) | (widget.userId == null)) ? 300.0 : 275,
         ),
         EurekaAppBar(
           title: 'Profile',

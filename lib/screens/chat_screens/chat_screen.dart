@@ -24,15 +24,17 @@ import 'package:intl/intl.dart';
 String channelNameAnswer = "";
 
 class ChatScreen extends StatefulWidget {
-  final String fromId;
+  final String recipientId;
   final String recipient;
   final String questionId;
+  final String groupChatId;
 
   const ChatScreen({
     Key key,
-    this.fromId,
+    this.recipientId,
     this.recipient,
     this.questionId,
+    this.groupChatId,
   }) : super(key: key);
 
   @override
@@ -49,7 +51,6 @@ class _ChatScreenState extends State<ChatScreen>
   FirebaseStorage storage = FirebaseStorage.instance;
 
   String messageText;
-  String groupChatId;
   String userId;
 
   // Initialize channel name on caller's side
@@ -71,13 +72,11 @@ class _ChatScreenState extends State<ChatScreen>
     super.initState();
     getCurrentUser();
     userId = loggedInUser.uid;
-    groupChatId = userId + "-" + widget.fromId + "-" + widget.questionId;
-    setGroupId();
 
     // initialize channel names for two cases:
     // 1: channelNameCall - user calls and joins the channel; (initialized to empty string)
     // 2: channelNameAnswer - user clicks answer and joins the created channel
-    channelNameAnswer = widget.fromId + "-" + userId;
+    channelNameAnswer = widget.recipientId + "-" + userId;
 
     UserService().getUserById(userId).then((payload) {
       setState(() {
@@ -98,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void dispose() {
     _controller.dispose();
-    _firestore.collection('messages').doc(groupChatId).update({
+    _firestore.collection('messages').doc(widget.groupChatId).update({
       userId: false,
     });
     super.dispose();
@@ -126,21 +125,6 @@ class _ChatScreenState extends State<ChatScreen>
     }
   }
 
-  void setGroupId() async {
-    List<String> groupChatIds = [];
-    _firestore.collection('messages').get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        groupChatIds.add(result.id.toString());
-      });
-
-      if (!groupChatIds.contains(groupChatId)) {
-        setState(() {
-          groupChatId = widget.fromId + "-" + userId + "-" + widget.questionId;
-        });
-      }
-    });
-  }
-
   void getCurrentUser() {
     try {
       final user = _auth.currentUser;
@@ -154,7 +138,7 @@ class _ChatScreenState extends State<ChatScreen>
 
   // create and receive token after starting the call
   Future<void> initGetTokenCall() async {
-    channelNameCall = userId + "-" + widget.fromId;
+    channelNameCall = userId + "-" + widget.recipientId;
     String tokenAnswer = "";
     // first check if call has already been started by another user
     await VideoCallService().getTokenAnswer(channelNameAnswer).then(
@@ -186,16 +170,16 @@ class _ChatScreenState extends State<ChatScreen>
     if (channelNameCall != channelNameAnswer) {
       _firestore
           .collection('messages')
-          .doc(groupChatId)
-          .collection(groupChatId)
+          .doc(widget.groupChatId)
+          .collection(widget.groupChatId)
           .add({
         'text': user.firstName + " started the call",
         'sender': "system - " + userId,
         'timestamp': DateTime.now(),
         'idFrom': userId,
-        'idTo': widget.fromId,
+        'idTo': widget.recipientId,
       });
-      _firestore.collection('messages').doc(groupChatId).update({
+      _firestore.collection('messages').doc(widget.groupChatId).update({
         'timestamp': DateTime.now(),
         'unseen': true,
         'lastMessageSender': loggedInUser.uid
@@ -223,14 +207,12 @@ class _ChatScreenState extends State<ChatScreen>
 
     File file = File(mediaPath);
 
-    print('this is mediaPath:' + mediaPath.toString());
-
     /// These next two varibles format the file name, best fit for Firebase.
     String fileName = mediaPath
         .substring(mediaPath.lastIndexOf("/"), mediaPath.lastIndexOf("."))
         .replaceAll("/", "");
     String uploadName =
-        'images/chat/$groupChatId/userId_${EmailAuth().getCurrentUser().uid}/$fileName.jpg';
+        'images/chat/${widget.groupChatId}/userId_$userId/$fileName.jpg';
 
     try {
       /// uploads the file
@@ -283,18 +265,18 @@ class _ChatScreenState extends State<ChatScreen>
                     if (channelNameCall != channelNameAnswer) {
                       _firestore
                           .collection('messages')
-                          .doc(groupChatId)
-                          .collection(groupChatId)
+                          .doc(widget.groupChatId)
+                          .collection(widget.groupChatId)
                           .add({
                         'text': "Call ended",
                         'sender': "system",
                         'timestamp': DateTime.now(),
                         'idFrom': userId,
-                        'idTo': widget.fromId,
+                        'idTo': widget.recipientId,
                       });
                       _firestore
                           .collection('messages')
-                          .doc(groupChatId)
+                          .doc(widget.groupChatId)
                           .update({
                         'timestamp': DateTime.now(),
                         'unseen': true,
@@ -317,7 +299,7 @@ class _ChatScreenState extends State<ChatScreen>
                     MaterialPageRoute(
                         builder: (BuildContext context) => Profile(
                               notSideMenu: true,
-                              userId: widget.fromId,
+                              userId: widget.recipientId,
                             )));
               },
               child: Text(
@@ -351,8 +333,8 @@ class _ChatScreenState extends State<ChatScreen>
             StreamBuilder<QuerySnapshot>(
               stream: _firestore
                   .collection('messages')
-                  .doc(groupChatId)
-                  .collection(groupChatId)
+                  .doc(widget.groupChatId)
+                  .collection(widget.groupChatId)
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
@@ -368,7 +350,7 @@ class _ChatScreenState extends State<ChatScreen>
                   final messageText = message.data()['text'];
                   final messageSender = message.data()['sender'];
                   final messageTimestamp = message.data()['timestamp'];
-                  final messageIsImage = message.data()['isImage'];
+                  final messageIsImage = message.data()['isImage'] == null ? false : message.data()['isImage'];
                   final messageBubble = MessageBubble(
                       sender: messageSender,
                       text: messageText,
@@ -376,7 +358,7 @@ class _ChatScreenState extends State<ChatScreen>
                       // if sender String contains "system", this message will appear in the center (it is a system message)
                       isSystem: messageSender.contains("system"),
                       // if sender String contains caller's ID, show Answer button. Caller won't see answer button
-                      showAnswerButton: messageSender.contains(widget.fromId),
+                      showAnswerButton: messageSender.contains(widget.recipientId),
                       messageIsImage: messageIsImage,
                       timestamp: messageTimestamp.toDate());
 
@@ -437,25 +419,25 @@ class _ChatScreenState extends State<ChatScreen>
                           var currentTimeAndDate = DateTime.now();
                           _firestore
                               .collection('messages')
-                              .doc(groupChatId)
-                              .collection(groupChatId)
+                              .doc(widget.groupChatId)
+                              .collection(widget.groupChatId)
                               .add({
                             'text': imageUrl,
                             'sender': loggedInUser.email,
                             'timestamp': currentTimeAndDate,
                             'idFrom': userId,
-                            'idTo': widget.fromId,
+                            'idTo': widget.recipientId,
                             'isImage': true
                           });
                           _firestore
                               .collection('messages')
-                              .doc(groupChatId)
+                              .doc(widget.groupChatId)
                               .get()
                               .then((snapshot) {
-                            if (snapshot.data()[widget.fromId] == false) {
+                            if (snapshot.data()[widget.recipientId] == false) {
                               _firestore
                                   .collection('messages')
-                                  .doc(groupChatId)
+                                  .doc(widget.groupChatId)
                                   .update({
                                 'timestamp': DateTime.now(),
                                 'unseen': true,
@@ -464,7 +446,7 @@ class _ChatScreenState extends State<ChatScreen>
                             } else {
                               _firestore
                                   .collection('messages')
-                                  .doc(groupChatId)
+                                  .doc(widget.groupChatId)
                                   .update({
                                 'timestamp': DateTime.now(),
                                 'unseen': false,
@@ -490,24 +472,24 @@ class _ChatScreenState extends State<ChatScreen>
                       var currentTimeAndDate = DateTime.now();
                       _firestore
                           .collection('messages')
-                          .doc(groupChatId)
-                          .collection(groupChatId)
+                          .doc(widget.groupChatId)
+                          .collection(widget.groupChatId)
                           .add({
                         'text': messageText.trim(),
                         'sender': loggedInUser.email,
                         'timestamp': currentTimeAndDate,
                         'idFrom': userId,
-                        'idTo': widget.fromId,
+                        'idTo': widget.recipientId,
                       });
                       _firestore
                           .collection('messages')
-                          .doc(groupChatId)
+                          .doc(widget.groupChatId)
                           .get()
                           .then((snapshot) {
-                        if (snapshot.data()[widget.fromId] == false) {
+                        if (snapshot.data()[widget.recipientId] == false) {
                           _firestore
                               .collection('messages')
-                              .doc(groupChatId)
+                              .doc(widget.groupChatId)
                               .update({
                             'timestamp': DateTime.now(),
                             'unseen': true,
@@ -516,7 +498,7 @@ class _ChatScreenState extends State<ChatScreen>
                         } else {
                           _firestore
                               .collection('messages')
-                              .doc(groupChatId)
+                              .doc(widget.groupChatId)
                               .update({
                             'timestamp': DateTime.now(),
                             'unseen': false,
@@ -623,7 +605,7 @@ class MessageBubble extends StatelessWidget {
                     child: Container(
                       constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.7),
-                      child: messageIsImage == null
+                      child: messageIsImage == false
                           ? Text(text,
                               style: TextStyle(
                                 fontSize: 17.0,

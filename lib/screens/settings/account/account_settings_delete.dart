@@ -116,6 +116,7 @@ class _AccountSettingsDeleteState extends State<AccountSettingsDelete> {
                     : Form(
                         key: _formKey,
                         child: TextFormField(
+                          obscureText: true,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Color(0xF6F6F6F6),
