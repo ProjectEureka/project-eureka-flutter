@@ -245,7 +245,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: widget.isMoreDetailsPage == null ? SideMenu() : null,
+      drawer: widget.notSideMenu == null ? SideMenu() : null,
       body: Column(
         children: [
           _headerStack(),
