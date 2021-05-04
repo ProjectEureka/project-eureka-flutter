@@ -27,6 +27,7 @@ class _ProfileState extends State<Profile> {
   UserModel userInfo = UserModel();
   List categories = [];
   bool loading = true;
+  int bestAnswersCount = 0;
 
   final User currentUser = EmailAuth().getCurrentUser();
 
@@ -48,6 +49,11 @@ class _ProfileState extends State<Profile> {
           userInfo = payload[2];
           categories = userInfo.category;
           loading = false;
+          answersList.forEach((answer) {
+            if(answer.bestAnswer){
+              bestAnswersCount += 1;
+            }
+          });
         });
       },
     );
@@ -135,12 +141,21 @@ class _ProfileState extends State<Profile> {
           if ((widget.userId == currentUser.uid) | (widget.userId == null))
             _editProfileButton(),
           SizedBox(
-            height: 15.0,
+            height: 7.0,
+          ),
+          loading
+              ? Text("Best Answers: -", style: TextStyle(fontWeight: FontWeight.bold))
+              : Text("Best Answers: " +
+              bestAnswersCount.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: 7.0,
           ),
           loading
               ? Text("-.- ⭐", style: TextStyle(fontWeight: FontWeight.bold))
               : userInfo.averageRating == 0.0
-                  ? Text("Not rated yet ⭐")
+                  ? Text("Not rated yet ⭐", style: TextStyle(fontWeight: FontWeight.bold))
                   : Text(
                       userInfo.averageRating.toString() + " ⭐",
                       style: TextStyle(fontWeight: FontWeight.bold),
