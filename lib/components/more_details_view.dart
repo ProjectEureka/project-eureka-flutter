@@ -16,6 +16,7 @@ class MoreDetailsView extends StatefulWidget {
   final bool isCurrUser;
   final firestore;
   final String currUserId;
+  final bool choosingBestAnswer;
 
   MoreDetailsView(
       {this.moreDetailModel,
@@ -23,7 +24,8 @@ class MoreDetailsView extends StatefulWidget {
       this.userAnswerModel,
       @required this.isCurrUser,
       this.firestore,
-      this.currUserId});
+      this.currUserId,
+      this.choosingBestAnswer});
 
   @override
   _MoreDetailsViewState createState() => _MoreDetailsViewState();
@@ -77,7 +79,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
         ),
         if (widget.isAnswer)
           widget.userAnswerModel.user.averageRating == 0.0
-              ? Text("")
+              ? Text("   N/A ⭐")
               : Text(
                   "  " +
                       widget.userAnswerModel.user.averageRating.toString() +
@@ -505,7 +507,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                         ? Container()
                         : widget.userAnswerModel.user.id == widget.currUserId
                             ? Container()
-                            : messageIcon()))
+                            : widget.choosingBestAnswer == null ? messageIcon() : Container()))
             : Positioned(
                 right: 0.0,
                 top: 35.0,
@@ -515,7 +517,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                       ? (widget.moreDetailModel.question.visible == false
                           ? Container()
                           : _questionMenu(false, false))
-                      : messageIcon(),
+                      : widget.choosingBestAnswer == null ? messageIcon() : Container(),
                 ),
               ),
       ],

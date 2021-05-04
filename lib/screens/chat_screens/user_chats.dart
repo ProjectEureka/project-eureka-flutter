@@ -193,7 +193,7 @@ class ConversationBubble extends StatelessWidget {
                               margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
                             ),
                             Container(
-                              child: Text(questionTitle,
+                              child: Text("Q: " + questionTitle,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white,

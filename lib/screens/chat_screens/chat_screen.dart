@@ -207,8 +207,6 @@ class _ChatScreenState extends State<ChatScreen>
 
     File file = File(mediaPath);
 
-    print('this is mediaPath:' + mediaPath.toString());
-
     /// These next two varibles format the file name, best fit for Firebase.
     String fileName = mediaPath
         .substring(mediaPath.lastIndexOf("/"), mediaPath.lastIndexOf("."))

@@ -95,6 +95,7 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
                         isAnswer: true,
                         userAnswerModel: userAnswer,
                         isCurrUser: false,
+                        choosingBestAnswer: true
                       ),
                     ),
                   ),

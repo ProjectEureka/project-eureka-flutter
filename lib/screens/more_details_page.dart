@@ -98,10 +98,12 @@ class _MoreDetailsState extends State<MoreDetails> {
       _moreDetailModel.user.id.toString(): false,
     });
 
-    editChat(false, groupChatId, _moreDetailModel.user.id, _moreDetailModel.user.firstName);
+    editChat(false, groupChatId, _moreDetailModel.user.id,
+        _moreDetailModel.user.firstName);
   }
 
-  void editChat(bool unseenByMe, String groupChatId, String recipientId, String recipientName) {
+  void editChat(bool unseenByMe, String groupChatId, String recipientId,
+      String recipientName) {
     if (unseenByMe) {
       _firestore
           .collection('messages')
@@ -121,11 +123,11 @@ class _MoreDetailsState extends State<MoreDetails> {
         context,
         MaterialPageRoute(
             builder: (context) => ChatScreen(
-              groupChatId: groupChatId,
-              recipientId: recipientId,
-              recipient: recipientName,
-              questionId: _moreDetailModel.question.id,
-            )));
+                  groupChatId: groupChatId,
+                  recipientId: recipientId,
+                  recipient: recipientName,
+                  questionId: _moreDetailModel.question.id,
+                )));
   }
 
   void addChatToFirebase() {
@@ -134,29 +136,35 @@ class _MoreDetailsState extends State<MoreDetails> {
     String groupChatIdReversed =
         '${_moreDetailModel.user.id}-${currUserId}-${_moreDetailModel.question.id}';
 
-    _firestore
-        .collection('messages')
-        .doc(groupChatId)
-        .get()
-        .then((snapshot) {
-      if (snapshot.data() == null) { // check if chat exists with with chatId string
+    _firestore.collection('messages').doc(groupChatId).get().then((snapshot) {
+      if (snapshot.data() == null) {
+        // check if chat exists with with chatId string
         _firestore
             .collection('messages')
             .doc(groupChatIdReversed)
             .get()
             .then((snapshot) {
-          if (snapshot.data() == null) // if it doesn't exist, also check if there is already a chat created by recipient
-              {
-            print(snapshot.data()); createChat(groupChatId); }
-          else // otherwise enter chat with reversed chatId
-              {editChat((snapshot.data()['unseen'] &&
-              snapshot.data()['lastMessageSender'] !=
-                  currUserId), groupChatIdReversed, _moreDetailModel.user.id, _moreDetailModel.user.firstName);}
+          if (snapshot.data() ==
+              null) // if it doesn't exist, also check if there is already a chat created by recipient
+          {
+            createChat(groupChatId);
+          } else // otherwise enter chat with reversed chatId
+          {
+            editChat(
+                (snapshot.data()['unseen'] &&
+                    snapshot.data()['lastMessageSender'] != currUserId),
+                groupChatIdReversed,
+                _moreDetailModel.user.id,
+                _moreDetailModel.user.firstName);
+          }
         });
       } else {
-        editChat((snapshot.data()['unseen'] &&
-            snapshot.data()['lastMessageSender'] !=
-                currUserId), groupChatId, _moreDetailModel.user.id, _moreDetailModel.user.firstName);
+        editChat(
+            (snapshot.data()['unseen'] &&
+                snapshot.data()['lastMessageSender'] != currUserId),
+            groupChatId,
+            _moreDetailModel.user.id,
+            _moreDetailModel.user.firstName);
       }
     });
   }
@@ -222,7 +230,6 @@ class _MoreDetailsState extends State<MoreDetails> {
   }
 
   Column _answersListBuilder() {
-    print(currUserId);
     return Column(
       children: [
         for (UserAnswerModel userAnswer in _moreDetailModel.userAnswer)
