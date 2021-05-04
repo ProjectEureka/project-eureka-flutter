@@ -130,8 +130,8 @@ class _ProfileState extends State<Profile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (widget.userId == currentUser.uid)
-          _editProfileButton(),
+          if ((widget.userId == currentUser.uid) | (widget.userId == null))
+            _editProfileButton(),
           SizedBox(
             height: 15.0,
           ),
@@ -158,12 +158,18 @@ class _ProfileState extends State<Profile> {
         EurekaAppBar(
           title: 'Profile',
           appBar: AppBar(),
-          actions: widget.notSideMenu == null ? null : [IconButton(
-              icon: Icon(
-                Icons.arrow_back_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () => Navigator.pop(context)), SizedBox(width: 15)],
+          actions: widget.notSideMenu == null
+              ? null
+              : [
+                  IconButton(
+                      icon: Icon(
+                        Icons.home,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (Route<void> route) => false)),
+                  SizedBox(width: 15)
+                ],
         ),
         _profileNameAndIcon(),
         _editButtonAndRating(),
@@ -239,7 +245,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideMenu(),
+      drawer: widget.isMoreDetailsPage == null ? SideMenu() : null,
       body: Column(
         children: [
           _headerStack(),
