@@ -309,43 +309,41 @@ class _SignInState extends State<SignIn> {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 25,
-                    right: 25,
-                    top: 120,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Sign In',
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 25,
+                  right: 25,
+                  top: 120,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Sign In',
+                      style: TextStyle(
+                        fontSize: 40.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 40.0),
+                    _loginTextForm(context),
+                    Visibility(
+                      visible: exception == "" ? false : true,
+                      child: Text(
+                        exception,
                         style: TextStyle(
-                          fontSize: 40.0,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
                         ),
                       ),
-                      SizedBox(height: 40.0),
-                      _loginTextForm(context),
-                      Visibility(
-                        visible: exception == "" ? false : true,
-                        child: Text(
-                          exception,
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
-                      _forgotPasswordButton(context),
-                      SizedBox(height: 30.0),
-                      _loginButton(context),
-                      _signUpButton(context),
-                      SizedBox(height: 20.0),
-                      _orLoginWith(),
-                      SizedBox(height: 10.0),
-                      _googleSignInButton(context),
-                    ],
-                  ),
+                    ),
+                    _forgotPasswordButton(context),
+                    SizedBox(height: 30.0),
+                    _loginButton(context),
+                    _signUpButton(context),
+                    SizedBox(height: 20.0),
+                    _orLoginWith(),
+                    SizedBox(height: 10.0),
+                    _googleSignInButton(context),
+                  ],
                 ),
               ),
             ],
