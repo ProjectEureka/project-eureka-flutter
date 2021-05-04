@@ -17,6 +17,7 @@ import 'dart:math';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:project_eureka_flutter/screens/profile_screen.dart';
 
 // Initialize global variable for channel name for the call receiver; accessible for in ChatScreen and MessageBubble classes
 String channelNameAnswer = "";
@@ -304,8 +305,13 @@ class _ChatScreenState extends State<ChatScreen>
         title: Column(
           children: [
             SizedBox(height: 50.0),
-            Text(
-              widget.recipient,
+            GestureDetector(
+              onTap: () async { Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) => Profile(notSideMenu: true, userId: widget.fromId,)));
+              },
+              child: Text(
+                widget.recipient,
+              ),
             ),
             FlatButton(
               color: Colors.blueGrey.withOpacity(0.5),

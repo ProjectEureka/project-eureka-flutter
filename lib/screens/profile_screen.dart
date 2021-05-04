@@ -12,10 +12,10 @@ import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class Profile extends StatefulWidget {
 
-  final isMoreDetailsPage;
+  final notSideMenu;
   final userId;
 
-  Profile({this.userId, this.isMoreDetailsPage});
+  Profile({this.userId, this.notSideMenu});
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -38,7 +38,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void initGetProfileData() {
-    ProfileService().getProfileInformation(widget.isMoreDetailsPage == null ? currentUser.uid : widget.userId).then(
+    ProfileService().getProfileInformation(widget.notSideMenu == null ? currentUser.uid : widget.userId).then(
       (payload) {
         setState(() {
           questionsList = payload[0];
@@ -158,7 +158,7 @@ class _ProfileState extends State<Profile> {
         EurekaAppBar(
           title: 'Profile',
           appBar: AppBar(),
-          actions: widget.isMoreDetailsPage == null ? null : [IconButton(
+          actions: widget.notSideMenu == null ? null : [IconButton(
               icon: Icon(
                 Icons.arrow_back_outlined,
                 color: Colors.white,
