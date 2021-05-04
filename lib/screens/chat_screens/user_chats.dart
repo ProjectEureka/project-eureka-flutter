@@ -46,7 +46,6 @@ class ConversationsStream extends StatelessWidget {
           .orderBy('timestamp', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
-      builder: (context, AsyncSnapshot<dynamic> snapshot) {
         //uses async snapshot
         if (snapshot.connectionState == ConnectionState.active) {
           final conversations = snapshot.data.docs;
