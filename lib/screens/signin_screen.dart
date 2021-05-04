@@ -95,7 +95,8 @@ class _SignInState extends State<SignIn> {
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: 'Email',
+                hintText: 'Email',
+                border: const OutlineInputBorder(),
                 filled: true,
                 fillColor: Color(0xF6F6F6F6),
                 enabledBorder: OutlineInputBorder(
@@ -121,7 +122,8 @@ class _SignInState extends State<SignIn> {
             TextFormField(
               obscureText: _isHiddenPassword,
               decoration: InputDecoration(
-                labelText: 'Password',
+                hintText: 'Password',
+                border: const OutlineInputBorder(),
                 filled: true,
                 fillColor: Color(0xF6F6F6F6),
                 enabledBorder: OutlineInputBorder(
@@ -286,6 +288,8 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      extendBody: true,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -305,40 +309,43 @@ class _SignInState extends State<SignIn> {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 120,
-                ),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      'Sign In',
-                      style: TextStyle(
-                        fontSize: 40.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 40.0),
-                    _loginTextForm(context),
-                    Visibility(
-                      visible: exception == "" ? false : true,
-                      child: Text(
-                        exception,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 25,
+                    right: 25,
+                    top: 120,
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Sign In',
                         style: TextStyle(
-                          color: Colors.red,
+                          fontSize: 40.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    _forgotPasswordButton(context),
-                    SizedBox(height: 30.0),
-                    _loginButton(context),
-                    _signUpButton(context),
-                    SizedBox(height: 20.0),
-                    _orLoginWith(),
-                    SizedBox(height: 10.0),
-                    _googleSignInButton(context),
-                  ],
+                      SizedBox(height: 40.0),
+                      _loginTextForm(context),
+                      Visibility(
+                        visible: exception == "" ? false : true,
+                        child: Text(
+                          exception,
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                      _forgotPasswordButton(context),
+                      SizedBox(height: 30.0),
+                      _loginButton(context),
+                      _signUpButton(context),
+                      SizedBox(height: 20.0),
+                      _orLoginWith(),
+                      SizedBox(height: 10.0),
+                      _googleSignInButton(context),
+                    ],
+                  ),
                 ),
               ),
             ],
