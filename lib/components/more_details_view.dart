@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
 import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
+import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class MoreDetailsView extends StatefulWidget {
@@ -13,13 +15,14 @@ class MoreDetailsView extends StatefulWidget {
   final bool isAnswer;
   final UserAnswerModel userAnswerModel;
   final bool isCurrUser;
+  final firestore;
 
-  MoreDetailsView({
-    this.moreDetailModel,
-    @required this.isAnswer,
-    this.userAnswerModel,
-    @required this.isCurrUser,
-  });
+  MoreDetailsView(
+      {this.moreDetailModel,
+      @required this.isAnswer,
+      this.userAnswerModel,
+      @required this.isCurrUser,
+      this.firestore});
   @override
   _MoreDetailsViewState createState() => _MoreDetailsViewState();
 }
@@ -286,7 +289,39 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     return IconButton(
       color: Color(0xFF00ADB5),
       icon: Icon(Icons.message_outlined),
-      onPressed: () => null,
+      onPressed: () {
+        addChatToFirebase(
+            widget.isAnswer ? widget.userAnswerModel : widget.moreDetailModel);
+      },
+    );
+  }
+
+  void addChatToFirebase(dynamic obj) {
+    String groupChatId = widget.isAnswer
+        ? '${widget.moreDetailModel.user.id}-${obj.user.id}-${widget.moreDetailModel.question.id}'
+        : '${EmailAuth().getCurrentUser().uid}-${obj.user.id}-${widget.moreDetailModel.question.id}';
+    print(obj.user.id);
+    widget.firestore.collection('messages').doc(groupChatId).set({
+      'chatIDUser': EmailAuth().getCurrentUser().uid,
+      'recipientId': obj.user.id,
+      'questionTitle': widget.moreDetailModel.question.title,
+      'questionId': widget.moreDetailModel.question.id,
+      'timestamp': DateTime.now(),
+      'lastMessageSender': EmailAuth().getCurrentUser().uid,
+      'unseen': true,
+      'groupChatId': groupChatId,
+      EmailAuth().getCurrentUser().uid: false,
+      obj.user.id.toString(): false,
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          fromId: obj.user.id,
+          recipient: obj.user.firstName,
+          questionId: widget.moreDetailModel.question.id,
+        ),
+      ),
     );
   }
 

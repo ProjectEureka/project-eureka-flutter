@@ -22,10 +22,7 @@ class MoreDetails extends StatefulWidget {
   final String questionId;
   final bool isCreatedOrAnswered;
 
-  MoreDetails({
-    this.questionId,
-    this.isCreatedOrAnswered
-  });
+  MoreDetails({this.questionId, this.isCreatedOrAnswered});
 
   @override
   _MoreDetailsState createState() => _MoreDetailsState();
@@ -50,11 +47,11 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   void initGetQuestionDetails() async {
     await MoreDetailService().getMoreDetail(widget.questionId).then((payload) {
-          setState(() {
-            _moreDetailModel = payload;
-            loading = false;
-          });
-        });
+      setState(() {
+        _moreDetailModel = payload;
+        loading = false;
+      });
+    });
   }
 
   EurekaRoundedButton _messageModalButton() {
@@ -111,7 +108,6 @@ class _MoreDetailsState extends State<MoreDetails> {
       'groupChatId': groupChatId,
       currUserId: false,
       _moreDetailModel.user.id: false,
-      //this was include to change the unseen field to false once the message has been seen.
     });
   }
 
@@ -184,6 +180,7 @@ class _MoreDetailsState extends State<MoreDetails> {
             isAnswer: true,
             userAnswerModel: userAnswer,
             isCurrUser: _moreDetailModel.user.id == currUserId,
+            firestore: _firestore,
           )
       ],
     );
@@ -194,15 +191,19 @@ class _MoreDetailsState extends State<MoreDetails> {
     return Scaffold(
       drawer: SideMenu(),
       appBar: EurekaAppBar(
-        title: 'Question Details',
-        appBar: AppBar(),
-         actions: widget.isCreatedOrAnswered == null ? [IconButton(
-              icon: Icon(
-                Icons.arrow_back_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () => Navigator.pop(context)), SizedBox(width: 15)] : null
-      ),
+          title: 'Question Details',
+          appBar: AppBar(),
+          actions: widget.isCreatedOrAnswered == null
+              ? [
+                  IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_outlined,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => Navigator.pop(context)),
+                  SizedBox(width: 15)
+                ]
+              : null),
       body: SingleChildScrollView(
         child: Container(
           constraints: BoxConstraints(
@@ -221,12 +222,13 @@ class _MoreDetailsState extends State<MoreDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if(!loading)
-                MoreDetailsView(
-                  moreDetailModel: _moreDetailModel,
-                  isAnswer: false,
-                  isCurrUser: _moreDetailModel.user.id == currUserId,
-                ),
+                if (!loading)
+                  MoreDetailsView(
+                    moreDetailModel: _moreDetailModel,
+                    isAnswer: false,
+                    isCurrUser: _moreDetailModel.user.id == currUserId,
+                    firestore: _firestore,
+                  ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),
                   child: Divider(
@@ -245,8 +247,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                   ),
                 ),
                 _noAnswersResponse(),
-                if(!loading)
-                _answersListBuilder(),
+                if (!loading) _answersListBuilder(),
               ],
             ),
           ),
@@ -283,8 +284,10 @@ class _MoreDetailsState extends State<MoreDetails> {
                     : (_moreDetailModel.user.id !=
                             currUserId // if currUser is question poster
                         ? _answerQuestionButton() // false = answer question
-                        : ((_moreDetailModel.question.closed != true) & (_moreDetailModel.userAnswer.length != 0))
-                          ? _closeQuestionButton() : null )),
+                        : ((_moreDetailModel.question.closed != true) &
+                                (_moreDetailModel.userAnswer.length != 0))
+                            ? _closeQuestionButton()
+                            : null)),
       ),
     );
   }
