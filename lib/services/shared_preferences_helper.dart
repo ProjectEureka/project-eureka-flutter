@@ -11,15 +11,4 @@ class SharedPreferencesHelper {
   int getInitScreen(SharedPreferences prefs) {
     return prefs.containsKey(_initScreen) ? prefs.getInt(_initScreen) : null;
   }
-
-  Future<bool> getSettings(String setting) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(setting) ??
-        false; // if setting doesn't exist yet, give false
-  }
-
-  Future<void> setSettings(String setting, bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(setting, value);
-  }
 }
