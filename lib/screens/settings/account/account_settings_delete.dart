@@ -14,7 +14,7 @@ class AccountSettingsDelete extends StatefulWidget {
 class _AccountSettingsDeleteState extends State<AccountSettingsDelete> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final EmailAuth _emailAuth = new EmailAuth();
+  final EmailAuth _emailAuth = EmailAuth();
 
   String _password;
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
@@ -10,7 +11,6 @@ import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_onboarding_service.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfileOnboarding extends StatefulWidget {
   final bool isProfile;
@@ -164,21 +164,22 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
 
     User _firebaseUser = EmailAuth().getCurrentUser();
     ProfileOnboardingService _profileOnboardingService =
-        new ProfileOnboardingService();
+        ProfileOnboardingService();
     List<String> mediaUrl = [];
     if (mediaPath != '') {
       mediaUrl = await uploadFiles();
     }
 
     /// Create the user object to be sent out.
-    UserModel user = new UserModel(
+    UserModel user = UserModel(
       id: _firebaseUser.uid,
       firstName: _firstName,
       lastName: _lastName,
       firebaseUuid: _firebaseUser.uid,
       email: _firebaseUser.email,
       city: '',
-      category: [], //we don't have form field for this
+      category: [],
+      //we don't have form field for this
       pictureUrl: mediaUrl.length == 0 ? widget.user.pictureUrl : mediaUrl[0],
       role: _role,
       ratings: [],

@@ -1,14 +1,13 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/screens/forgot_password.dart';
 import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/more_details_page.dart';
-import 'package:project_eureka_flutter/screens/signin_screen.dart';
 import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/screens/onboarding_screen.dart';
 import 'package:project_eureka_flutter/screens/root_screen.dart';
+import 'package:project_eureka_flutter/screens/signin_screen.dart';
 import 'package:project_eureka_flutter/screens/signup_screen.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {

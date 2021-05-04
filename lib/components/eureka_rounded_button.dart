@@ -29,7 +29,9 @@ class _EurekaRoundedButtonState extends State<EurekaRoundedButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: widget.isTwoButtons == null ? EdgeInsets.all(20.0) : EdgeInsets.all(9.0),
+      padding: widget.isTwoButtons == null
+          ? EdgeInsets.all(20.0)
+          : EdgeInsets.all(9.0),
       child: FlatButton(
         onPressed: widget.onPressed,
         disabledColor: Colors.grey[400],

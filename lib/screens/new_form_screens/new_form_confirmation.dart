@@ -149,8 +149,9 @@ class _NewFormConfirmationState extends State<NewFormConfirmation> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MoreDetails(
-                      questionId:
-                      widget.isAnswer ? widget.answerModel.questionId : widget.questionModel.id,
+                      questionId: widget.isAnswer
+                          ? widget.answerModel.questionId
+                          : widget.questionModel.id,
                       isCreatedOrAnswered: true,
                     ),
                   ),

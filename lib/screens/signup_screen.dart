@@ -14,9 +14,9 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  EmailAuth _emailAuth = new EmailAuth();
+  EmailAuth _emailAuth = EmailAuth();
   FirebaseExceptionHandler _firebaseExceptionHandler =
-      new FirebaseExceptionHandler();
+      FirebaseExceptionHandler();
 
   String _userEmail;
   String _password;

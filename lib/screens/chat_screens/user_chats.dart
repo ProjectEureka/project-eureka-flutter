@@ -118,6 +118,7 @@ class ConversationBubble extends StatelessWidget {
     this.groupId,
     this.lastMessageSender,
   });
+
   final String recipientId;
   final String questionTitle;
   final String questionId;

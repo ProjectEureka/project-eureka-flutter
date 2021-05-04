@@ -115,8 +115,7 @@ class _RatingState extends State<Rating> {
   //Rates the current user for now until the answer page is created
   Future<void> _submit() async {
     await _closeQuestion();
-    RatingModel rating =
-        new RatingModel(id: widget.userInfo.id, rating: _rating);
+    RatingModel rating = RatingModel(id: widget.userInfo.id, rating: _rating);
     try {
       await RatingService().updateRating(rating);
     } catch (e) {

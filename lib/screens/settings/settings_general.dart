@@ -10,8 +10,7 @@ class SettingsGeneral extends StatefulWidget {
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _SettingsGeneral extends State<SettingsGeneral> {
-  SharedPreferencesHelper sharedPreferencesHelper =
-      new SharedPreferencesHelper();
+  SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper();
 
   @override
   void initState() {

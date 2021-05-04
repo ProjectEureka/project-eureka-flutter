@@ -23,6 +23,7 @@ class MoreDetailsView extends StatefulWidget {
       this.userAnswerModel,
       @required this.isCurrUser,
       this.firestore});
+
   @override
   _MoreDetailsViewState createState() => _MoreDetailsViewState();
 }
@@ -32,8 +33,17 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 15.0, 0.0),
       child: GestureDetector(
-        onTap: () async { Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Profile(notSideMenu: true, userId: widget.isAnswer ? widget.userAnswerModel.user.id : widget.moreDetailModel.user.id,))); },
+        onTap: () async {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => Profile(
+                        notSideMenu: true,
+                        userId: widget.isAnswer
+                            ? widget.userAnswerModel.user.id
+                            : widget.moreDetailModel.user.id,
+                      )));
+        },
         child: CircleAvatar(
           radius: widget.isAnswer ? 20.0 : 40.0,
           backgroundColor: Colors.transparent,
@@ -64,13 +74,14 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
               fontWeight: FontWeight.bold),
           textAlign: TextAlign.left,
         ),
-
         if (widget.isAnswer)
           widget.userAnswerModel.user.averageRating == 0.0
               ? Text("  Not rated yet ⭐")
-              : Text("  " +
-            widget.userAnswerModel.user.averageRating.toString() + " ⭐",
-          ),
+              : Text(
+                  "  " +
+                      widget.userAnswerModel.user.averageRating.toString() +
+                      " ⭐",
+                ),
       ],
     );
   }
@@ -99,9 +110,8 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     return Row(
       children: [
         Text(
-          widget.isAnswer
-              ? "Answered: "
-              : "Asked: ", // This widget will build depending on if the component is for answers or question
+          widget.isAnswer ? "Answered: " : "Asked: ",
+          // This widget will build depending on if the component is for answers or question
           style: TextStyle(
               fontSize: widget.isAnswer ? 12.5 : 16.0,
               fontWeight: FontWeight.bold),
@@ -138,8 +148,9 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
               widget.moreDetailModel.user.averageRating == 0.0
                   ? Text("Not rated yet ⭐")
                   : Text(
-                widget.moreDetailModel.user.averageRating.toString() + " ⭐",
-              ),
+                      widget.moreDetailModel.user.averageRating.toString() +
+                          " ⭐",
+                    ),
             SizedBox(height: widget.isAnswer ? 0.0 : 10.0),
             _questionCategory(),
             _timeAgo(dateTime),
@@ -372,29 +383,31 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     return PopupMenuButton<String>(
       onSelected: (String result) {
         setState(() {
-          switch(result) {
-            case 'Answer': {
-              _answerQuestion();
-            }
-            break;
-            case 'Archive': {
-              _archiveQuestion();
-            }
-            break;
+          switch (result) {
+            case 'Answer':
+              {
+                _answerQuestion();
+              }
+              break;
+            case 'Archive':
+              {
+                _archiveQuestion();
+              }
+              break;
           }
         });
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        if(widget.moreDetailModel.question.closed != true)
-        const PopupMenuItem<String>(
-          value: 'Answer',
-          child: Text('Answer'),
-        ),
-        if(widget.moreDetailModel.question.visible != false)
-        const PopupMenuItem<String>(
-          value: 'Archive',
-          child: Text('Archive'),
-        )
+        if (widget.moreDetailModel.question.closed != true)
+          const PopupMenuItem<String>(
+            value: 'Answer',
+            child: Text('Answer'),
+          ),
+        if (widget.moreDetailModel.question.visible != false)
+          const PopupMenuItem<String>(
+            value: 'Archive',
+            child: Text('Archive'),
+          )
       ],
     );
   }

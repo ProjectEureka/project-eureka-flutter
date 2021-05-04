@@ -194,14 +194,14 @@ class _MoreDetailsState extends State<MoreDetails> {
           appBar: AppBar(),
           actions: widget.isCreatedOrAnswered == null
               ? [
-            IconButton(
-                icon: Icon(
-                  Icons.home,
-                  color: Colors.white,
-                ),
-                onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                    context, '/home', (Route<void> route) => false)),
-            SizedBox(width: 15)
+                  IconButton(
+                      icon: Icon(
+                        Icons.home,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (Route<void> route) => false)),
+                  SizedBox(width: 15)
                 ]
               : null),
       body: SingleChildScrollView(

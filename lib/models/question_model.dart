@@ -4,6 +4,7 @@ class QuestionModel {
   final String questionDate;
   final String description;
   final String category;
+
   // for Lists (both for list of string and list of integers), use List<dynamic>, e
   final List<dynamic> mediaUrls;
   final bool closed;
