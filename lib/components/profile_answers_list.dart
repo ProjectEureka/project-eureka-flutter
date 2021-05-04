@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ProfileAnswersView extends StatefulWidget {
@@ -60,12 +61,15 @@ class _ProfileAnswersViewState extends State<ProfileAnswersView> {
                 ),
               ],
             ),
-            _eurekaListViewTextStyle(
-              value: index == 1
+            Text(
+              (widget.answersList[index].bestAnswer == true)
                   ? "Best Answer"
-                  : "", // for testing purposes it only shows one best answer
-              color: Colors.blue,
-              fontWeight: FontWeight.bold,
+                  : "",
+              style: TextStyle(
+                  fontSize: 15.0,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green),
             ),
           ],
         ),
@@ -95,7 +99,14 @@ class _ProfileAnswersViewState extends State<ProfileAnswersView> {
         FlatButton(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onPressed: () {
-            // Question page redirection here
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MoreDetails(
+                  questionId: widget.answersList[index].questionId,
+                ),
+              ),
+            );
           },
           child: Text(
             "Question Details",

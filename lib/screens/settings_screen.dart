@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
-import 'package:project_eureka_flutter/screens/root_screen.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_account.dart';
 import 'package:project_eureka_flutter/screens/settings/settings_general.dart';
-import 'package:project_eureka_flutter/screens/settings/settings_payment.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
 class Settings extends StatelessWidget {
@@ -45,9 +43,6 @@ class Settings extends StatelessWidget {
         children: <Widget>[
           settingsListTile(context, CupertinoIcons.gear_alt_fill, 'General',
               SettingsGeneral()),
-          Divider(height: 1.0),
-          settingsListTile(context, CupertinoIcons.creditcard_fill, 'Payment',
-              SettingsPayment()),
           Divider(height: 1.0),
           settingsListTile(
               context, CupertinoIcons.person_alt, 'Account', SettingsAccount()),

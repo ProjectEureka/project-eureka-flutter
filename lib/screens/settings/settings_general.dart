@@ -13,33 +13,8 @@ class _SettingsGeneral extends State<SettingsGeneral> {
   SharedPreferencesHelper sharedPreferencesHelper =
       new SharedPreferencesHelper();
 
-  // initialized three settings
-  bool _darkMode = false;
-  bool _emailNotification = false;
-  bool _textNotification = false;
-
-  // get initial values of the settings once coming to the settings page
-  void _getValuesSettings() {
-    sharedPreferencesHelper.getSettings('darkMode').then((data) {
-      setState(() {
-        _darkMode = data;
-      });
-    });
-    sharedPreferencesHelper.getSettings('emailNotification').then((data) {
-      setState(() {
-        _emailNotification = data;
-      });
-    });
-    sharedPreferencesHelper.getSettings('textNotification').then((data) {
-      setState(() {
-        _textNotification = data;
-      });
-    });
-  }
-
   @override
   void initState() {
-    _getValuesSettings();
     super.initState();
   }
 
@@ -52,39 +27,6 @@ class _SettingsGeneral extends State<SettingsGeneral> {
       ),
       body: Column(
         children: [
-          settingsList(
-            "Dark Mode",
-            _darkMode,
-            (bool value) {
-              setState(() {
-                sharedPreferencesHelper.setSettings('darkMode', value);
-                _darkMode = value;
-                print("Dark mode: " + _darkMode.toString());
-              });
-            },
-          ),
-          settingsList(
-            "Email Notification",
-            _emailNotification,
-            (bool value) {
-              setState(() {
-                sharedPreferencesHelper.setSettings('emailNotification', value);
-                _emailNotification = value;
-                print("Email notification: " + _emailNotification.toString());
-              });
-            },
-          ),
-          settingsList(
-            "Text Notification",
-            _textNotification,
-            (bool value) {
-              setState(() {
-                sharedPreferencesHelper.setSettings('textNotification', value);
-                _textNotification = value;
-                print("Text notification: " + _textNotification.toString());
-              });
-            },
-          ),
           ListTile(
             title: Row(children: [
               Text('About   ', style: TextStyle(fontSize: 18.0)),
@@ -97,7 +39,7 @@ class _SettingsGeneral extends State<SettingsGeneral> {
                     return AlertDialog(
                       title: Text('About Eureka'),
                       content: Text(
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel massa sit amet justo porta porttitor. Donec hendrerit sollicitudin malesuada. Mauris porttitor, odio vitae mattis lobortis, est lorem scelerisque ante, a vestibulum neque elit nec turpis. Pellentesque pulvinar tempor commodo. Donec leo velit, pharetra non imperdiet quis, bibendum et metus. Ut vitae sem lectus. Quisque id viverra risus, eget fermentum neque. Maecenas at augue magna. Donec dapibus condimentum sem eu molestie. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec in iaculis magna, vitae pretium magna. Fusce rutrum, nibh fermentum feugiat pharetra.',
+                        'EureQa is an app where users can provide help or request help through a system of answers and questions. Users will be able to connect live with each other, through our chat and video call system.',
                         textAlign: TextAlign.center,
                       ),
                       actions: <Widget>[

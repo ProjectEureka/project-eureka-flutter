@@ -4,6 +4,8 @@ import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
 import 'package:project_eureka_flutter/screens/home_screen.dart';
+import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
+import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -29,24 +31,29 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
   Padding profileIcon() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 15.0, 0.0),
-      child: CircleAvatar(
-        radius: widget.isAnswer ? 20.0 : 40.0,
-        backgroundColor: Colors.transparent,
-        backgroundImage: (widget.isAnswer
-                ? widget.userAnswerModel.user.pictureUrl == ''
-                : widget.moreDetailModel.user.pictureUrl == '')
-            ? AssetImage('assets/images/profile_default_image.png')
-            : NetworkImage(
-                widget.isAnswer
-                    ? widget.userAnswerModel.user.pictureUrl
-                    : widget.moreDetailModel.user.pictureUrl,
-              ),
+      child: GestureDetector(
+        onTap: () async { Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Profile(isMoreDetailsPage: true, userId: widget.isAnswer ? widget.userAnswerModel.user.id : widget.moreDetailModel.user.id,))); },
+        child: CircleAvatar(
+          radius: widget.isAnswer ? 20.0 : 40.0,
+          backgroundColor: Colors.transparent,
+          backgroundImage: (widget.isAnswer
+                  ? widget.userAnswerModel.user.pictureUrl == ''
+                  : widget.moreDetailModel.user.pictureUrl == '')
+              ? AssetImage('assets/images/profile_default_image.png')
+              : NetworkImage(
+                  widget.isAnswer
+                      ? widget.userAnswerModel.user.pictureUrl
+                      : widget.moreDetailModel.user.pictureUrl,
+                ),
+        ),
       ),
     );
   }
 
   Row _profileName() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           widget.isAnswer
@@ -57,6 +64,13 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
               fontWeight: FontWeight.bold),
           textAlign: TextAlign.left,
         ),
+
+        if (widget.isAnswer)
+          widget.userAnswerModel.user.averageRating == 0.0
+              ? Text("  Not rated yet ⭐")
+              : Text("  " +
+            widget.userAnswerModel.user.averageRating.toString() + " ⭐",
+          ),
       ],
     );
   }
@@ -120,6 +134,12 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
           children: [
             SizedBox(height: 15.0),
             _profileName(),
+            if (!widget.isAnswer)
+              widget.moreDetailModel.user.averageRating == 0.0
+                  ? Text("Not rated yet ⭐")
+                  : Text(
+                widget.moreDetailModel.user.averageRating.toString() + " ⭐",
+              ),
             SizedBox(height: widget.isAnswer ? 0.0 : 10.0),
             _questionCategory(),
             _timeAgo(dateTime),
@@ -138,7 +158,8 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                 style: TextStyle(
                     fontSize: 15.0,
                     fontStyle: FontStyle.italic,
-                    color: Colors.grey),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green),
               )
             : Container())
         : Container();
@@ -308,7 +329,8 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     return (!widget.isCurrUser ? Container() : messageIcon());
   }
 
-  Future<void> _archiveOnPress() async {
+  /* DROP DOWN MENU - BEGIN */
+  Future<void> _archiveQuestion() async {
     await CloseQuestionService()
         .archiveQuestion(widget.moreDetailModel.question.id);
 
@@ -334,67 +356,101 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     );
   }
 
-  Widget _archiveButton() {
-    return FlatButton(
-      color: Colors.red,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      onPressed: () => _archiveOnPress(),
-      child: Text(
-        "Archive",
-        style: TextStyle(fontSize: 20.0),
-      ),
+  void _answerQuestion() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewForm(
+          isAnswer: true,
+          questionId: widget.moreDetailModel.question.id,
+        ),
+      ), // standard form
     );
   }
 
-  Stack _moreDetailsHeader() {
-    return Stack(
-      children: [
-        _profileNameAndIcon(),
-        Positioned(
-          right: -10.0,
-          top: widget.isAnswer ? 0.0 : 35.0,
-          child: Transform.scale(
-            scale: widget.isAnswer ? 1.20 : (widget.isCurrUser ? .75 : 1.30),
-            child: widget.isAnswer
-                ? (widget.moreDetailModel == null
-                    ? Container()
-                    : widget.moreDetailModel.user.id ==
-                            widget.userAnswerModel.user.id
-                        ? Container()
-                        : messageBubble())
-                : (widget.isCurrUser
-                    ? (widget.moreDetailModel.question.visible == false
-                        ? Container()
-                        : _archiveButton())
-                    : messageIcon()),
-          ),
+  PopupMenuButton _questionMenu(bool isArchived, bool isClosed) {
+    return PopupMenuButton<String>(
+      onSelected: (String result) {
+        setState(() {
+          switch(result) {
+            case 'Answer': {
+              _answerQuestion();
+            }
+            break;
+            case 'Archive': {
+              _archiveQuestion();
+            }
+            break;
+          }
+        });
+      },
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        if(widget.moreDetailModel.question.closed != true)
+        const PopupMenuItem<String>(
+          value: 'Answer',
+          child: Text('Answer'),
         ),
+        if(widget.moreDetailModel.question.visible != false)
+        const PopupMenuItem<String>(
+          value: 'Archive',
+          child: Text('Archive'),
+        )
       ],
     );
   }
 
+  /* DROP DOWN MENU - END */
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 8.0),
-      child: Column(
-        children: [
-          _moreDetailsHeader(),
-          _moreDetailsBody(),
-          widget.isAnswer
-              ? Padding(
-                  padding: const EdgeInsets.fromLTRB(14.0, 10.0, 14.0, 10.0),
-                  child: Divider(
-                    color: Colors.black,
-                    thickness: 1.0,
-                    height: 0.0,
-                  ),
-                )
-              : Container(),
-        ],
-      ),
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 8.0),
+          child: Column(
+            children: [
+              _profileNameAndIcon(),
+              _moreDetailsBody(),
+              widget.isAnswer
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(14.0, 10.0, 14.0, 10.0),
+                      child: Divider(
+                        color: Colors.black,
+                        thickness: 1.0,
+                        height: 0.0,
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
+        ),
+        widget.isAnswer
+            ? Positioned(
+                right: 0.0,
+                top: 0.0,
+                child: Transform.scale(
+                    scale: 1.20,
+                    child: widget.moreDetailModel == null
+                        ? Container()
+                        : widget.moreDetailModel.user.id ==
+                                widget.userAnswerModel.user.id
+                            ? Container()
+                            : messageBubble()),
+              )
+            : Positioned(
+                right: 0.0,
+                top: 35.0,
+                child: Transform.scale(
+                  scale: 1.30,
+                  child: widget.isCurrUser
+                      ? (widget.moreDetailModel.question.visible == false
+                          ? Container()
+                          : _questionMenu(false, false))
+                      : messageIcon(),
+                ),
+              ),
+      ],
     );
   }
 }

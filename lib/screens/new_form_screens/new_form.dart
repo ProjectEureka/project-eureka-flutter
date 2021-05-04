@@ -79,18 +79,6 @@ class _NewFormState extends State<NewForm> {
     );
   }
 
-  Column _videoForm() {
-    return Column(
-      children: <Widget>[
-        Center(
-          child: Container(
-            child: Text("Create the video form here..."),
-          ),
-        )
-      ],
-    );
-  }
-
   Widget _scrollingForm() {
     return _isUploading
         ? Center(
@@ -105,7 +93,7 @@ class _NewFormState extends State<NewForm> {
             child: Column(
               children: <Widget>[
                 EurekaToggleSwitch(
-                    labels: ['Text', 'Photo', 'Video'],
+                    labels: ['Text', 'Photo'],
                     initialLabelIndex: _formType,
                     setState: (index) {
                       setState(() {
@@ -124,10 +112,6 @@ class _NewFormState extends State<NewForm> {
                     picker: _imagePicker,
                   ),
                 ),
-                Visibility(
-                  visible: _formType == 2 ? true : false,
-                  child: _videoForm(),
-                )
               ],
             ),
           );

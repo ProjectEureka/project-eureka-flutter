@@ -6,8 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_profile_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
-import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_onboarding_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -43,16 +43,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     return EurekaAppBar(
       title: widget.isProfile ? 'Edit Your Profile' : 'Create Your Profile',
       appBar: AppBar(),
-      actions: [
-        widget.isProfile
-            ? IconButton(
-                icon: Icon(
-                  Icons.cancel,
-                  color: Color(0xFF00ADB5),
-                ),
-                onPressed: () => Navigator.pop(context))
-            : Container(),
-      ],
     );
   }
 
@@ -116,22 +106,6 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-            child: Text(
-              'Do you prefer to help people with their questions or ask questions?',
-              textAlign: TextAlign.center,
-            ),
-          ),
-          EurekaToggleSwitch(
-            labels: ['None', 'Student', 'Teacher'],
-            initialLabelIndex: _role,
-            setState: (index) {
-              setState(() {
-                _role = index;
-              });
-            },
-          ),
           GestureDetector(
             onTap: () async {
               String temp = await showModalBottomSheet(
@@ -154,6 +128,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
                       color: Colors.white,
                     )
                   : CircleAvatar(
+                      backgroundColor: Colors.transparent,
                       backgroundImage: FileImage(File(mediaPath)),
                       radius: 50.0,
                     ),
@@ -204,7 +179,7 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
       email: _firebaseUser.email,
       city: '',
       category: [], //we don't have form field for this
-      pictureUrl: mediaUrl.length == 0 ? '' : mediaUrl[0],
+      pictureUrl: mediaUrl.length == 0 ? widget.user.pictureUrl : mediaUrl[0],
       role: _role,
       ratings: [],
       averageRating: 0.0,
@@ -217,7 +192,12 @@ class _ProfileOnboardingState extends State<ProfileOnboarding> {
         // This currently doesn't work until we can get the current user_id
         await _profileOnboardingService.updateUser(_firebaseUser.uid, user);
 
-        Navigator.pop(context);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Profile(),
+            ),
+            (Route<void> route) => false);
       } else {
         // Using HTTP POST to add new user
         await _profileOnboardingService.addUser(user);

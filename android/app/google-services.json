@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:345803967238:android:16987dcaf506c5abd8ac87",
+        "android_client_info": {
+          "package_name": "com.eureqa.project_eureka_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "345803967238-fkl4ljutktq1saj21bb5d8dkhobd86pt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOQ3Puyw8Xg5P9fEv873DhJ4TK34YHJ-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "345803967238-fkl4ljutktq1saj21bb5d8dkhobd86pt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "345803967238-hdhsdljofjn69jijg967jj0o69nkffdm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.projectEurekaFlutter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:345803967238:android:814b0c686b2206a7d8ac87",
         "android_client_info": {
           "package_name": "com.example.project_eureka_flutter"
@@ -14,11 +50,59 @@
       },
       "oauth_client": [
         {
+          "client_id": "345803967238-4esvtunseb24qg84sniloi8gb6m28jfa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_eureka_flutter",
+            "certificate_hash": "d937dd494a14be03027ac41469833e8c3ca57608"
+          }
+        },
+        {
+          "client_id": "345803967238-577dq5jd040c31oea0met759umpohabr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_eureka_flutter",
+            "certificate_hash": "6cae9b7f2a17e2bc517f576872d1b877facaab8d"
+          }
+        },
+        {
+          "client_id": "345803967238-7iq5ub0pqdhk6let9ullfjqathv78sfd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_eureka_flutter",
+            "certificate_hash": "a558fd59d266eec8ad40c3f37ba598fe5d23110d"
+          }
+        },
+        {
+          "client_id": "345803967238-h310pipdgeqiqqkodv18cga8n39vl35m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_eureka_flutter",
+            "certificate_hash": "f069292e3cc9978b7b58140666c9661106baf038"
+          }
+        },
+        {
+          "client_id": "345803967238-hf65ujm2mniumq8nqbstjkpfqrls2c72.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_eureka_flutter",
+            "certificate_hash": "6da6c7d10e1f1eff3f77ef2ac35c144cf2d9c48c"
+          }
+        },
+        {
           "client_id": "345803967238-pu417p3rj09eku6f1d4okmvn9lifv6io.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.project_eureka_flutter",
             "certificate_hash": "c774b294b2253d1816b940fee9db7eb8d68fb96d"
+          }
+        },
+        {
+          "client_id": "345803967238-q5cl2hq4pe33ecdrgm8j92qp130c6qjj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.project_eureka_flutter",
+            "certificate_hash": "07c8830d1fb2b1646b5164f5c182cf7f0e7882cc"
           }
         },
         {
@@ -37,6 +121,13 @@
             {
               "client_id": "345803967238-fkl4ljutktq1saj21bb5d8dkhobd86pt.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "345803967238-hdhsdljofjn69jijg967jj0o69nkffdm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.projectEurekaFlutter"
+              }
             }
           ]
         }

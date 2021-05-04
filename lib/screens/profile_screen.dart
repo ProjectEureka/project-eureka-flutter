@@ -11,6 +11,12 @@ import 'package:project_eureka_flutter/services/profile_service.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class Profile extends StatefulWidget {
+
+  final isMoreDetailsPage;
+  final userId;
+
+  Profile({this.userId, this.isMoreDetailsPage});
+
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -23,7 +29,7 @@ class _ProfileState extends State<Profile> {
   List categories = [];
   bool loading = true;
 
-  final User user = EmailAuth().getCurrentUser();
+  final User currentUser = EmailAuth().getCurrentUser();
 
   @override
   void initState() {
@@ -32,7 +38,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void initGetProfileData() {
-    ProfileService().getProfileInformation(user.uid).then(
+    ProfileService().getProfileInformation(widget.isMoreDetailsPage == null ? currentUser.uid : widget.userId).then(
       (payload) {
         setState(() {
           questionsList = payload[0];
@@ -124,6 +130,7 @@ class _ProfileState extends State<Profile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          if (widget.userId == currentUser.uid)
           _editProfileButton(),
           SizedBox(
             height: 15.0,
@@ -151,6 +158,12 @@ class _ProfileState extends State<Profile> {
         EurekaAppBar(
           title: 'Profile',
           appBar: AppBar(),
+          actions: widget.isMoreDetailsPage == null ? null : [IconButton(
+              icon: Icon(
+                Icons.arrow_back_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.pop(context)), SizedBox(width: 15)],
         ),
         _profileNameAndIcon(),
         _editButtonAndRating(),
@@ -204,33 +217,6 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _categoryBuilder(int index) {
-    return Column(
-      children: [
-        ListTile(
-          leading: Image.asset(
-              'assets/images/${categories[index].toLowerCase()}.png'),
-          title: Text(
-            '${categories[index]}',
-          ),
-        ),
-        Divider(color: Colors.grey.shade400, height: 1.0)
-      ],
-    );
-  }
-
-  Column _interestList() {
-    return _toggleSwtichListBuilder(
-      categories.length,
-      ListView.builder(
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          return _categoryBuilder(index);
-        },
-      ),
-    );
-  }
-
   Column _listVisibility() {
     return Column(
       children: [
@@ -246,12 +232,6 @@ class _ProfileState extends State<Profile> {
               ? _noResults(" have not answered to any questions yet")
               : _answersList(),
         ),
-        Visibility(
-          visible: _tab == 2 ? true : false,
-          child: categories.length == 0
-              ? _noResults(" does not have categories of interest")
-              : _interestList(),
-        )
       ],
     );
   }
@@ -264,7 +244,7 @@ class _ProfileState extends State<Profile> {
         children: [
           _headerStack(),
           EurekaToggleSwitch(
-            labels: ['Questions', 'Answers', 'Interests'],
+            labels: ['Questions', 'Answers'],
             initialLabelIndex: _tab,
             setState: (index) {
               setState(() {

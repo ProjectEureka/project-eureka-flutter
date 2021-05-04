@@ -1,7 +1,6 @@
 import 'package:project_eureka_flutter/screens/forgot_password.dart';
 import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/more_details_page.dart';
-import 'package:project_eureka_flutter/screens/settings/payment/payment_confirmation.dart';
 import 'package:project_eureka_flutter/screens/signin_screen.dart';
 import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/screens/onboarding_screen.dart';
@@ -37,10 +36,6 @@ class RouteGenerator {
       case '/home':
         return CupertinoPageRoute(
           builder: (_) => Home(),
-        );
-      case '/paymentConfirmation':
-        return CupertinoPageRoute(
-          builder: (_) => PaymentConfirmation(),
         );
       case '/newQuestion':
         return CupertinoPageRoute(
