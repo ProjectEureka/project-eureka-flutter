@@ -7,7 +7,6 @@ import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
-import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class MoreDetailsView extends StatefulWidget {
@@ -16,13 +15,15 @@ class MoreDetailsView extends StatefulWidget {
   final UserAnswerModel userAnswerModel;
   final bool isCurrUser;
   final firestore;
+  final String currUserId;
 
   MoreDetailsView(
       {this.moreDetailModel,
       @required this.isAnswer,
       this.userAnswerModel,
       @required this.isCurrUser,
-      this.firestore});
+      this.firestore,
+      this.currUserId});
 
   @override
   _MoreDetailsViewState createState() => _MoreDetailsViewState();
@@ -76,7 +77,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
         ),
         if (widget.isAnswer)
           widget.userAnswerModel.user.averageRating == 0.0
-              ? Text("  Not rated yet ⭐")
+              ? Text("")
               : Text(
                   "  " +
                       widget.userAnswerModel.user.averageRating.toString() +
@@ -307,37 +308,92 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
     );
   }
 
-  void addChatToFirebase(dynamic obj) {
-    String groupChatId = widget.isAnswer
-        ? '${widget.moreDetailModel.user.id}-${obj.user.id}-${widget.moreDetailModel.question.id}'
-        : '${EmailAuth().getCurrentUser().uid}-${obj.user.id}-${widget.moreDetailModel.question.id}';
-    print(obj.user.id);
+  void createChat(dynamic obj, String groupChatId) {
     widget.firestore.collection('messages').doc(groupChatId).set({
-      'chatIDUser': EmailAuth().getCurrentUser().uid,
+      'chatIDUser': widget.currUserId,
       'recipientId': obj.user.id,
       'questionTitle': widget.moreDetailModel.question.title,
       'questionId': widget.moreDetailModel.question.id,
       'timestamp': DateTime.now(),
-      'lastMessageSender': EmailAuth().getCurrentUser().uid,
+      'lastMessageSender': widget.currUserId,
       'unseen': true,
       'groupChatId': groupChatId,
-      EmailAuth().getCurrentUser().uid: false,
+      widget.currUserId.toString(): false,
       obj.user.id.toString(): false,
     });
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(
-          fromId: obj.user.id,
-          recipient: obj.user.firstName,
-          questionId: widget.moreDetailModel.question.id,
-        ),
-      ),
-    );
+
+    editChat(false, groupChatId, obj.user.id, obj.user.firstName);
   }
 
-  Widget messageBubble() {
-    return (!widget.isCurrUser ? Container() : messageIcon());
+  void editChat(bool unseenByMe, String groupChatId, String recipientId,
+      String recipientName) {
+    if (unseenByMe) {
+      widget.firestore
+          .collection('messages')
+          .doc(groupChatId)
+          .update({'unseen': false});
+    }
+    widget.firestore
+        .collection('messages')
+        .doc(groupChatId)
+        .update({widget.currUserId.toString(): true});
+
+    enterChat(recipientId, recipientName, groupChatId);
+  }
+
+  void enterChat(String recipientId, String recipientName, String groupChatId) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChatScreen(
+                  groupChatId: groupChatId,
+                  recipientId: recipientId,
+                  recipient: recipientName,
+                  questionId: widget.moreDetailModel.question.id,
+                )));
+  }
+
+  void addChatToFirebase(dynamic obj) {
+    String groupChatId =
+        '${widget.currUserId.toString()}-${obj.user.id}-${widget.moreDetailModel.question.id}';
+    String groupChatIdReversed =
+        '${obj.user.id}-${widget.currUserId.toString()}-${widget.moreDetailModel.question.id}';
+
+    widget.firestore
+        .collection('messages')
+        .doc(groupChatId)
+        .get()
+        .then((snapshot) {
+      if (snapshot.data() == null) {
+        // check if chat exists with with chatId string
+        widget.firestore
+            .collection('messages')
+            .doc(groupChatIdReversed)
+            .get()
+            .then((snapshot) {
+          if (snapshot.data() ==
+              null) // if it doesn't exist, also check if there is already a chat created by recipient
+          {
+            createChat(obj, groupChatId);
+          } else // otherwise enter chat with reversed chatId
+          {
+            editChat(
+                (snapshot.data()['unseen'] &&
+                    snapshot.data()['lastMessageSender'] != widget.currUserId),
+                groupChatIdReversed,
+                obj.user.id,
+                obj.user.firstName);
+          }
+        });
+      } else {
+        editChat(
+            (snapshot.data()['unseen'] &&
+                snapshot.data()['lastMessageSender'] != widget.currUserId),
+            groupChatId,
+            obj.user.id,
+            obj.user.firstName);
+      }
+    });
   }
 
   /* DROP DOWN MENU - BEGIN */
@@ -444,13 +500,12 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                 top: 0.0,
                 child: Transform.scale(
                     scale: 1.20,
-                    child: widget.moreDetailModel == null
+                    child: (widget.moreDetailModel == null &&
+                            widget.userAnswerModel == null)
                         ? Container()
-                        : widget.moreDetailModel.user.id ==
-                                widget.userAnswerModel.user.id
+                        : widget.userAnswerModel.user.id == widget.currUserId
                             ? Container()
-                            : messageBubble()),
-              )
+                            : messageIcon()))
             : Positioned(
                 right: 0.0,
                 top: 35.0,

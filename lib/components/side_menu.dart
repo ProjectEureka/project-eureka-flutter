@@ -57,7 +57,7 @@ class _SideMenuState extends State<SideMenu> {
               '${user.firstName} ${user.lastName}',
               style: TextStyle(fontSize: 18.0),
             ),
-            accountEmail: Text('${user.email}'),
+            accountEmail: Text('${EmailAuth().getCurrentUser().email}'),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: CircleAvatar(

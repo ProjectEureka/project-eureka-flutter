@@ -15,7 +15,6 @@ import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
 
-final _firestore = FirebaseFirestore.instance;
 
 class MoreDetails extends StatefulWidget {
   final String questionId;
@@ -36,8 +35,11 @@ class _MoreDetailsState extends State<MoreDetails> {
   String currUserId;
   bool loading;
 
+  FirebaseFirestore _firestore;
+
   @override
   void initState() {
+    _firestore = FirebaseFirestore.instance;
     loading = true;
     initGetQuestionDetails();
     currUserId = EmailAuth().getCurrentUser().uid;
@@ -55,19 +57,8 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   EurekaRoundedButton _messageModalButton() {
     return EurekaRoundedButton(
-      onPressed: () {
+      onPressed: () async {
         addChatToFirebase();
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChatScreen(
-              fromId: _moreDetailModel.user.id,
-              recipient: _moreDetailModel.user.firstName,
-              questionId: _moreDetailModel.question.id,
-            ),
-          ),
-        );
       },
       buttonText: 'Message ${_moreDetailModel.user.firstName}',
       isTwoButtons: true,
@@ -92,10 +83,8 @@ class _MoreDetailsState extends State<MoreDetails> {
 
 //This is used to create the collection in which the the chat messages between the current user
 // and the question user will be stored, denoted by the groupChatId
-  void addChatToFirebase() {
-    String groupChatId =
-        '$currUserId-${_moreDetailModel.user.id}-${_moreDetailModel.question.id}';
 
+  void createChat(String groupChatId) {
     _firestore.collection('messages').doc(groupChatId).set({
       'chatIDUser': currUserId,
       'recipientId': _moreDetailModel.user.id,
@@ -106,7 +95,69 @@ class _MoreDetailsState extends State<MoreDetails> {
       'unseen': true,
       'groupChatId': groupChatId,
       currUserId: false,
-      _moreDetailModel.user.id: false,
+      _moreDetailModel.user.id.toString(): false,
+    });
+
+    editChat(false, groupChatId, _moreDetailModel.user.id, _moreDetailModel.user.firstName);
+  }
+
+  void editChat(bool unseenByMe, String groupChatId, String recipientId, String recipientName) {
+    if (unseenByMe) {
+      _firestore
+          .collection('messages')
+          .doc(groupChatId)
+          .update({'unseen': false});
+    }
+    _firestore
+        .collection('messages')
+        .doc(groupChatId)
+        .update({currUserId: true});
+
+    enterChat(recipientId, recipientName, groupChatId);
+  }
+
+  void enterChat(String recipientId, String recipientName, String groupChatId) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              groupChatId: groupChatId,
+              recipientId: recipientId,
+              recipient: recipientName,
+              questionId: _moreDetailModel.question.id,
+            )));
+  }
+
+  void addChatToFirebase() {
+    String groupChatId =
+        '$currUserId-${_moreDetailModel.user.id}-${_moreDetailModel.question.id}';
+    String groupChatIdReversed =
+        '${_moreDetailModel.user.id}-${currUserId}-${_moreDetailModel.question.id}';
+
+    _firestore
+        .collection('messages')
+        .doc(groupChatId)
+        .get()
+        .then((snapshot) {
+      if (snapshot.data() == null) { // check if chat exists with with chatId string
+        _firestore
+            .collection('messages')
+            .doc(groupChatIdReversed)
+            .get()
+            .then((snapshot) {
+          if (snapshot.data() == null) // if it doesn't exist, also check if there is already a chat created by recipient
+              {
+            print(snapshot.data()); createChat(groupChatId); }
+          else // otherwise enter chat with reversed chatId
+              {editChat((snapshot.data()['unseen'] &&
+              snapshot.data()['lastMessageSender'] !=
+                  currUserId), groupChatIdReversed, _moreDetailModel.user.id, _moreDetailModel.user.firstName);}
+        });
+      } else {
+        editChat((snapshot.data()['unseen'] &&
+            snapshot.data()['lastMessageSender'] !=
+                currUserId), groupChatId, _moreDetailModel.user.id, _moreDetailModel.user.firstName);
+      }
     });
   }
 
@@ -171,6 +222,7 @@ class _MoreDetailsState extends State<MoreDetails> {
   }
 
   Column _answersListBuilder() {
+    print(currUserId);
     return Column(
       children: [
         for (UserAnswerModel userAnswer in _moreDetailModel.userAnswer)
@@ -180,6 +232,7 @@ class _MoreDetailsState extends State<MoreDetails> {
             userAnswerModel: userAnswer,
             isCurrUser: _moreDetailModel.user.id == currUserId,
             firestore: _firestore,
+            currUserId: currUserId,
           )
       ],
     );
@@ -227,6 +280,7 @@ class _MoreDetailsState extends State<MoreDetails> {
                     isAnswer: false,
                     isCurrUser: _moreDetailModel.user.id == currUserId,
                     firestore: _firestore,
+                    currUserId: currUserId,
                   ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 15.0),

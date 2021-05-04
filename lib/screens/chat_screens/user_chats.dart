@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
@@ -7,8 +6,6 @@ import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/services/users_service.dart';
 
-final _firestore = FirebaseFirestore.instance;
-User loggedInUser = EmailAuth().getCurrentUser();
 
 class ChatScreenConversations extends StatefulWidget {
   @override
@@ -16,8 +13,11 @@ class ChatScreenConversations extends StatefulWidget {
 }
 
 class _ChatScreenConversations extends State<ChatScreenConversations> {
+
+  FirebaseFirestore _firebase;
   @override
   void initState() {
+    _firebase = FirebaseFirestore.instance;
     super.initState();
   }
 
@@ -31,17 +31,19 @@ class _ChatScreenConversations extends State<ChatScreenConversations> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[ConversationsStream()],
+            children: <Widget>[ConversationsStream(firestore: _firebase)],
           ),
         ));
   }
 }
 
 class ConversationsStream extends StatelessWidget {
+  final firestore;
+  ConversationsStream({this.firestore,});
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore
+      stream: firestore
           .collection('messages')
           .orderBy('timestamp', descending: true)
           .snapshots(),
@@ -62,16 +64,17 @@ class ConversationsStream extends StatelessWidget {
             //if the user has not seen this message, then this will be true
             final conversationBubble = ConversationBubble(
               questionTitle: questionTitle,
-              recipientId: recipientID == loggedInUser.uid
+              recipientId: recipientID == EmailAuth().getCurrentUser().uid
                   ? conversationUserID
                   : recipientID,
               questionId: questionID,
               unseen: unseen,
               groupId: groupChatID,
               lastMessageSender: lastMessageSender,
+                firestore: firestore,
             );
-            if (conversationUserID == loggedInUser.uid ||
-                recipientID == loggedInUser.uid) {
+            if (conversationUserID == EmailAuth().getCurrentUser().uid ||
+                recipientID == EmailAuth().getCurrentUser().uid) {
               conversationBubbles.add(conversationBubble);
             }
           }
@@ -117,6 +120,7 @@ class ConversationBubble extends StatelessWidget {
     this.unseen,
     this.groupId,
     this.lastMessageSender,
+    this.firestore
   });
 
   final String recipientId;
@@ -125,6 +129,7 @@ class ConversationBubble extends StatelessWidget {
   final bool unseen;
   final String groupId;
   final String lastMessageSender;
+  final firestore;
 
   @override
   Widget build(BuildContext context) {
@@ -142,24 +147,23 @@ class ConversationBubble extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(25.0))),
                 child: FlatButton(
                   onPressed: () {
-                    if (unseen && lastMessageSender != loggedInUser.uid) {
-                      _firestore
+                    if (unseen && lastMessageSender != EmailAuth().getCurrentUser().uid) {
+                      firestore
                           .collection('messages')
                           .doc(groupId)
                           .update({'unseen': false});
                     }
-                    _firestore
+                    firestore
                         .collection('messages')
                         .doc(groupId)
-                        .update({loggedInUser.uid: true});
+                        .update({EmailAuth().getCurrentUser().uid: true});
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChatScreen(
-                                  fromId: recipientId,
-                                  recipient: snapshot.data.firstName +
-                                      " " +
-                                      snapshot.data.lastName,
+                                  groupChatId: groupId,
+                                  recipientId: recipientId,
+                                  recipient: snapshot.data.firstName,
                                   questionId: questionId,
                                 )));
                   },
@@ -195,13 +199,13 @@ class ConversationBubble extends StatelessWidget {
                                       color: Colors.white,
                                       fontStyle: (unseen &&
                                               (lastMessageSender !=
-                                                  loggedInUser.uid))
+                                                  EmailAuth().getCurrentUser().uid))
                                           ? FontStyle.italic
                                           : FontStyle.normal,
                                       fontSize: 16,
                                       fontWeight: (unseen &&
                                               (lastMessageSender !=
-                                                  loggedInUser.uid))
+                                                  EmailAuth().getCurrentUser().uid))
                                           ? FontWeight.bold
                                           : FontWeight.normal)),
                               alignment: Alignment.centerLeft,
@@ -215,7 +219,7 @@ class ConversationBubble extends StatelessWidget {
                         child: Icon(
                           Icons.fiber_manual_record_rounded,
                           color: (unseen &&
-                                  (lastMessageSender != loggedInUser.uid))
+                                  (lastMessageSender != EmailAuth().getCurrentUser().uid))
                               ? Colors.white
                               : Colors.cyan,
                         ),
