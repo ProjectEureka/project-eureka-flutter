@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 
 /// This class allows the users to view an image in full screen
 /// and zoom around.
@@ -19,9 +18,16 @@ class EurekaImageViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     File file = File(imagePath);
     return Scaffold(
-      appBar: EurekaAppBar(
-        title: 'Image Preview',
-        appBar: AppBar(),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        actions: [IconButton(
+            icon: Icon(
+              Icons.cancel_rounded,
+              color: Colors.cyan,
+              size: 35,
+            ),
+            onPressed: () => Navigator.pop(context)), SizedBox(width: 25)],
       ),
       body: PhotoView(
         imageProvider: isUrl ? NetworkImage(imagePath) : FileImage(file),

@@ -47,49 +47,58 @@ class ConversationsStream extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         //uses async snapshot
-        if (!snapshot.hasData) {
-          return Column(
-            children: [
-              Center(
-                heightFactor: 30,
-                child: Text("Start New Chat from a Question"),
-              ),
-            ],
-          );
-        }
-        final conversations = snapshot.data.docs;
-        List<ConversationBubble> conversationBubbles = [];
-        for (var userChat in conversations) {
-          final conversationUserID = userChat.data()['chatIDUser'];
-          final recipientID = userChat.data()['recipientId'];
-          final questionTitle = userChat.data()['questionTitle'];
-          final questionID = userChat.data()['questionId'];
-          final unseen = userChat.data()['unseen'];
-          final groupChatID = userChat.data()['groupChatId'];
-          final lastMessageSender = userChat.data()['lastMessageSender'];
+        if (snapshot.connectionState == ConnectionState.active) {
+          final conversations = snapshot.data.docs;
+          List<ConversationBubble> conversationBubbles = [];
+          for (var userChat in conversations) {
+            final conversationUserID = userChat.data()['chatIDUser'];
+            final recipientID = userChat.data()['recipientId'];
+            final questionTitle = userChat.data()['questionTitle'];
+            final questionID = userChat.data()['questionId'];
+            final unseen = userChat.data()['unseen'];
+            final groupChatID = userChat.data()['groupChatId'];
+            final lastMessageSender = userChat.data()['lastMessageSender'];
 
-          //if the user has not seen this message, then this will be true
-          final conversationBubble = ConversationBubble(
-            questionTitle: questionTitle,
-            recipientId: recipientID == loggedInUser.uid
-                ? conversationUserID
-                : recipientID,
-            questionId: questionID,
-            unseen: unseen,
-            groupId: groupChatID,
-            lastMessageSender: lastMessageSender,
-          );
-          if (conversationUserID == loggedInUser.uid ||
-              recipientID == loggedInUser.uid) {
-            conversationBubbles.add(conversationBubble);
+            //if the user has not seen this message, then this will be true
+            final conversationBubble = ConversationBubble(
+              questionTitle: questionTitle,
+              recipientId: recipientID == loggedInUser.uid
+                  ? conversationUserID
+                  : recipientID,
+              questionId: questionID,
+              unseen: unseen,
+              groupId: groupChatID,
+              lastMessageSender: lastMessageSender,
+            );
+            if (conversationUserID == loggedInUser.uid ||
+                recipientID == loggedInUser.uid) {
+              conversationBubbles.add(conversationBubble);
+            }
           }
+          // return message if there were no chats associated with the current user id
+          if (conversationBubbles.isEmpty) {
+            return Column(
+              children: [
+                Center(
+                  heightFactor: 20,
+                  child: Text(
+                    "No Chats Found",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ],
+            );
+          }
+          return Expanded(
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+              children: conversationBubbles,
+            ),
+          );
+        } else {
+          // if connection with firebase is failing
+          return CircularProgressIndicator();
         }
-        return Expanded(
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-            children: conversationBubbles,
-          ),
-        );
       },
     );
   }

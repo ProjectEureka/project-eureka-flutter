@@ -33,7 +33,7 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 15.0, 0.0),
       child: GestureDetector(
         onTap: () async { Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Profile(isMoreDetailsPage: true, userId: widget.isAnswer ? widget.userAnswerModel.user.id : widget.moreDetailModel.user.id,))); },
+            MaterialPageRoute(builder: (BuildContext context) => Profile(notSideMenu: true, userId: widget.isAnswer ? widget.userAnswerModel.user.id : widget.moreDetailModel.user.id,))); },
         child: CircleAvatar(
           radius: widget.isAnswer ? 20.0 : 40.0,
           backgroundColor: Colors.transparent,

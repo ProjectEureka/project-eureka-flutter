@@ -2,7 +2,10 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:project_eureka_flutter/components/eureka_image_viewer.dart';
+import 'package:project_eureka_flutter/components/eureka_profile_button.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/call_screens/call_page.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
@@ -11,6 +14,10 @@ import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/video_communication.dart';
 import 'package:project_eureka_flutter/screens/more_details_page.dart';
 import 'dart:math';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:project_eureka_flutter/screens/profile_screen.dart';
 
 // Initialize global variable for channel name for the call receiver; accessible for in ChatScreen and MessageBubble classes
 String channelNameAnswer = "";
@@ -38,6 +45,7 @@ class _ChatScreenState extends State<ChatScreen>
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
   User loggedInUser = EmailAuth().getCurrentUser();
+  FirebaseStorage storage = FirebaseStorage.instance;
 
   String messageText;
   String groupChatId;
@@ -205,6 +213,36 @@ class _ChatScreenState extends State<ChatScreen>
     print(status);
   }
 
+  Future<String> uploadImage(String mediaPath) async {
+    String _mediaUrl = '';
+
+    File file = File(mediaPath);
+
+    print('this is mediaPath:' + mediaPath.toString());
+
+    /// These next two varibles format the file name, best fit for Firebase.
+    String fileName = mediaPath
+        .substring(mediaPath.lastIndexOf("/"), mediaPath.lastIndexOf("."))
+        .replaceAll("/", "");
+    String uploadName =
+        'images/chat/$groupChatId/userId_${EmailAuth().getCurrentUser().uid}/$fileName.jpg';
+
+    try {
+      /// uploads the file
+      TaskSnapshot snapshot = await storage.ref(uploadName).putFile(file);
+
+      /// get the download URL
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        _mediaUrl = downloadUrl;
+      });
+    } catch (e) {
+      print(e);
+    }
+
+    return _mediaUrl;
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: EurekaAppBar(
@@ -267,8 +305,13 @@ class _ChatScreenState extends State<ChatScreen>
         title: Column(
           children: [
             SizedBox(height: 50.0),
-            Text(
-              widget.recipient,
+            GestureDetector(
+              onTap: () async { Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) => Profile(notSideMenu: true, userId: widget.fromId,)));
+              },
+              child: Text(
+                widget.recipient,
+              ),
             ),
             FlatButton(
               color: Colors.blueGrey.withOpacity(0.5),
@@ -314,6 +357,7 @@ class _ChatScreenState extends State<ChatScreen>
                   final messageText = message.data()['text'];
                   final messageSender = message.data()['sender'];
                   final messageTimestamp = message.data()['timestamp'];
+                  final messageIsImage = message.data()['isImage'];
                   final messageBubble = MessageBubble(
                       sender: messageSender,
                       text: messageText,
@@ -322,6 +366,7 @@ class _ChatScreenState extends State<ChatScreen>
                       isSystem: messageSender.contains("system"),
                       // if sender String contains caller's ID, show Answer button. Caller won't see answer button
                       showAnswerButton: messageSender.contains(widget.fromId),
+                      messageIsImage: messageIsImage,
                       timestamp: messageTimestamp.toDate());
 
                   messageBubbles.add(messageBubble);
@@ -363,6 +408,67 @@ class _ChatScreenState extends State<ChatScreen>
                   ),
                   SizedBox(
                     width: 15,
+                  ),
+                  Container(
+                    width: 60,
+                    child: FlatButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        color: Colors.cyan,
+                        onPressed: () async {
+                          String image = await showModalBottomSheet(
+                              context: context,
+                              builder: (context) =>
+                                  EurekaProfileButton(picker: ImagePicker()));
+                          String imageUrl = await uploadImage(image);
+                          messageTextController.clear();
+                          var currentTimeAndDate = DateTime.now();
+                          _firestore
+                              .collection('messages')
+                              .doc(groupChatId)
+                              .collection(groupChatId)
+                              .add({
+                            'text': imageUrl,
+                            'sender': loggedInUser.email,
+                            'timestamp': currentTimeAndDate,
+                            'idFrom': userId,
+                            'idTo': widget.fromId,
+                            'isImage': true
+                          });
+                          _firestore
+                              .collection('messages')
+                              .doc(groupChatId)
+                              .get()
+                              .then((snapshot) {
+                            if (snapshot.data()[widget.fromId] == false) {
+                              _firestore
+                                  .collection('messages')
+                                  .doc(groupChatId)
+                                  .update({
+                                'timestamp': DateTime.now(),
+                                'unseen': true,
+                                'lastMessageSender': loggedInUser.uid
+                              });
+                            } else {
+                              _firestore
+                                  .collection('messages')
+                                  .doc(groupChatId)
+                                  .update({
+                                'timestamp': DateTime.now(),
+                                'unseen': false,
+                                'lastMessageSender': loggedInUser.uid
+                              });
+                            }
+                          });
+                        },
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.white,
+                        )),
+                  ),
+                  SizedBox(
+                    width: 5,
                   ),
                   FlatButton(
                     shape: RoundedRectangleBorder(
@@ -436,13 +542,15 @@ class MessageBubble extends StatelessWidget {
       this.isMe,
       this.isSystem,
       this.timestamp,
-      this.showAnswerButton});
+      this.showAnswerButton,
+      this.messageIsImage});
   final String sender;
   final String text;
   final bool isMe;
   final bool isSystem;
   final bool showAnswerButton;
   final DateTime timestamp;
+  final bool messageIsImage;
 
   // Answer call from the button tha appears in chat
   Future<String> answerCall() async {
@@ -493,11 +601,7 @@ class MessageBubble extends StatelessWidget {
                           bottomLeft: Radius.circular(30.0),
                           bottomRight: Radius.circular(30.0)),
               elevation: 5.0, //adds shadow
-              color: isMe
-                  ? Colors.cyan
-                  : isSystem
-                      ? Colors.white
-                      : Colors.white,
+              color: isMe ? Colors.cyan : Colors.white,
 
               child: Column(
                 children: <Widget>[
@@ -505,21 +609,35 @@ class MessageBubble extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                     child: Container(
-                      child: Text(text,
-                          style: TextStyle(
-                            fontSize: 17.0,
-                            color: isMe
-                                ? Colors.white
-                                : isSystem
-                                    ? Colors.blue
-                                    : Colors.black,
-                          ),
-                          textAlign: TextAlign.start),
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      child: messageIsImage == null
+                          ? Text(text,
+                              style: TextStyle(
+                                fontSize: 17.0,
+                                color: isMe
+                                    ? Colors.white
+                                    : isSystem
+                                        ? Colors.blue
+                                        : Colors.black,
+                              ),
+                              textAlign: TextAlign.start)
+                          : GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EurekaImageViewer(imagePath: text, isUrl: true),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                constraints: BoxConstraints(maxWidth: 200, maxHeight: 150),
+                                child: FadeInImage.memoryNetwork(image: text, placeholder: kTransparentImage),
+                              )),
                     ),
                   ),
                 ],
-                crossAxisAlignment:
-                    isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               ),
             ),
 
