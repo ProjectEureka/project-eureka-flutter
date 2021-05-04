@@ -609,6 +609,7 @@ class MessageBubble extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                     child: Container(
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
                       child: messageIsImage == null
                           ? Text(text,
                               style: TextStyle(
@@ -637,8 +638,6 @@ class MessageBubble extends StatelessWidget {
                     ),
                   ),
                 ],
-                crossAxisAlignment:
-                    isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               ),
             ),
 
