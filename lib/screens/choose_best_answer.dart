@@ -3,10 +3,10 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/more_details_view.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 import 'package:project_eureka_flutter/screens/rating_screen.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
-import 'package:project_eureka_flutter/screens/more_details_page.dart';
 
 class ChooseBestAnswer extends StatefulWidget {
   final String questionId;
@@ -112,7 +112,7 @@ class _ChooseBestAnswerState extends State<ChooseBestAnswer> {
               : () => widget.answers[bestAnswerIndex].user.id ==
                       EmailAuth().getCurrentUser().uid
                   ? {
-                       _closeQuestion(widget.answers[bestAnswerIndex].answer.id),
+                      _closeQuestion(widget.answers[bestAnswerIndex].answer.id),
                       Navigator.pushNamedAndRemoveUntil(
                           context, '/home', (Route<void> route) => false),
                       Navigator.push(

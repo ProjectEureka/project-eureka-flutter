@@ -19,15 +19,19 @@ class EurekaImageViewer extends StatelessWidget {
     File file = File(imagePath);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(automaticallyImplyLeading: false,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
-        actions: [IconButton(
-            icon: Icon(
-              Icons.cancel_rounded,
-              color: Colors.cyan,
-              size: 35,
-            ),
-            onPressed: () => Navigator.pop(context)), SizedBox(width: 25)],
+        actions: [
+          IconButton(
+              icon: Icon(
+                Icons.cancel_rounded,
+                color: Colors.cyan,
+                size: 35,
+              ),
+              onPressed: () => Navigator.pop(context)),
+          SizedBox(width: 25)
+        ],
       ),
       body: PhotoView(
         imageProvider: isUrl ? NetworkImage(imagePath) : FileImage(file),

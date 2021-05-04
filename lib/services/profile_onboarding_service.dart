@@ -1,16 +1,17 @@
-import 'package:project_eureka_flutter/models/user_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:http/http.dart' as http;
+import 'package:project_eureka_flutter/models/user_model.dart';
 
 class ProfileOnboardingService {
   Future<http.Response> addUser(UserModel user) async {
     await DotEnv.load();
 
     return http.post(
-      Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
+      Uri.https(
+        DotEnv.env['HOST'],
         '/v1/users',
       ),
       headers: <String, String>{
@@ -26,8 +27,8 @@ class ProfileOnboardingService {
     await DotEnv.load();
 
     return http.put(
-      Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
+      Uri.https(
+        DotEnv.env['HOST'],
         '/v1/users/$userId',
       ),
       headers: <String, String>{

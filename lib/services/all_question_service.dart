@@ -1,16 +1,17 @@
-import 'package:project_eureka_flutter/models/question_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:http/http.dart' as http;
+import 'package:project_eureka_flutter/models/question_model.dart';
 
 class AllQuestionService {
   // GET
   Future<List<QuestionModel>> getQuestions() async {
     await DotEnv.load();
 
-    final response = await http.get(Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'], '/v1/questions'));
+    final response =
+        await http.get(Uri.https(DotEnv.env['HOST'], '/v1/questions'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
@@ -22,8 +23,8 @@ class AllQuestionService {
 
       final body = json.decode(response.body);
       print("All questions were loaded");
-      List<QuestionModel> questionsActive = new List();
-      List<QuestionModel> questionsClosed = new List();
+      List<QuestionModel> questionsActive = List();
+      List<QuestionModel> questionsClosed = List();
 
       body.reversed.forEach((question) {
         if (question['visible']) {
@@ -33,8 +34,7 @@ class AllQuestionService {
         }
       });
 
-      return new List<QuestionModel>.from(questionsActive)
-        ..addAll(questionsClosed);
+      return List<QuestionModel>.from(questionsActive)..addAll(questionsClosed);
     } else {
       throw Exception('Failed to load questions');
     }

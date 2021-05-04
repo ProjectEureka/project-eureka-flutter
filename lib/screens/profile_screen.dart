@@ -4,14 +4,13 @@ import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
 import 'package:project_eureka_flutter/components/profile_answers_list.dart';
+import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/screens/profile_onboarding_screen.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/profile_service.dart';
-import 'package:project_eureka_flutter/components/side_menu.dart';
 
 class Profile extends StatefulWidget {
-
   final notSideMenu;
   final userId;
 
@@ -25,7 +24,7 @@ class _ProfileState extends State<Profile> {
   int _tab = 0;
   List questionsList = [];
   List answersList = [];
-  UserModel userInfo = new UserModel();
+  UserModel userInfo = UserModel();
   List categories = [];
   bool loading = true;
 
@@ -38,7 +37,10 @@ class _ProfileState extends State<Profile> {
   }
 
   void initGetProfileData() {
-    ProfileService().getProfileInformation(widget.notSideMenu == null ? currentUser.uid : widget.userId).then(
+    ProfileService()
+        .getProfileInformation(
+            widget.notSideMenu == null ? currentUser.uid : widget.userId)
+        .then(
       (payload) {
         setState(() {
           questionsList = payload[0];

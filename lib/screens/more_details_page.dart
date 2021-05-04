@@ -5,16 +5,15 @@ import 'package:flutter/painting.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/more_details_view.dart';
-import 'package:project_eureka_flutter/components/side_menu.dart';
 import 'package:project_eureka_flutter/models/more_details_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
+import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 import 'package:project_eureka_flutter/services/more_detail_service.dart';
-import 'package:project_eureka_flutter/screens/chat_screens/chat_screen.dart';
-import 'package:project_eureka_flutter/screens/choose_best_answer.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -194,14 +193,14 @@ class _MoreDetailsState extends State<MoreDetails> {
           appBar: AppBar(),
           actions: widget.isCreatedOrAnswered == null
               ? [
-            IconButton(
-                icon: Icon(
-                  Icons.home,
-                  color: Colors.white,
-                ),
-                onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                    context, '/home', (Route<void> route) => false)),
-            SizedBox(width: 15)
+                  IconButton(
+                      icon: Icon(
+                        Icons.home,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (Route<void> route) => false)),
+                  SizedBox(width: 15)
                 ]
               : null),
       body: SingleChildScrollView(

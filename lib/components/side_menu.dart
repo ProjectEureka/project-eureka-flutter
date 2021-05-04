@@ -5,11 +5,12 @@ import 'package:project_eureka_flutter/screens/home_screen.dart';
 import 'package:project_eureka_flutter/screens/new_question_screen.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
 import 'package:project_eureka_flutter/screens/settings_screen.dart';
-import 'package:project_eureka_flutter/services/users_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
+import 'package:project_eureka_flutter/services/users_service.dart';
 
 class SideMenu extends StatefulWidget {
   final String title;
+
   SideMenu({
     this.title,
   });
@@ -20,7 +21,7 @@ class SideMenu extends StatefulWidget {
 
 class _SideMenuState extends State<SideMenu> {
   bool loading = true;
-  UserModel user = new UserModel(
+  UserModel user = UserModel(
     firstName: '',
     lastName: '',
     email: '',
@@ -35,7 +36,6 @@ class _SideMenuState extends State<SideMenu> {
   }
 
   void initGetCurrentUser() {
-
     UserService().getUserById(userId).then((payload) {
       setState(() {
         user = payload;

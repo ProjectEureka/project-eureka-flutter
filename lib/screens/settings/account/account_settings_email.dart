@@ -11,7 +11,7 @@ class AccountSettingsEmail extends StatefulWidget {
 
 class _AccountSettingsEmailState extends State<AccountSettingsEmail> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final EmailAuth _emailAuth = new EmailAuth();
+  final EmailAuth _emailAuth = EmailAuth();
   String email;
   static final RegExp _regExp = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");

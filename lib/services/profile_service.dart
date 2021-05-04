@@ -1,9 +1,10 @@
-import 'package:project_eureka_flutter/models/question_model.dart';
-import 'package:project_eureka_flutter/models/answer_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:http/http.dart' as http;
+import 'package:project_eureka_flutter/models/answer_model.dart';
+import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 
 class ProfileService {
@@ -11,9 +12,8 @@ class ProfileService {
     // profile id will be changed to the current user id associated with firebase id
     await DotEnv.load();
 
-    final response = await http.get(Uri.http(
-        DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
-        '/v1/profile/' + userID));
+    final response =
+        await http.get(Uri.https(DotEnv.env['HOST'], '/v1/profile/' + userID));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response, then parse the JSON.
@@ -37,12 +37,12 @@ class ProfileService {
           : print(
               "Profile answers were load. No answers found with this user ID");
 
-      List<QuestionModel> questions = new List();
-      List<AnswerModel> answers = new List();
+      List<QuestionModel> questions = List();
+      List<AnswerModel> answers = List();
       UserModel user = UserModel.fromJson(body['user']);
 
       // profileInfo will be a dynamic List containing user's info, questions list, answers list
-      List<dynamic> profileInfo = new List();
+      List<dynamic> profileInfo = List();
 
       body['questions'].reversed.forEach((question) {
         questions.add(QuestionModel.fromJson(question));

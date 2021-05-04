@@ -1,20 +1,21 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
+import 'package:project_eureka_flutter/components/eureka_camera_form.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
-import 'package:project_eureka_flutter/components/eureka_camera_form.dart';
 import 'package:project_eureka_flutter/models/answer_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form_confirmation.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
-import 'package:uuid/uuid.dart';
-import 'package:project_eureka_flutter/services/new_question_service.dart';
 import 'package:project_eureka_flutter/services/new_answer_service.dart';
+import 'package:project_eureka_flutter/services/new_question_service.dart';
+import 'package:uuid/uuid.dart';
 
 class NewForm extends StatefulWidget {
   final String categoryName;
@@ -66,8 +67,8 @@ class _NewFormState extends State<NewForm> {
               : 'Please explain in detail your question...',
           keyboardType: TextInputType.multiline,
           textInputAction: TextInputAction.done,
-          maxLines:
-              widget.isAnswer ? 15 : 10, // make body form bigger when answer
+          maxLines: widget.isAnswer ? 15 : 10,
+          // make body form bigger when answer
           errValidatorMsg: widget.isAnswer
               ? 'Answer body is required.'
               : 'Question body is required.',
@@ -169,7 +170,7 @@ class _NewFormState extends State<NewForm> {
     if (widget.isAnswer) {
       /// builds answers model
       setState(() {
-        _answer = new AnswerModel(
+        _answer = AnswerModel(
           id: _id,
           mediaUrls: downloadUrls,
           answerDate: _date.toIso8601String(),
@@ -185,11 +186,11 @@ class _NewFormState extends State<NewForm> {
       /// builds question model
       /// Create new Object to be sent to backend.
       setState(() {
-        _question = new QuestionModel(
+        _question = QuestionModel(
           id: _id,
           title: _title,
-          questionDate:
-              _date.toIso8601String(), // format date to add `T` character
+          questionDate: _date.toIso8601String(),
+          // format date to add `T` character
           description: _body,
           mediaUrls: downloadUrls,
           category: widget.categoryName,

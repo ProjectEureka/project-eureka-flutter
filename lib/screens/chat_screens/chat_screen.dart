@@ -18,6 +18,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:project_eureka_flutter/screens/profile_screen.dart';
+import 'package:intl/intl.dart';
 
 // Initialize global variable for channel name for the call receiver; accessible for in ChatScreen and MessageBubble classes
 String channelNameAnswer = "";
@@ -35,7 +36,7 @@ class ChatScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChatScreenState createState() => new _ChatScreenState();
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen>
@@ -50,14 +51,18 @@ class _ChatScreenState extends State<ChatScreen>
   String messageText;
   String groupChatId;
   String userId;
+
   // Initialize channel name on caller's side
   String channelNameCall = "";
+
   // initialize token on the caller's side that will be requested from the backend
   String _tokenCall = "";
+
   // used to get the user's firstName fir the system message when starting the call
-  UserModel user = new UserModel(
+  UserModel user = UserModel(
     firstName: '',
   );
+
   // Used for the animated video call button to turn off / turn on animation
   bool showAnimationButton;
 
@@ -80,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen>
       });
     });
 
-    _controller = new AnimationController(
+    _controller = AnimationController(
       vsync: this,
     );
     _controller.repeat(
@@ -108,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen>
         break;
       }
       // listen to answerToken every 4 seconds
-      await Future.delayed(new Duration(seconds: 4));
+      await Future.delayed(Duration(seconds: 4));
       await VideoCallService().getTokenAnswer(channelNameAnswer).then(
         (payload) {
           if (!mounted)
@@ -255,8 +260,8 @@ class _ChatScreenState extends State<ChatScreen>
                   ? Container(
                       alignment: Alignment(0, 0.15),
                       child: CustomPaint(
-                        painter: new SpritePainter(_controller),
-                        child: new SizedBox(
+                        painter: SpritePainter(_controller),
+                        child: SizedBox(
                           width: 80.0,
                           height: 80.0,
                         ),
@@ -265,7 +270,7 @@ class _ChatScreenState extends State<ChatScreen>
                   : Container(
                       alignment: Alignment(0, 0.15),
                       child: CustomPaint(
-                        child: new SizedBox(
+                        child: SizedBox(
                           width: 80.0,
                           height: 80.0,
                         ),
@@ -306,8 +311,14 @@ class _ChatScreenState extends State<ChatScreen>
           children: [
             SizedBox(height: 50.0),
             GestureDetector(
-              onTap: () async { Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) => Profile(notSideMenu: true, userId: widget.fromId,)));
+              onTap: () async {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => Profile(
+                              notSideMenu: true,
+                              userId: widget.fromId,
+                            )));
               },
               child: Text(
                 widget.recipient,
@@ -544,6 +555,7 @@ class MessageBubble extends StatelessWidget {
       this.timestamp,
       this.showAnswerButton,
       this.messageIsImage});
+
   final String sender;
   final String text;
   final bool isMe;
@@ -609,7 +621,8 @@ class MessageBubble extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                     child: Container(
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.7),
                       child: messageIsImage == null
                           ? Text(text,
                               style: TextStyle(
@@ -626,14 +639,17 @@ class MessageBubble extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        EurekaImageViewer(imagePath: text, isUrl: true),
+                                    builder: (context) => EurekaImageViewer(
+                                        imagePath: text, isUrl: true),
                                   ),
                                 );
                               },
                               child: Container(
-                                constraints: BoxConstraints(maxWidth: 200, maxHeight: 150),
-                                child: FadeInImage.memoryNetwork(image: text, placeholder: kTransparentImage),
+                                constraints: BoxConstraints(
+                                    maxWidth: 200, maxHeight: 150),
+                                child: FadeInImage.memoryNetwork(
+                                    image: text,
+                                    placeholder: kTransparentImage),
                               )),
                     ),
                   ),
@@ -705,17 +721,17 @@ class SpritePainter extends CustomPainter {
 
   void circle(Canvas canvas, Rect rect, double value) {
     double opacity = (1.0 - (value / 4.0)).clamp(0.0, 1.0);
-    Color color = new Color.fromRGBO(0, 117, 194, opacity);
+    Color color = Color.fromRGBO(0, 117, 194, opacity);
     double size = rect.width / 2;
     double area = size * size;
     double radius = sqrt(area * value / 4);
-    final Paint paint = new Paint()..color = color;
+    final Paint paint = Paint()..color = color;
     canvas.drawCircle(rect.center, radius, paint);
   }
 
   @override
   void paint(Canvas canvas, Size size) {
-    Rect rect = new Rect.fromLTRB(0.0, 0.0, size.width, size.height);
+    Rect rect = Rect.fromLTRB(0.0, 0.0, size.width, size.height);
     for (int wave = 3; wave >= 0; wave--) {
       circle(canvas, rect, wave + _animation.value);
     }

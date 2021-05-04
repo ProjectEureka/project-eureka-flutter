@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
 import 'package:project_eureka_flutter/components/eureka_list_view.dart';
 import 'package:project_eureka_flutter/components/side_menu.dart';
-import 'package:project_eureka_flutter/screens/chat_screens/user_chats.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/screens/chat_screens/user_chats.dart';
 import 'package:project_eureka_flutter/services/all_question_service.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
 
@@ -16,16 +16,21 @@ class _HomeState extends State<Home> {
   //Made for testing purposes. Used to see if the Users Will Properly show on the home page
   UserModel user;
   String userId = EmailAuth().getCurrentUser().uid;
+
   // Questions data. Unfiltered list of questions
   List data = [];
+
   // Will filter the list of questions
   List questionsListFiltered = [];
+
   // These lists will help to filter questions by both search key and category simultaneously
   // Might be inefficient to use that many lists around, thus, this might change in the future versions to something more dynamic and efficient
   List questionsListFilteredCategory = [];
   List questionsListFilteredSearch = [];
+
   // isSearching keep track of whether search bar is activated or not. Search bar will appear if user clicked a search icon.
   bool isSearching = false;
+
   // Keeps track of the last chosen category. By default is All Categories.
   String selectedCategory = "All Categories";
   String dropdownValue = 'All Categories';
@@ -33,6 +38,7 @@ class _HomeState extends State<Home> {
   ///
   ///for chat screen testing purposes
   String fromId = "hJGcQsILP7XQDSvWY2Qx2k3MD0V2";
+
   // Get data from the database to the list. Questions are shown on home page is always questionsListFiltered,
   // which at this point is a copy of a `data`, as no filters have been applied yet
   @override
@@ -321,8 +327,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideMenu(),
-      resizeToAvoidBottomInset:
-          false, // fixed: "Create New Question" button was moving up while in keyboard mode
+      resizeToAvoidBottomInset: false,
+      // fixed: "Create New Question" button was moving up while in keyboard mode
       appBar: homeAppBar(),
 
       // List of questions and a category filter

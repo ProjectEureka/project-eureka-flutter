@@ -19,7 +19,8 @@ class EurekaAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: title is String ? Text(title) : title, //Text(title),
+      title: title is String ? Text(title) : title,
+      //Text(title),
       backgroundColor: Color(0xFF37474F),
       centerTitle: true,
       toolbarHeight: toolbarHeight,
@@ -27,5 +28,5 @@ class EurekaAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Size get preferredSize => new Size.fromHeight(toolbarHeight);
+  Size get preferredSize => Size.fromHeight(toolbarHeight);
 }

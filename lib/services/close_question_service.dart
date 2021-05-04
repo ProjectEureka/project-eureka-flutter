@@ -1,5 +1,6 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:http/http.dart' as http;
 
 class CloseQuestionService {
@@ -8,19 +9,16 @@ class CloseQuestionService {
     await DotEnv.load();
 
     return await http.put(
-      Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
-          '/v1/question/$questionId/close'),
+      Uri.https(DotEnv.env['HOST'], '/v1/question/$questionId/close'),
       body: answerId,
     );
   }
 
-  Future<http.Response> archiveQuestion(
-      String questionId) async {
+  Future<http.Response> archiveQuestion(String questionId) async {
     await DotEnv.load();
 
     return await http.put(
-      Uri.http(DotEnv.env['HOST'] + ':' + DotEnv.env['PORT'],
-          '/v1/questions/$questionId/archive'),
+      Uri.https(DotEnv.env['HOST'], '/v1/questions/$questionId/archive'),
     );
   }
 }
