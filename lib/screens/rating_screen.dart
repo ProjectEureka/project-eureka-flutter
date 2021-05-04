@@ -3,9 +3,9 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/models/rating_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
+import 'package:project_eureka_flutter/screens/more_details_page.dart';
 import 'package:project_eureka_flutter/services/close_question_service.dart';
 import 'package:project_eureka_flutter/services/rating_service.dart';
-import 'package:project_eureka_flutter/screens/more_details_page.dart';
 
 class Rating extends StatefulWidget {
   final UserModel userInfo;

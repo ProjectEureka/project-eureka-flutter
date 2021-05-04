@@ -1,20 +1,21 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_eureka_flutter/components/eureka_appbar.dart';
+import 'package:project_eureka_flutter/components/eureka_camera_form.dart';
 import 'package:project_eureka_flutter/components/eureka_rounded_button.dart';
 import 'package:project_eureka_flutter/components/eureka_text_form_field.dart';
 import 'package:project_eureka_flutter/components/eureka_toggle_switch.dart';
-import 'package:project_eureka_flutter/components/eureka_camera_form.dart';
 import 'package:project_eureka_flutter/models/answer_model.dart';
 import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/screens/new_form_screens/new_form_confirmation.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:project_eureka_flutter/services/email_auth.dart';
-import 'package:uuid/uuid.dart';
-import 'package:project_eureka_flutter/services/new_question_service.dart';
 import 'package:project_eureka_flutter/services/new_answer_service.dart';
+import 'package:project_eureka_flutter/services/new_question_service.dart';
+import 'package:uuid/uuid.dart';
 
 class NewForm extends StatefulWidget {
   final String categoryName;

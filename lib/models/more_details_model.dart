@@ -1,6 +1,6 @@
 import 'package:project_eureka_flutter/models/question_model.dart';
-import 'package:project_eureka_flutter/models/user_model.dart';
 import 'package:project_eureka_flutter/models/user_answer_model.dart';
+import 'package:project_eureka_flutter/models/user_model.dart';
 
 class MoreDetailModel {
   final UserModel user;

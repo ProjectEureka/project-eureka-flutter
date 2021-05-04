@@ -1,9 +1,10 @@
-import 'package:project_eureka_flutter/models/question_model.dart';
-import 'package:project_eureka_flutter/models/answer_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:http/http.dart' as http;
+import 'package:project_eureka_flutter/models/answer_model.dart';
+import 'package:project_eureka_flutter/models/question_model.dart';
 import 'package:project_eureka_flutter/models/user_model.dart';
 
 class ProfileService {
