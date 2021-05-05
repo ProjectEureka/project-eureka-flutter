@@ -80,7 +80,7 @@ class _ProfileAnswersViewState extends State<ProfileAnswersView> {
   }
 
   Text descriptionRow(int index) {
-    return Text(
+    return Text("A: " +
       widget.answersList[index].description,
       textAlign: TextAlign.left,
       style: TextStyle(
