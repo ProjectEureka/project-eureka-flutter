@@ -160,13 +160,14 @@ class _ProfileState extends State<Profile> {
           loading
               ? Text("  Rating: -.- ⭐",
                   style: TextStyle(fontWeight: FontWeight.bold))
-              : userInfo.averageRating == 0.0
-                  ? Text("  Not rated yet ⭐",
-                      style: TextStyle(fontWeight: FontWeight.bold))
-                  : Text(
-                      "  Rating: " + userInfo.averageRating.toString() + " ⭐",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+              : userInfo.averageRating > 0.0
+          ? Text(
+    "  Rating: " + userInfo.averageRating.toString() + " ⭐",
+    style: TextStyle(fontWeight: FontWeight.bold),
+    )
+
+                  : Text("  Not rated yet ⭐",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
           loading
               ? Text("  Best Answers: - ",
               style: TextStyle(fontWeight: FontWeight.bold))
