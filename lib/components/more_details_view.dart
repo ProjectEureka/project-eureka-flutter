@@ -78,13 +78,13 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
           textAlign: TextAlign.left,
         ),
         if (widget.isAnswer)
-          widget.userAnswerModel.user.averageRating == 0.0
-              ? Text("   N/A ⭐")
-              : Text(
+          widget.userAnswerModel.user.averageRating > 0.0
+              ? Text(
                   "  " +
                       widget.userAnswerModel.user.averageRating.toString() +
                       " ⭐",
-                ),
+                )
+              : Text("   N/A ⭐")
       ],
     );
   }
@@ -507,7 +507,9 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                         ? Container()
                         : widget.userAnswerModel.user.id == widget.currUserId
                             ? Container()
-                            : widget.choosingBestAnswer == null ? messageIcon() : Container()))
+                            : widget.choosingBestAnswer == null
+                                ? messageIcon()
+                                : Container()))
             : Positioned(
                 right: 0.0,
                 top: 35.0,
@@ -517,7 +519,9 @@ class _MoreDetailsViewState extends State<MoreDetailsView> {
                       ? (widget.moreDetailModel.question.visible == false
                           ? Container()
                           : _questionMenu(false, false))
-                      : widget.choosingBestAnswer == null ? messageIcon() : Container(),
+                      : widget.choosingBestAnswer == null
+                          ? messageIcon()
+                          : Container(),
                 ),
               ),
       ],
