@@ -155,26 +155,29 @@ class _ProfileState extends State<Profile> {
           if ((widget.userId == currentUser.uid) | (widget.userId == null))
             _editProfileButton(),
           SizedBox(
-                  height: 10.0,
+            height: 10.0,
           ),
           loading
               ? Text("  Rating: -.- ⭐",
                   style: TextStyle(fontWeight: FontWeight.bold))
               : userInfo.averageRating > 0.0
-          ? Text(
-    "  Rating: " + userInfo.averageRating.toString() + " ⭐",
-    style: TextStyle(fontWeight: FontWeight.bold),
-    )
-
+                  ? Text(
+                      "  Rating: " + userInfo.averageRating.toString() + " ⭐",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
                   : Text("  Not rated yet ⭐",
                       style: TextStyle(fontWeight: FontWeight.bold)),
           loading
               ? Text("  Best Answers: - ",
-              style: TextStyle(fontWeight: FontWeight.bold))
+                  style: TextStyle(fontWeight: FontWeight.bold))
               : Text(
-            "  Best Answers: " + bestAnswersCount.toString() + " (" + bestAnswersRate.round().toString() + "%)",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+                  "  Best Answers: " +
+                      bestAnswersCount.toString() +
+                      " (" +
+                      bestAnswersRate.round().toString() +
+                      "%)",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
           SizedBox(
             height: 4.0,
           ),
