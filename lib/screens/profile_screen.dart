@@ -28,6 +28,8 @@ class _ProfileState extends State<Profile> {
   List categories = [];
   bool loading = true;
   int bestAnswersCount = 0;
+  int answersNotOwnQuestionCount = 0;
+  double bestAnswersRate = 0;
 
   final User currentUser = EmailAuth().getCurrentUser();
 
@@ -50,10 +52,20 @@ class _ProfileState extends State<Profile> {
           categories = userInfo.category;
           loading = false;
           answersList.forEach((answer) {
-            if(answer.bestAnswer){
+            answersNotOwnQuestionCount += 1;
+            if (answer.bestAnswer) {
               bestAnswersCount += 1;
+              questionsList.forEach((question) =>
+                  (answer.questionId == question.id)
+                      ? {bestAnswersCount -= 1, answersNotOwnQuestionCount -= 1}
+                      : null);
             }
           });
+          bestAnswersCount == 0
+              ? bestAnswersRate = 0
+              : bestAnswersRate = ((bestAnswersCount.toDouble() /
+                      answersNotOwnQuestionCount.toDouble()) *
+                  100);
         });
       },
     );
@@ -95,9 +107,10 @@ class _ProfileState extends State<Profile> {
                       TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
           loading
               ? Text("")
-              : Text(((widget.userId == currentUser.uid) | (widget.userId == null))
-                  ? currentUser.email
-                  : '',
+              : Text(
+                  ((widget.userId == currentUser.uid) | (widget.userId == null))
+                      ? currentUser.email
+                      : '',
                   style: TextStyle(
                     fontSize: 15.0,
                   ),
@@ -134,7 +147,7 @@ class _ProfileState extends State<Profile> {
 
   Positioned _editButtonAndRating() {
     return Positioned(
-      top: 190.0,
+      top: 175.0,
       right: 15.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -142,25 +155,28 @@ class _ProfileState extends State<Profile> {
           if ((widget.userId == currentUser.uid) | (widget.userId == null))
             _editProfileButton(),
           SizedBox(
-            height: 7.0,
+                  height: 10.0,
           ),
           loading
-              ? Text("Best Answers: - ", style: TextStyle(fontWeight: FontWeight.bold))
-              : Text("Best Answers: " +
-              bestAnswersCount.toString() + " ",
+              ? Text("  Rating: -.- ⭐",
+                  style: TextStyle(fontWeight: FontWeight.bold))
+              : userInfo.averageRating == 0.0
+                  ? Text("  Not rated yet ⭐",
+                      style: TextStyle(fontWeight: FontWeight.bold))
+                  : Text(
+                      "  Rating: " + userInfo.averageRating.toString() + " ⭐",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+          loading
+              ? Text("  Best Answers: - ",
+              style: TextStyle(fontWeight: FontWeight.bold))
+              : Text(
+            "  Best Answers: " + bestAnswersCount.toString() + " (" + bestAnswersRate.round().toString() + "%)",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(
-            height: 7.0,
+            height: 4.0,
           ),
-          loading
-              ? Text("-.- ⭐", style: TextStyle(fontWeight: FontWeight.bold))
-              : userInfo.averageRating == 0.0
-                  ? Text("Not rated yet ⭐", style: TextStyle(fontWeight: FontWeight.bold))
-                  : Text(
-                      userInfo.averageRating.toString() + " ⭐",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
         ],
       ),
     );
@@ -171,7 +187,9 @@ class _ProfileState extends State<Profile> {
       children: [
         /// forces the stack to be a min height of 300.0
         Container(
-          height: ((widget.userId == currentUser.uid) | (widget.userId == null)) ? 300.0 : 275,
+          height: ((widget.userId == currentUser.uid) | (widget.userId == null))
+              ? 300.0
+              : 275,
         ),
         EurekaAppBar(
           title: 'Profile',

@@ -106,7 +106,7 @@ class ConversationsStream extends StatelessWidget {
           );
         } else {
           // if connection with firebase is failing
-          return Center(child: CircularProgressIndicator());
+          return Center(heightFactor: 5, child: CircularProgressIndicator());
         }
       },
     );
@@ -241,7 +241,7 @@ class ConversationBubble extends StatelessWidget {
               ),
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return Center(heightFactor: 5,child: CircularProgressIndicator());
           }
         });
   }
