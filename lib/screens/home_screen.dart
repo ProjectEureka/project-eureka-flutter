@@ -154,7 +154,9 @@ class _HomeState extends State<Home> {
   EurekaAppBar homeAppBar() {
     return EurekaAppBar(
       title: !isSearching
-          ? Text('EureQa')
+          ? Container(
+              child: Image.asset('assets/images/EureQaLogo.png', width: 140),
+            )
           : TextField(
               onChanged: (value) {
                 // Call function to apply search filter
